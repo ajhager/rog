@@ -108,7 +108,7 @@ func Open(width, height, zoom int, title string, fullscreen bool) {
 
     glfw.SetWindowCloseCallback(Close)
 
-    glfw.SetWindowTitle(title)
+    //glfw.SetWindowTitle(title)
 
     // Initialize opengl
     glInit(width*cellSize, height*cellSize)
