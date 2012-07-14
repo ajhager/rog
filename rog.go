@@ -1,176 +1,122 @@
 package rog
 
 import (
-    "time"
-    "github.com/jteeuwen/glfw"
-    "github.com/banthar/gl"
+	"bytes"
+	"fmt"
+	"image"
+	"image/color"
+	"image/draw"
+	_ "image/png"
+	"runtime"
+	"sync"
+	"github.com/skelterjohn/go.wde"
+	_ "github.com/skelterjohn/go.wde/init"
 )
 
 var (
-    root *Console
-    texture gl.Texture
-    running bool
-    winColor Color = Color{0, 0, 0}
-    fadeColor Color = Color{0, 0, 0}
-    fadeAlpha uint8 = 0
-    cellSize int
-    newTime, oldTime, frames int64
-    frameTime, Dt float64
-    showFPS bool = false
+	wg sync.WaitGroup
 )
 
-func Clear() {
-    setWinColor(Color{0, 0, 0})
-    root.Clear()
+type driver func(*Window)
+type drawer func(draw.Image)
+
+type Window struct {
+	win wde.Window
+	*Console
 }
 
-func Fill(ch uint8, bg, fg Color) {
-    root.Fill(ch, bg, fg)
+func (this *Window) Close() {
+	this.win.Close()
 }
 
-func FillCh(ch uint8) {
-    root.FillCh(ch)
+func (this *Window) Draw(drawer drawer) {
+	drawer(this.win.Screen())
 }
 
-func FillBg(bg Color) {
-    root.FillBg(bg)
-    setWinColor(bg)
+func Open(width, height int, title string, driver driver) {
+	wg.Add(1)
+	go func() {
+		dw, err := wde.NewWindow(width*16+4, height*16+4)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		dw.SetTitle(title)
+		dw.Show()
+
+		console := NewConsole(width, height)
+		window := &Window{dw, console}
+
+		f := font()
+		buf := bytes.NewBuffer(f)
+		mask, _, err := image.Decode(buf)
+		if err != nil {
+			panic(err)
+		}
+
+		events := dw.EventChan()
+		done := make(chan bool)
+
+		go func() {
+		loop:
+			for ei := range events {
+				runtime.Gosched()
+				switch e := ei.(type) {
+				case wde.KeyTypedEvent:
+					fmt.Println("KeyDownEvent", e.Glyph)
+				case wde.CloseEvent:
+					dw.Close()
+					break loop
+				}
+			}
+			done <- true
+		}()
+
+		for {
+			screen := dw.Screen()
+			draw.Draw(screen, screen.Bounds(), &image.Uniform{color.Black}, image.ZP, draw.Src)
+
+			// Update state of the console.
+			driver(window)
+
+			mr := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
+			// Render the console to the screen
+			for y := 0; y < window.h; y++ {
+				for x := 0; x < window.w; x++ {
+					r := mr.Add(image.Point{x * 16, y * 16})
+					bg := window.bg[y][x]
+					src := &image.Uniform{bg}
+					draw.Draw(screen, r, src, image.ZP, draw.Src)
+
+					ch := window.ch[y][x]
+					fg := window.fg[y][x]
+					if ch != 0 && ch != 32 {
+						src = &image.Uniform{fg}
+						draw.DrawMask(screen, r, src, image.ZP, mask, image.Point{int(ch%32) * 16, int(ch/32) * 16}, draw.Over)
+					}
+				}
+			}
+			dw.FlushImage()
+
+			// Check for console close.	
+			select {
+			case <-done:
+				wg.Done()
+				return
+			default:
+			}
+		}
+	}()
 }
 
-func FillFg(fg Color) {
-    root.FillFg(fg)
+func Start() {
+	go func() {
+		wg.Wait()
+		wde.Stop()
+	}()
+	wde.Run()
 }
 
-func Set(x, y int, ch uint8, bg, fg Color) {
-    root.Set(x, y, ch, bg, fg)
-}
-
-func SetCh(x, y int, ch uint8) {
-    root.SetCh(x, y, ch)
-}
-
-func SetBg(x, y int, bg Color) {
-    root.SetBg(x, y, bg)
-}
-
-func SetFg(x, y int, fg Color) {
-    root.SetFg(x, y, fg)
-}
-
-func SetChFg(x, y int, ch uint8, fg Color) {
-    root.SetChFg(x, y, ch, fg)
-}
-
-func SetChBg(x, y int, ch uint8, bg Color) {
-    root.SetChBg(x, y, ch, bg)
-}
-
-func SetFade(fade Color, alpha uint8) {
-    fadeColor = fade
-    fadeAlpha = alpha
-}
-
-func Key(key int) bool {
-    return glfw.Key(key) == glfw.KeyPress
-}
-
-func setWinColor(win Color) {
-    r := gl.GLclampf(float32(win.R) / 255.0)
-    g := gl.GLclampf(float32(win.G) / 255.0)
-    b := gl.GLclampf(float32(win.B) / 255.0)
-    a := gl.GLclampf(1.0)
-    gl.ClearColor(r, g, b, a)
-    winColor = win
-}
-
-func Open(width, height, zoom int, title string, fullscreen bool) {
-    // Set up the root console
-    root = NewConsole(width, height)
-
-    // Initialize the windowing library
-    if err := glfw.Init(); err != nil {
-        panic(err)
-    }
-    running = true
-
-    state := glfw.Windowed
-    if fullscreen {
-        state = glfw.Fullscreen
-        glfw.SetSwapInterval(1)
-    }
-    cellSize = fontSize * zoom
-
-    glfw.OpenWindowHint(glfw.WindowNoResize, gl.TRUE)
-    err := glfw.OpenWindow(width*cellSize, height*cellSize, 8, 8, 8, 8, 0, 0, state)
-    if err != nil {
-        panic(err)
-    }
-
-    glfw.SetWindowCloseCallback(Close)
-
-    //glfw.SetWindowTitle(title)
-
-    // Initialize opengl
-    glInit(width*cellSize, height*cellSize)
-    setWinColor(winColor)
-
-    // Initialize timing
-    newTime, oldTime = time.Now().UnixNano(), time.Now().UnixNano()
-}
-
-func IsOpen() bool {
-    return running && glfw.WindowParam(glfw.Opened) == 1
-}
-
-func Close() int {
-    running = false
-    glfw.CloseWindow()
-    glfw.Terminate()
-    return 0
-}
-
-func ShowFPS(on bool) {
-    showFPS = on
-}
-
-func Flush() {
-    gl.Clear(gl.COLOR_BUFFER_BIT)
-
-    for y := 0; y < root.h; y++ {
-        for x := 0; x < root.w; x++ {
-            bg := root.bg[y][x]
-            if !bg.Equal(winColor) {
-                setColor(root.bg[y][x])
-                letter(x, y, 219)
-            }
-            
-            ch := root.ch[y][x]
-            fg := root.fg[y][x]
-            if (ch != 0 && ch != 32) && !fg.Equal(bg) {
-                setColor(root.fg[y][x])
-                letter(x, y, ch)
-            }
-        }
-    }
-    
-    if (fadeAlpha != 0) {
-//        setColorA(fadeColor.R, fadeColor.G, fadeColor.B, fadeAlpha)
-//        letter(0, 0, root.w *cellSize, root.h*cellSize, 219)
-    }
-
-    glfw.SwapBuffers()
-
-    frames += 1
-    newTime = time.Now().UnixNano()
-    Dt = float64(newTime - oldTime) / 1e9
-    frameTime += Dt
-    oldTime = newTime
-    
-    if frameTime >= 1 {
-        if (showFPS) {
-            println(frames)
-        }
-        frameTime -= 1
-        frames = 0
-    }
+func Stop() {
+	wde.Stop()
 }

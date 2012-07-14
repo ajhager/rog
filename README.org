@@ -1,3 +1,0 @@
-* rog
-** Still very much a work in progress. A 32-bit console has been implemented with minimal keyboard input.
-** Requires glew and glfw shared libs installed for now. This restriction will be removed once I merge in native window / opengl context creation.
