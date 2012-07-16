@@ -6,11 +6,7 @@ import (
 )
 
 func popup(w *rog.Window) {
-	w.Clear()
-	red := color.RGBA{200, 50, 0, 255}
-	w.Print("POPUP")
-	w.Set(10, 10, '*', red, nil)
-	w.SetTitle("Popup")
+	w.Print("fps: %v", w.Fps)
 }
 
 func game(w *rog.Window) {
@@ -24,7 +20,7 @@ func game(w *rog.Window) {
 }
 
 func main() {
-	rog.Open(48, 32, "Basic Example", game)
+	//rog.Open(48, 32, "Basic Example", game)
 	rog.Open(48, 32, "Second Window", popup)
 	rog.Start()
 }

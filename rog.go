@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"image"
-	"image/color"
 	"image/draw"
 	_ "image/png"
 	"runtime"
 	"sync"
+	"time"
 	"github.com/skelterjohn/go.wde"
 	_ "github.com/skelterjohn/go.wde/init"
 )
@@ -25,9 +25,10 @@ type driver func(*Window)
 type drawer func(draw.Image)
 
 type Window struct {
+	*Console
 	win wde.Window
 	Dt  float64
-	*Console
+	Fps int64
 }
 
 func (this *Window) Close() {
@@ -54,7 +55,7 @@ func Open(width, height int, title string, driver driver) {
 		dw.Show()
 
 		console := NewConsole(width, height)
-		window := &Window{dw, 0, console}
+		window := &Window{console, dw, 0, 0}
 
 		f := font()
 		buf := bytes.NewBuffer(f)
@@ -81,9 +82,14 @@ func Open(width, height int, title string, driver driver) {
 			done <- true
 		}()
 
+		oldTime := time.Now()
+		newTime := time.Now()
+		elapsed := float64(0)
+		frames := int64(0)
 		for {
 			screen := dw.Screen()
-			draw.Draw(screen, screen.Bounds(), &image.Uniform{color.Black}, image.ZP, draw.Src)
+			// draw.Draw(screen, screen.Bounds(), &image.Uniform{color.Black}, image.ZP, draw.Src)
+
 
 			// Update state of the console.
 			driver(window)
@@ -106,6 +112,17 @@ func Open(width, height int, title string, driver driver) {
 				}
 			}
 			dw.FlushImage()
+
+			oldTime = newTime
+			newTime = time.Now()
+			window.Dt = newTime.Sub(oldTime).Seconds()
+			elapsed += window.Dt
+			frames += 1
+			if elapsed >= 1 {
+				window.Fps = frames
+				frames = 0
+				elapsed -= elapsed
+			}
 
 			// Check for console close.	
 			select {

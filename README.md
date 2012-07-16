@@ -11,6 +11,8 @@ Plans
 -----
 * Move console to a separate package so other projects can use it.
 * Optimizations to console rendering.
+* Window scaling.
+* User supplied font sets.
 * Background color flags.
 * String printing.
 * Frame time and fps calculation.
