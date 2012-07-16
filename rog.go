@@ -86,28 +86,29 @@ func Open(width, height int, title string, driver driver) {
 		newTime := time.Now()
 		elapsed := float64(0)
 		frames := int64(0)
+		mr := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
 		for {
 			screen := dw.Screen()
-			// draw.Draw(screen, screen.Bounds(), &image.Uniform{color.Black}, image.ZP, draw.Src)
-
 
 			// Update state of the console.
 			driver(window)
 
-			mr := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
 			// Render the console to the screen
 			for y := 0; y < window.h; y++ {
 				for x := 0; x < window.w; x++ {
-					r := mr.Add(image.Point{x * 16, y * 16})
-					bg := window.bg[y][x]
-					src := &image.Uniform{bg}
-					draw.Draw(screen, r, src, image.ZP, draw.Src)
+					if window.dirt[y][x] {
+						window.dirt[y][x] = false
+						r := mr.Add(image.Point{x * 16, y * 16})
+						bg := window.bg[y][x]
+						src := &image.Uniform{bg}
+						draw.Draw(screen, r, src, image.ZP, draw.Src)
 
-					ch := window.ch[y][x]
-					fg := window.fg[y][x]
-					if ch != 0 && ch != 32 {
-						src = &image.Uniform{fg}
-						draw.DrawMask(screen, r, src, image.ZP, mask, image.Point{int(ch%32) * 16, int(ch/32) * 16}, draw.Over)
+						ch := window.ch[y][x]
+						fg := window.fg[y][x]
+						if ch != ' ' {
+							src = &image.Uniform{fg}
+							draw.DrawMask(screen, r, src, image.ZP, mask, image.Point{int(ch%32) * 16, int(ch/32) * 16}, draw.Over)
+						}
 					}
 				}
 			}
