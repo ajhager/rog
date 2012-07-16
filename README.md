@@ -9,21 +9,16 @@ rog
 
 Plans
 -----
-* Move console to a separate package so other projects can use it.
-* Optimizations to console rendering.
-* Window scaling.
-* User supplied font sets.
 * Background color flags.
-* String printing.
-* Frame time and fps calculation.
 * Keyboard and mouse input routines.
 * Console to console blitting.
-* Console fading.
-* Image blit2x.
-* Saving screenshots.
-* Color constants.
+* String printing.
 * Field of view and lighting algorithms.
+* Image package for scaling up pixel art + window scaling.
+* Saving screenshots and videos.
+* User supplied font sets.
 * Documentation and tutorials.
+* Move console to a separate package so other projects can use it.
 
 Notes
 -----

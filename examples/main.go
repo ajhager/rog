@@ -17,10 +17,11 @@ func game(w *rog.Window) {
 			w.Set(x, y, rune(1000+(2*(x+(x*y)))+(y+x*y)), purple, grey)
 		}
 	}
+	w.Print("fps: %v", w.Fps)
 }
 
 func main() {
-	//rog.Open(48, 32, "Basic Example", game)
+	// rog.Open(48, 32, "Basic Example", game)
 	rog.Open(48, 32, "Second Window", popup)
 	rog.Start()
 }
