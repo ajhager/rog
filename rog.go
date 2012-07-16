@@ -13,6 +13,10 @@ import (
 	_ "github.com/skelterjohn/go.wde/init"
 )
 
+func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+}
+
 var (
 	wg sync.WaitGroup
 )
@@ -22,6 +26,7 @@ type drawer func(draw.Image)
 
 type Window struct {
 	win wde.Window
+	Dt  float64
 	*Console
 }
 
@@ -31,6 +36,10 @@ func (this *Window) Close() {
 
 func (this *Window) Draw(drawer drawer) {
 	drawer(this.win.Screen())
+}
+
+func (this *Window) SetTitle(title string) {
+	this.win.SetTitle(title)
 }
 
 func Open(width, height int, title string, driver driver) {
@@ -45,7 +54,7 @@ func Open(width, height int, title string, driver driver) {
 		dw.Show()
 
 		console := NewConsole(width, height)
-		window := &Window{dw, console}
+		window := &Window{dw, 0, console}
 
 		f := font()
 		buf := bytes.NewBuffer(f)
