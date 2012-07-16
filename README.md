@@ -2,17 +2,26 @@ rog
 ===
 ![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot.png)
 
-* Depends only on skelterjohn/go.wde, so little to no dependencies.
-* 32bit, unicode console with built in font has been implemented.
+* Depends only on skelterjohn/go.wde.
+* 32bit, unicode console with built in font.
 * Supports opening multiple windows, each backed by their own console and input.
-* For the moment, it takes inspiration from libtcod (the de facto roguelike library.)
+* Takes inspiration from libtcod (the de facto roguelike library.)
 
 Plans
 -----
-* String and shape drawing.
+* Move console to a separate package so other projects can use it.
+* Optimizations to console rendering.
+* Background color flags.
+* String printing.
+* Frame time and fps calculation.
 * Keyboard and mouse input routines.
 * Console to console blitting.
+* Console fading.
+* Image blit2x.
+* Saving screenshots.
+* Color constants.
 * Field of view and lighting algorithms.
+* Documentation and tutorials.
 
 Notes
 -----
