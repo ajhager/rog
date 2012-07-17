@@ -9,15 +9,14 @@ rog
 
 Plans
 -----
-* Background color flags.
 * Keyboard and mouse input routines.
-* Console to console blitting.
 * String printing.
 * Field of view and lighting algorithms.
-* Image package for scaling up pixel art + window scaling.
+* Documentation and tutorials.
+* Image package for scaling up pixel art and window zoom.
+* Console to console blitting.
 * Saving screenshots and videos.
 * User supplied font sets.
-* Documentation and tutorials.
 * Move console to a separate package so other projects can use it.
 
 Notes
