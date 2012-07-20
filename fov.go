@@ -76,7 +76,6 @@ func min(x, y int) (out int) {
 }
 
 // Circular Raycasting
-// func crCastRay(fov *FOVMap)
 func fovCircularCastRay(fov *FOVMap, xo, yo, xd, yd, r2 int, walls bool) {
 	curx := xo
 	cury := yo
@@ -111,7 +110,7 @@ func fovCircularCastRay(fov *FOVMap, xo, yo, xd, yd, r2 int, walls bool) {
 	}
 }
 
-func postproc(fov *FOVMap, x0, y0, x1, y1, dx, dy int) {
+func fovCircularPostProc(fov *FOVMap, x0, y0, x1, y1, dx, dy int) {
 	for cx := x0; cx <= x1; cx++ {
 		for cy := y0; cy <= y1; cy++ {
 			x2 := cx + dx
@@ -176,9 +175,9 @@ func FOVCircular(fov *FOVMap, x, y, r int, walls bool) {
 		yo--
 	}
 	if walls {
-		postproc(fov, xmin, ymin, x, y, -1, -1)
-		postproc(fov, x, ymin, xmax-1, y, 1, -1)
-		postproc(fov, xmin, y, x, ymax-1, -1, 1)
-		postproc(fov, x, y, xmax-1, ymax-1, 1, 1)
+		fovCircularPostProc(fov, xmin, ymin, x, y, -1, -1)
+		fovCircularPostProc(fov, x, ymin, xmax-1, y, 1, -1)
+		fovCircularPostProc(fov, xmin, y, x, ymax-1, -1, 1)
+		fovCircularPostProc(fov, x, y, xmax-1, ymax-1, 1, 1)
 	}
 }
