@@ -86,7 +86,7 @@ func fovCircularCastRay(fov *FOVMap, xo, yo, xd, yd, r2 int, walls bool) {
 		in = true
 		fov.viewable[cury][curx] = true
 	}
-	for p := range NewLine(xo, yo, xd, yd) {
+	for _, p := range NewLine(xo, yo, xd, yd) {
 		curx = p.X
 		cury = p.Y
 		if r2 > 0 {
@@ -110,7 +110,6 @@ func fovCircularCastRay(fov *FOVMap, xo, yo, xd, yd, r2 int, walls bool) {
 		}
 	}
 }
-
 
 func postproc(fov *FOVMap, x0, y0, x1, y1, dx, dy int) {
 	for cx := x0; cx <= x1; cx++ {
@@ -178,8 +177,8 @@ func FOVCircular(fov *FOVMap, x, y, r int, walls bool) {
 	}
 	if walls {
 		postproc(fov, xmin, ymin, x, y, -1, -1)
-		postproc(fov, x, ymin, xmax - 1, y, 1, -1)
-		postproc(fov, xmin, y, x, ymax - 1, -1, 1)
-		postproc(fov, x, y, xmax - 1, ymax - 1, 1, 1)
+		postproc(fov, x, ymin, xmax-1, y, 1, -1)
+		postproc(fov, xmin, y, x, ymax-1, -1, 1)
+		postproc(fov, x, y, xmax-1, ymax-1, 1, 1)
 	}
 }
