@@ -51,6 +51,14 @@ func (con *Console) SetDefaults(fg, bg color.Color, blend ColorBlend) {
 	con.blend = blend
 }
 
+func (con *Console) Dirty() {
+	for x := 0; x < con.w; x++ {
+		for y := 0; y < con.h; y++ {
+			con.dirt[y][x] = true
+		}
+	}
+}
+
 func (con *Console) Clear() {
 	con.Fill(' ', con.dFg, con.dBg)
 }
@@ -65,13 +73,13 @@ func (con *Console) Fill(ch rune, fg, bg color.Color) {
 
 func (con *Console) Set(x, y int, ch rune, fg, bg color.Color, blend ColorBlend) {
 	if ch > 0 && con.ch[y][x] != ch {
-		con.ch[y][x] = ch
 		con.dirt[y][x] = true
+		con.ch[y][x] = ch
 	}
 
 	if fg != nil && !colorEq(fg, con.fg[y][x]) {
-		con.fg[y][x] = fg
 		con.dirt[y][x] = true
+		con.fg[y][x] = fg
 	}
 
 	if bg != nil && !colorEq(bg, con.bg[y][x]) {
@@ -87,7 +95,7 @@ func (con *Console) Put(x, y int, ch rune) {
 func (con *Console) Print(s string, rest ...interface{}) {
 	runes := []rune(fmt.Sprintf(s, rest...))
 	for x := 0; x < len(runes); x++ {
-		con.Set(x, 5, runes[x], nil, nil, Normal)
+		con.Set(x, 0, runes[x], nil, nil, Normal)
 	}
 }
 

@@ -46,7 +46,9 @@ func (this *Window) SetTitle(title string) {
 func Open(width, height int, title string, driver driver) {
 	wg.Add(1)
 	go func() {
-		dw, err := wde.NewWindow(width*16+4, height*16+4)
+		dw, err := wde.NewWindow(width*16+20, height*16+20)
+		ww, wh := dw.Size()
+		fmt.Printf("w:%v h:%v\n", ww, wh)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -72,8 +74,9 @@ func Open(width, height int, title string, driver driver) {
 			for ei := range events {
 				runtime.Gosched()
 				switch e := ei.(type) {
-				case wde.KeyTypedEvent:
-					fmt.Println("KeyDownEvent", e.Glyph)
+				case wde.ResizeEvent:
+					console.Dirty()
+					fmt.Println(e)
 				case wde.CloseEvent:
 					dw.Close()
 					break loop
