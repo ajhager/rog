@@ -5,78 +5,96 @@ import (
 	"github.com/ajhager/rog"
 )
 
-func popup(w *rog.Window) {
-	w.Print("fps: %v", w.Fps)
+var (
+	width  = 20
+	height = 20
 
-	w.Set(19, 5, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 5, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 5, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
-	w.Set(21, 5, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
+	darkWall   = color.RGBA{0, 0, 100, 255}
+	lightWall  = color.RGBA{130, 110, 50, 255}
+	darkFloor  = color.RGBA{50, 50, 150, 255}
+	lightFloor = color.RGBA{200, 180, 50, 255}
 
-	w.Set(19, 6, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 6, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 6, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Multiply)
-	w.Set(21, 6, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
+	fov   = rog.NewFOVMap(width, height)
+	x     = 0
+	y     = 10
+	dx    = 1
+	time  = float64(0)
+	first = true
+	i     = 0
+	smap  = [][]rune{
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{'#', ' ', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
+		{'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+		{'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#'},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', '#'},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+		{'#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+	}
+)
 
-	w.Set(19, 7, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 7, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 7, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Screen)
-	w.Set(21, 7, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
+func fovExample(w *rog.Window) {
+	i += 1
+	time += w.Dt
 
-	w.Set(19, 8, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 8, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 8, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Overlay)
-	w.Set(21, 8, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
+	w.Print("%v    ", w.Fps)
 
-	w.Set(19, 9, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 9, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 9, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Lighten)
-	w.Set(21, 9, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
-
-	w.Set(19, 10, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 10, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 10, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Darken)
-	w.Set(21, 10, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
-
-	w.Set(19, 11, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 11, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 11, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Dodge)
-	w.Set(21, 11, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
-
-	w.Set(19, 12, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 12, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 12, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Alpha(.5))
-	w.Set(21, 12, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
-
-	w.Set(19, 13, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 13, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 13, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Add)
-	w.Set(21, 13, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
-
-	w.Set(19, 14, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 14, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 14, -1, nil, color.RGBA{200, 100, 100, 255}, rog.AddAlpha(.5))
-	w.Set(21, 14, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
-
-	w.Set(19, 15, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 15, -1, nil, color.RGBA{100, 100, 200, 255}, rog.Normal)
-	w.Set(20, 15, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Burn)
-	w.Set(21, 15, -1, nil, color.RGBA{200, 100, 100, 255}, rog.Normal)
-}
-
-func game(w *rog.Window) {
-	grey := color.RGBA{20, 20, 20, 255}
-	for x := 0; x < w.Width(); x++ {
-		for y := 0; y < w.Height(); y++ {
-			purple := color.RGBA{uint8(200), uint8(y * x), uint8((y * 4) % 255), 255}
-			w.Set(x, y, rune(1000+(2*(x+(x*y)))+(y+x*y)), purple, grey, rog.Normal)
+	if first {
+		first = false
+		w.Set(x, y, '@', color.White, nil, rog.Normal)
+		for y := 0; y < width; y++ {
+			for x := 0; x < height; x++ {
+				if smap[y][x] == '#' {
+					fov.Block(x, y, true)
+				}
+			}
 		}
 	}
-	w.Print("fps: %v", w.Fps)
+
+	if time >= .25 {
+		// fmt.Printf("%v\n", x)
+		time = 0
+		w.Set(x, y, ' ', color.White, nil, rog.Normal)
+		x += dx
+		if x == (width-1) || x == 0 {
+			dx = -dx
+		}
+		w.Set(x, y, '@', color.White, nil, rog.Normal)
+		fov.Update(x, y, 10, true, rog.FOVCircular)
+	}
+
+	for y := 0; y < fov.Height(); y++ {
+		for x := 0; x < fov.Width(); x++ {
+			if fov.Look(x, y) {
+				if smap[y][x] == '#' {
+					w.Set(x, y, -1, nil, lightWall, rog.Normal)
+				} else {
+					w.Set(x, y, -1, nil, lightFloor, rog.Normal)
+				}
+			} else {
+				if smap[y][x] == '#' {
+					w.Set(x, y, -1, nil, darkWall, rog.Normal)
+				} else {
+					w.Set(x, y, -1, nil, darkFloor, rog.Normal)
+				}
+			}
+		}
+	}
 }
 
 func main() {
-	// rog.Open(48, 32, "Basic Example", game)
-	rog.Open(48, 32, "Second Window", popup)
+	rog.Open(width, height, "FOV Example", fovExample)
 	rog.Start()
 }
