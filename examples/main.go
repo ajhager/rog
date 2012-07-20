@@ -3,6 +3,7 @@ package main
 import (
 	"image/color"
 	"github.com/ajhager/rog"
+	"runtime"
 )
 
 var (
@@ -55,13 +56,17 @@ var (
 		[]rune("                                                "),
 		[]rune("                                                "),
 	}
+
+	stats runtime.MemStats
 )
 
 func fovExample(w *rog.Window) {
+	runtime.ReadMemStats(&stats)
+
 	i += 1
 	time += w.Dt
 
-	w.Print("%v    ", w.Fps)
+	w.Print("%vFPS %.2fMB %vGR", w.Fps, float64(stats.Sys)/float64(1000000), runtime.NumGoroutine())
 
 	if first {
 		first = false
