@@ -11,7 +11,6 @@ Plans
 -----
 * Keyboard and mouse input routines.
 * String printing.
-* Field of view and lighting algorithms.
 * Documentation and tutorials.
 * Image package for scaling up pixel art and window zoom.
 * Console to console blitting.

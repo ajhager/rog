@@ -66,7 +66,7 @@ func fovExample(w *rog.Window) {
 	i += 1
 	time += w.Dt
 
-	w.Print("%vFPS %.2fMB %vGR", w.Fps, float64(stats.Sys)/float64(1000000), runtime.NumGoroutine())
+	w.Print("%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine())
 
 	if first {
 		first = false
