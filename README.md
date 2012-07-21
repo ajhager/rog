@@ -9,14 +9,13 @@ rog
 
 Plans
 -----
-* Keyboard and mouse input routines.
+* Keyboard handling.
 * String printing.
 * Documentation and tutorials.
-* Image package for scaling up pixel art and window zoom.
+* Image scale and rotate blitting.
 * Console to console blitting.
-* Saving screenshots and videos.
+* Saving screenshots.
 * User supplied font sets.
-* Move console to a separate package so other projects can use it.
 
 Notes
 -----
@@ -26,3 +25,4 @@ Thanks
 ------
 * Yamamushi [http://www.theasciiproject.com/]
 * libTCOD [http://doryen.eptalys.net/libtcod/]
+* John Asmuth [http://github.com/skelterjohn/go.wde]
