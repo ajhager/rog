@@ -26,9 +26,10 @@ type drawer func(draw.Image)
 
 type Window struct {
 	*Console
-	win wde.Window
-	Dt  float64
-	Fps int64
+	win   wde.Window
+	Dt    float64
+	Fps   int64
+	Mouse *Mouse
 }
 
 func (this *Window) Close() {
@@ -41,6 +42,15 @@ func (this *Window) Draw(drawer drawer) {
 
 func (this *Window) SetTitle(title string) {
 	this.win.SetTitle(title)
+}
+
+type MouseButton struct {
+	Pressed, Released bool
+}
+
+type Mouse struct {
+	Pos, DPos, Cell, DCell image.Point
+	Left, Right, Middle    MouseButton
 }
 
 func Open(width, height int, title string, driver driver) {
@@ -57,7 +67,7 @@ func Open(width, height int, title string, driver driver) {
 		dw.Show()
 
 		console := NewConsole(width, height)
-		window := &Window{console, dw, 0, 0}
+		window := &Window{console, dw, 0, 0, new(Mouse)}
 
 		f := font()
 		buf := bytes.NewBuffer(f)
@@ -67,30 +77,61 @@ func Open(width, height int, title string, driver driver) {
 		}
 
 		events := dw.EventChan()
-		done := make(chan bool)
-
-		go func() {
-		loop:
-			for ei := range events {
-				runtime.Gosched()
-				switch e := ei.(type) {
-				case wde.ResizeEvent:
-					console.Dirty()
-					fmt.Println(e)
-				case wde.CloseEvent:
-					dw.Close()
-					break loop
-				}
-			}
-			done <- true
-		}()
-
 		oldTime := time.Now()
 		newTime := time.Now()
 		elapsed := float64(0)
 		frames := int64(0)
 		mr := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
 		for {
+			window.Mouse.DPos.X = 0
+			window.Mouse.DPos.Y = 0
+			window.Mouse.DCell.X = 0
+			window.Mouse.DCell.Y = 0
+			window.Mouse.Left.Released = false
+			window.Mouse.Right.Released = false
+			window.Mouse.Middle.Released = false
+			select {
+			case ei := <-events:
+				switch e := ei.(type) {
+				case wde.MouseMovedEvent:
+					window.Mouse.Pos.X = e.Where.X
+					window.Mouse.Pos.Y = e.Where.Y
+					window.Mouse.DPos.X = e.From.X
+					window.Mouse.DPos.Y = e.From.Y
+					window.Mouse.Cell.X = e.Where.X / 16
+					window.Mouse.Cell.Y = e.Where.Y / 16
+					window.Mouse.DCell.X = e.From.X / 16
+					window.Mouse.DCell.Y = e.From.Y / 16
+				case wde.MouseDownEvent:
+					switch e.Which {
+					case wde.LeftButton:
+						window.Mouse.Left.Pressed = true
+					case wde.RightButton:
+						window.Mouse.Right.Pressed = true
+					case wde.MiddleButton:
+						window.Mouse.Right.Pressed = true
+					}
+				case wde.MouseUpEvent:
+					switch e.Which {
+					case wde.LeftButton:
+						window.Mouse.Left.Pressed = false
+						window.Mouse.Left.Released = true
+					case wde.RightButton:
+						window.Mouse.Right.Pressed = false
+						window.Mouse.Right.Released = true
+					case wde.MiddleButton:
+						window.Mouse.Right.Pressed = false
+						window.Mouse.Right.Released = true
+					}
+				case wde.ResizeEvent:
+					console.Dirty()
+				case wde.CloseEvent:
+					dw.Close()
+					wg.Done()
+				}
+			default:
+			}
+
 			screen := dw.Screen()
 
 			// Update state of the console.
@@ -126,14 +167,6 @@ func Open(width, height int, title string, driver driver) {
 				window.Fps = frames
 				frames = 0
 				elapsed -= elapsed
-			}
-
-			// Check for console close.	
-			select {
-			case <-done:
-				wg.Done()
-				return
-			default:
 			}
 		}
 	}()

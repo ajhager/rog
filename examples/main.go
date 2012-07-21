@@ -18,10 +18,7 @@ var (
 	fov   = rog.NewFOVMap(width, height)
 	x     = 0
 	y     = 16
-	dx    = 1
-	time  = float64(0)
 	first = true
-	i     = 0
 	tmap  = [][]rune{
 		[]rune("                                                "),
 		[]rune("                                                "),
@@ -61,16 +58,8 @@ var (
 )
 
 func fovExample(w *rog.Window) {
-	runtime.ReadMemStats(&stats)
-
-	i += 1
-	time += w.Dt
-
-	w.Print("%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine())
-
 	if first {
 		first = false
-		w.Set(x, y, '@', color.White, nil, rog.Normal)
 		for y := 0; y < height; y++ {
 			for x := 0; x < width; x++ {
 				if tmap[y][x] == '#' {
@@ -80,13 +69,18 @@ func fovExample(w *rog.Window) {
 		}
 	}
 
-	if time >= .25 {
-		time = 0
+	runtime.ReadMemStats(&stats)
+
+	w.Print(0, 0, "                                                ")
+	w.Print(0, 0, "%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine())
+
+	w.Print(0, 31, "                                                ")
+	w.Print(0, 31, "Pos: %v %v Cell: %v %v", w.Mouse.Pos.X, w.Mouse.Pos.Y, w.Mouse.Cell.X, w.Mouse.Cell.Y)
+
+	if w.Mouse.Left.Released {
 		w.Set(x, y, ' ', color.White, nil, rog.Normal)
-		x += dx
-		if x == (width-1) || x == 0 {
-			dx = -dx
-		}
+		x = w.Mouse.Cell.X
+		y = w.Mouse.Cell.Y
 		w.Set(x, y, '@', color.White, nil, rog.Normal)
 		fov.Update(x, y, 10, true, rog.FOVCircular)
 	}

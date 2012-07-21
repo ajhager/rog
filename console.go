@@ -92,10 +92,10 @@ func (con *Console) Put(x, y int, ch rune) {
 	con.Set(x, y, ch, con.dFg, con.dBg, con.blend)
 }
 
-func (con *Console) Print(s string, rest ...interface{}) {
+func (con *Console) Print(x, y int, s string, rest ...interface{}) {
 	runes := []rune(fmt.Sprintf(s, rest...))
-	for x := 0; x < len(runes); x++ {
-		con.Set(x, 0, runes[x], nil, nil, Normal)
+	for xx := x; xx < len(runes)+x; xx++ {
+		con.Set(xx, y, runes[xx], nil, nil, Normal)
 	}
 }
 
