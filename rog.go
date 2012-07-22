@@ -56,7 +56,7 @@ type Mouse struct {
 func Open(width, height int, title string, driver driver) {
 	wg.Add(1)
 	go func() {
-		dw, err := wde.NewWindow(width*16+20, height*16+20)
+		dw, err := wde.NewWindow(width*16, height*16)
 		ww, wh := dw.Size()
 		fmt.Printf("w:%v h:%v\n", ww, wh)
 		if err != nil {

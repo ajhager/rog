@@ -12,10 +12,10 @@ Plans
 * Keyboard handling.
 * String printing.
 * Documentation and tutorials.
-* Image scale and rotate blitting.
+* Image scale and rotation.
 * Console to console blitting.
-* Saving screenshots.
-* User supplied font sets.
+* Saving screenshots and video.
+* User supplied font sets and tilemaps.
 
 Notes
 -----
