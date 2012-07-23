@@ -57,6 +57,14 @@ var (
 	stats runtime.MemStats
 )
 
+func movePlayer(w *rog.Window, xx, yy int) {
+	w.Set(x, y, ' ', color.White, nil, rog.Normal)
+	x = xx
+	y = yy
+	w.Set(x, y, '@', color.White, nil, rog.Normal)
+	fov.Update(x, y, 10, true, rog.FOVCircular)
+}
+
 func fovExample(w *rog.Window) {
 	if first {
 		first = false
@@ -78,12 +86,27 @@ func fovExample(w *rog.Window) {
 	w.Print(0, 31, "Pos: %v %v Cell: %v %v", w.Mouse.Pos.X, w.Mouse.Pos.Y, w.Mouse.Cell.X, w.Mouse.Cell.Y)
 
 	if w.Mouse.Left.Released {
-		w.Set(x, y, ' ', color.White, nil, rog.Normal)
-		x = w.Mouse.Cell.X
-		y = w.Mouse.Cell.Y
-		w.Set(x, y, '@', color.White, nil, rog.Normal)
-		fov.Update(x, y, 10, true, rog.FOVCircular)
+        movePlayer(w, w.Mouse.Cell.X, w.Mouse.Cell.Y)
 	}
+
+    switch w.Key {
+    case "k":
+        if tmap[y-1][x] != '#' {
+            movePlayer(w, x, y - 1)
+        }
+    case "j":
+        if tmap[y+1][x] != '#' {
+            movePlayer(w, x, y + 1)
+        }
+    case "h":
+        if tmap[y][x-1] != '#' {
+            movePlayer(w, x - 1, y)
+        }
+    case "l":
+        if tmap[y][x+1] != '#' {
+            movePlayer(w, x + 1, y)
+        }
+    }
 
 	for y := 0; y < fov.Height(); y++ {
 		for x := 0; x < fov.Width(); x++ {

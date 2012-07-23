@@ -30,6 +30,7 @@ type Window struct {
 	Dt    float64
 	Fps   int64
 	Mouse *Mouse
+    Key string
 }
 
 func (this *Window) Close() {
@@ -61,6 +62,7 @@ func handleEvents(window *Window) {
 	window.Mouse.Left.Released = false
 	window.Mouse.Right.Released = false
 	window.Mouse.Middle.Released = false
+    window.Key = ""
 	select {
 	case ei := <-window.win.EventChan():
 		switch e := ei.(type) {
@@ -94,6 +96,8 @@ func handleEvents(window *Window) {
 				window.Mouse.Right.Pressed = false
 				window.Mouse.Right.Released = true
 			}
+        case wde.KeyTypedEvent:
+            window.Key = e.Glyph
 		case wde.ResizeEvent:
 			window.Dirty()
 		case wde.CloseEvent:
@@ -116,7 +120,7 @@ func Open(width, height int, title string, driver driver) {
 		dw.Show()
 
 		console := NewConsole(width, height)
-		window := &Window{console, dw, 0, 0, new(Mouse)}
+		window := &Window{console, dw, 0, 0, new(Mouse), ""}
 
 		f := font()
 		buf := bytes.NewBuffer(f)
