@@ -10,10 +10,11 @@ var (
 	width  = 48
 	height = 32
 
-	darkWall   = color.RGBA{0, 0, 100, 255}
-	lightWall  = color.RGBA{130, 110, 50, 255}
-	darkFloor  = color.RGBA{50, 50, 150, 255}
-	lightFloor = color.RGBA{200, 180, 50, 255}
+	darkWall   = color.RGBA{40, 40, 40, 255}
+	lightWall = color.RGBA{165, 120, 150, 255}
+	darkFloor  = color.RGBA{20, 15, 17, 255}
+	lightFloor  = color.RGBA{100, 70, 90, 255}
+	lightFloor2  = color.RGBA{90, 60, 80, 255}
     grey  = color.RGBA{200, 200, 200, 255}
     umbra = color.RGBA{30, 20, 10, 255}
 
@@ -65,8 +66,7 @@ func movePlayer(w *rog.Window, xx, yy int) {
 	    w.Set(x, y, " ", color.White, nil)
 	    x = xx
 	    y = yy
-	    w.Set(x, y, "@", color.White, nil)
-	    fov.Update(x, y, 10, true, rog.FOVCircular)
+	    fov.Update(x, y, 20, true, rog.FOVCircular)
     }
 }
 
@@ -102,19 +102,20 @@ func fovExample(w *rog.Window) {
 		for x := 0; x < fov.Width(); x++ {
 			if fov.Look(x, y) {
 				if tmap[y][x] == '#' {
-					w.Set(x, y, "", nil, lightWall)
+					w.Set(x, y, "", lightWall, lightWall)
 				} else {
-					w.Set(x, y, "", nil, lightFloor)
+					w.Set(x, y, "✵", lightFloor2, lightFloor)
 				}
 			} else {
 				if tmap[y][x] == '#' {
 					w.Set(x, y, "", nil, darkWall)
 				} else {
-					w.Set(x, y, "", nil, darkFloor)
+					w.Set(x, y, " ", nil, darkFloor)
 				}
 			}
 		}
 	}
+	w.Set(x, y, "@", grey, nil)
 
 	runtime.ReadMemStats(&stats)
     w.Fill(0, 0, w.Width(), 1, ' ', grey, umbra, rog.Dodge)
