@@ -9,11 +9,12 @@ rog
 
 Plans
 -----
+* User supplied font sets and tilemaps.
 * Documentation and tutorials.
+* Noise generators.
 * Image scale and rotation.
 * Console to console blitting.
 * Saving screenshots.
-* User supplied font sets and tilemaps.
 
 Notes
 -----
@@ -21,6 +22,6 @@ Notes
 
 Thanks
 ------
-* Yamamushi [http://www.theasciiproject.com/]
 * libTCOD [http://doryen.eptalys.net/libtcod/]
 * John Asmuth [http://github.com/skelterjohn/go.wde]
+* Yamamushi [http://www.theasciiproject.com/]

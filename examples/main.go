@@ -110,7 +110,7 @@ func fovExample(w *rog.Window) {
             w.Set(cx, cy, "", nil, darkWall)
 			w.Set(cx, cy, " ", nil, darkFloor)
 			if fov.Look(cx, cy) {
-                i := intensity(x, y, cx, cy, 30)
+                i := intensity(x, y, cx, cy, 20)
 				if tmap[cy][cx] == '#' {
 					w.Set(cx, cy, "", nil, rog.ColorMul(lightWall, i))
 				} else {
