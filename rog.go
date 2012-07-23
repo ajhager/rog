@@ -53,12 +53,61 @@ type Mouse struct {
 	Left, Right, Middle    MouseButton
 }
 
+func handleEvents(window *Window) {
+	window.Mouse.DPos.X = 0
+	window.Mouse.DPos.Y = 0
+	window.Mouse.DCell.X = 0
+	window.Mouse.DCell.Y = 0
+	window.Mouse.Left.Released = false
+	window.Mouse.Right.Released = false
+	window.Mouse.Middle.Released = false
+	select {
+	case ei := <-window.win.EventChan():
+		switch e := ei.(type) {
+		case wde.MouseMovedEvent:
+			window.Mouse.Pos.X = e.Where.X
+			window.Mouse.Pos.Y = e.Where.Y
+			window.Mouse.DPos.X = e.From.X
+			window.Mouse.DPos.Y = e.From.Y
+			window.Mouse.Cell.X = e.Where.X / 16
+			window.Mouse.Cell.Y = e.Where.Y / 16
+			window.Mouse.DCell.X = e.From.X / 16
+			window.Mouse.DCell.Y = e.From.Y / 16
+		case wde.MouseDownEvent:
+			switch e.Which {
+			case wde.LeftButton:
+				window.Mouse.Left.Pressed = true
+			case wde.RightButton:
+				window.Mouse.Right.Pressed = true
+			case wde.MiddleButton:
+				window.Mouse.Right.Pressed = true
+			}
+		case wde.MouseUpEvent:
+			switch e.Which {
+			case wde.LeftButton:
+				window.Mouse.Left.Pressed = false
+				window.Mouse.Left.Released = true
+			case wde.RightButton:
+				window.Mouse.Right.Pressed = false
+				window.Mouse.Right.Released = true
+			case wde.MiddleButton:
+				window.Mouse.Right.Pressed = false
+				window.Mouse.Right.Released = true
+			}
+		case wde.ResizeEvent:
+			window.Dirty()
+		case wde.CloseEvent:
+            window.win.Close()
+			wg.Done()
+		}
+	default:
+	}
+}
+
 func Open(width, height int, title string, driver driver) {
 	wg.Add(1)
 	go func() {
 		dw, err := wde.NewWindow(width*16, height*16)
-		ww, wh := dw.Size()
-		fmt.Printf("w:%v h:%v\n", ww, wh)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -76,63 +125,16 @@ func Open(width, height int, title string, driver driver) {
 			panic(err)
 		}
 
-		events := dw.EventChan()
 		oldTime := time.Now()
 		newTime := time.Now()
 		elapsed := float64(0)
 		frames := int64(0)
 		mr := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
 		for {
-			window.Mouse.DPos.X = 0
-			window.Mouse.DPos.Y = 0
-			window.Mouse.DCell.X = 0
-			window.Mouse.DCell.Y = 0
-			window.Mouse.Left.Released = false
-			window.Mouse.Right.Released = false
-			window.Mouse.Middle.Released = false
-			select {
-			case ei := <-events:
-				switch e := ei.(type) {
-				case wde.MouseMovedEvent:
-					window.Mouse.Pos.X = e.Where.X
-					window.Mouse.Pos.Y = e.Where.Y
-					window.Mouse.DPos.X = e.From.X
-					window.Mouse.DPos.Y = e.From.Y
-					window.Mouse.Cell.X = e.Where.X / 16
-					window.Mouse.Cell.Y = e.Where.Y / 16
-					window.Mouse.DCell.X = e.From.X / 16
-					window.Mouse.DCell.Y = e.From.Y / 16
-				case wde.MouseDownEvent:
-					switch e.Which {
-					case wde.LeftButton:
-						window.Mouse.Left.Pressed = true
-					case wde.RightButton:
-						window.Mouse.Right.Pressed = true
-					case wde.MiddleButton:
-						window.Mouse.Right.Pressed = true
-					}
-				case wde.MouseUpEvent:
-					switch e.Which {
-					case wde.LeftButton:
-						window.Mouse.Left.Pressed = false
-						window.Mouse.Left.Released = true
-					case wde.RightButton:
-						window.Mouse.Right.Pressed = false
-						window.Mouse.Right.Released = true
-					case wde.MiddleButton:
-						window.Mouse.Right.Pressed = false
-						window.Mouse.Right.Released = true
-					}
-				case wde.ResizeEvent:
-					console.Dirty()
-				case wde.CloseEvent:
-					dw.Close()
-					wg.Done()
-				}
-			default:
-			}
+			screen := window.win.Screen()
 
-			screen := dw.Screen()
+            // Handle events.
+            handleEvents(window)
 
 			// Update state of the console.
 			driver(window)
@@ -156,7 +158,7 @@ func Open(width, height int, title string, driver driver) {
 					}
 				}
 			}
-			dw.FlushImage()
+			window.win.FlushImage()
 
 			oldTime = newTime
 			newTime = time.Now()
