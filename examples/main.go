@@ -14,11 +14,14 @@ var (
 	lightWall  = color.RGBA{130, 110, 50, 255}
 	darkFloor  = color.RGBA{50, 50, 150, 255}
 	lightFloor = color.RGBA{200, 180, 50, 255}
+    grey  = color.RGBA{200, 200, 200, 255}
+    umbra = color.RGBA{30, 20, 10, 255}
 
 	fov   = rog.NewFOVMap(width, height)
 	x     = 0
 	y     = 16
 	first = true
+	row = "                                                "
 	tmap  = [][]rune{
 		[]rune("                                                "),
 		[]rune("                                                "),
@@ -58,11 +61,13 @@ var (
 )
 
 func movePlayer(w *rog.Window, xx, yy int) {
-	w.Set(x, y, ' ', color.White, nil, rog.Normal)
-	x = xx
-	y = yy
-	w.Set(x, y, '@', color.White, nil, rog.Normal)
-	fov.Update(x, y, 10, true, rog.FOVCircular)
+    if xx >= 0 && yy > 0 && xx < width && yy < height-1 && tmap[yy][xx] == ' ' {
+	    w.Set(x, y, " ", color.White, nil)
+	    x = xx
+	    y = yy
+	    w.Set(x, y, "@", color.White, nil)
+	    fov.Update(x, y, 10, true, rog.FOVCircular)
+    }
 }
 
 func fovExample(w *rog.Window) {
@@ -75,15 +80,8 @@ func fovExample(w *rog.Window) {
 				}
 			}
 		}
+        movePlayer(w, 27, 16)
 	}
-
-	runtime.ReadMemStats(&stats)
-
-	w.Print(0, 0, "                                                ")
-	w.Print(0, 0, "%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine())
-
-	w.Print(0, 31, "                                                ")
-	w.Print(0, 31, "Pos: %v %v Cell: %v %v", w.Mouse.Pos.X, w.Mouse.Pos.Y, w.Mouse.Cell.X, w.Mouse.Cell.Y)
 
 	if w.Mouse.Left.Released {
         movePlayer(w, w.Mouse.Cell.X, w.Mouse.Cell.Y)
@@ -91,40 +89,38 @@ func fovExample(w *rog.Window) {
 
     switch w.Key {
     case "k":
-        if tmap[y-1][x] != '#' {
-            movePlayer(w, x, y - 1)
-        }
+        movePlayer(w, x, y - 1)
     case "j":
-        if tmap[y+1][x] != '#' {
-            movePlayer(w, x, y + 1)
-        }
+        movePlayer(w, x, y + 1)
     case "h":
-        if tmap[y][x-1] != '#' {
-            movePlayer(w, x - 1, y)
-        }
+        movePlayer(w, x - 1, y)
     case "l":
-        if tmap[y][x+1] != '#' {
-            movePlayer(w, x + 1, y)
-        }
+        movePlayer(w, x + 1, y)
     }
 
 	for y := 0; y < fov.Height(); y++ {
 		for x := 0; x < fov.Width(); x++ {
 			if fov.Look(x, y) {
 				if tmap[y][x] == '#' {
-					w.Set(x, y, -1, nil, lightWall, rog.Normal)
+					w.Set(x, y, "", nil, lightWall)
 				} else {
-					w.Set(x, y, -1, nil, lightFloor, rog.Normal)
+					w.Set(x, y, "", nil, lightFloor)
 				}
 			} else {
 				if tmap[y][x] == '#' {
-					w.Set(x, y, -1, nil, darkWall, rog.Normal)
+					w.Set(x, y, "", nil, darkWall)
 				} else {
-					w.Set(x, y, -1, nil, darkFloor, rog.Normal)
+					w.Set(x, y, "", nil, darkFloor)
 				}
 			}
 		}
 	}
+
+	runtime.ReadMemStats(&stats)
+    w.Fill(0, 0, w.Width(), 1, ' ', grey, umbra, rog.Dodge)
+    w.Set(0, 0, w.P("%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine()), nil, nil)
+	w.Set(0, 31, row, grey, umbra, rog.Dodge)
+	w.Set(0, 31, w.P("Pos: %v %v Cell: %v %v", w.Mouse.Pos.X, w.Mouse.Pos.Y, w.Mouse.Cell.X, w.Mouse.Cell.Y), nil, nil)
 }
 
 func main() {

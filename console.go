@@ -60,18 +60,18 @@ func (con *Console) Dirty() {
 }
 
 func (con *Console) Clear() {
-	con.Fill(' ', con.dFg, con.dBg)
+	con.Fill(0, 0, con.w, con.h, ' ', con.dFg, con.dBg)
 }
 
-func (con *Console) Fill(ch rune, fg, bg color.Color) {
-	for x := 0; x < con.w; x++ {
-		for y := 0; y < con.h; y++ {
-			con.Set(x, y, ch, fg, bg, Normal)
+func (con *Console) Fill(x0, y0, x1, y1 int, ch rune, fg, bg color.Color, bl ...ColorBlend) {
+	for x := x0; x < x1; x++ {
+		for y := y0; y < y1; y++ {
+			con.Set(x, y, string(ch), fg, bg, bl...)
 		}
 	}
 }
 
-func (con *Console) Set(x, y int, ch rune, fg, bg color.Color, blend ColorBlend) {
+func (con *Console) put(x, y int, ch rune, fg, bg color.Color, blend ColorBlend) {
 	if ch > 0 && con.ch[y][x] != ch {
 		con.dirt[y][x] = true
 		con.ch[y][x] = ch
@@ -88,15 +88,25 @@ func (con *Console) Set(x, y int, ch rune, fg, bg color.Color, blend ColorBlend)
 	}
 }
 
-func (con *Console) Put(x, y int, ch rune) {
-	con.Set(x, y, ch, con.dFg, con.dBg, con.blend)
+func (con *Console) Set(x, y int, data string, fg, bg color.Color, bl ...ColorBlend) {
+    blend := Normal
+    if len(bl) > 0 {
+        blend = bl[0]
+    }
+
+    runes := []rune(data)
+    num := len(runes)
+    if num > 0 {
+	    for xx := 0; xx < num; xx++ {
+		    con.put(xx+x, y, runes[xx], fg, bg, blend)
+	    }
+    } else {
+		con.put(x, y, -1, fg, bg, blend)
+    }
 }
 
-func (con *Console) Print(x, y int, s string, rest ...interface{}) {
-	runes := []rune(fmt.Sprintf(s, rest...))
-	for xx := x; xx < len(runes)+x; xx++ {
-		con.Set(xx, y, runes[xx], nil, nil, Normal)
-	}
+func (con *Console) P(s string, rest ...interface{}) string {
+	return fmt.Sprintf(s, rest...)
 }
 
 func (con *Console) Width() int {
