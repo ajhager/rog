@@ -10,13 +10,12 @@ var (
 	width  = 48
 	height = 32
 
-	darkWall   = color.RGBA{40, 40, 40, 255}
-	lightWall = color.RGBA{165, 120, 150, 255}
-	darkFloor  = color.RGBA{20, 15, 17, 255}
-	lightFloor  = color.RGBA{100, 70, 90, 255}
-	lightFloor2  = color.RGBA{90, 60, 80, 255}
+	darkWall   = color.RGBA{0, 0, 0, 255}
+	lightWall = color.RGBA{255, 180, 180, 255}
+	darkFloor  = color.RGBA{0, 0, 0, 255}
+	lightFloor  = color.RGBA{128, 70, 70, 255}
     grey  = color.RGBA{200, 200, 200, 255}
-    umbra = color.RGBA{30, 20, 10, 255}
+    umbra = color.RGBA{30, 30, 30, 255}
 
 	fov   = rog.NewFOVMap(width, height)
 	x     = 0
@@ -70,6 +69,14 @@ func movePlayer(w *rog.Window, xx, yy int) {
     }
 }
 
+func intensity(px, py, cx, cy, r int) float64 {
+    r2 := float64(r * r)
+    squaredDist := float64((px-cx)*(px-cx)+(py-cy)*(py-cy))
+    coef1 := 1.0 / (1.0 + squaredDist / 20)
+    coef2 := coef1 - 1.0 / (1.0 + r2)
+    return coef2 / (1.0 - 1.0 / (1.0 + r2))
+}
+
 func fovExample(w *rog.Window) {
 	if first {
 		first = false
@@ -98,24 +105,21 @@ func fovExample(w *rog.Window) {
         movePlayer(w, x + 1, y)
     }
 
-	for y := 0; y < fov.Height(); y++ {
-		for x := 0; x < fov.Width(); x++ {
-			if fov.Look(x, y) {
-				if tmap[y][x] == '#' {
-					w.Set(x, y, "", lightWall, lightWall)
+	for cy := 0; cy < fov.Height(); cy++ {
+		for cx := 0; cx < fov.Width(); cx++ {
+            w.Set(cx, cy, "", nil, darkWall)
+			w.Set(cx, cy, " ", nil, darkFloor)
+			if fov.Look(cx, cy) {
+                i := intensity(x, y, cx, cy, 30)
+				if tmap[cy][cx] == '#' {
+					w.Set(cx, cy, "", nil, rog.ColorMul(lightWall, i))
 				} else {
-					w.Set(x, y, "✵", lightFloor2, lightFloor)
-				}
-			} else {
-				if tmap[y][x] == '#' {
-					w.Set(x, y, "", nil, darkWall)
-				} else {
-					w.Set(x, y, " ", nil, darkFloor)
+					w.Set(cx, cy, "✵", rog.ColorMul(lightFloor, i*1.5), rog.ColorMul(lightFloor, i), rog.Screen)
 				}
 			}
 		}
 	}
-	w.Set(x, y, "@", grey, nil)
+	w.Set(x, y, "웃", grey, nil)
 
 	runtime.ReadMemStats(&stats)
     w.Fill(0, 0, w.Width(), 1, ' ', grey, umbra, rog.Dodge)

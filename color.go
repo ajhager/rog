@@ -11,6 +11,12 @@ func colorEq(x, y color.Color) bool {
 	return xr == yr && xg == yg && xb == yb && xa == ya
 }
 
+func ColorMul(x color.Color, s float64) color.Color {
+	xr, xg, xb, xa := colorToFloats(x)
+    r, g, b, a := 255 * xr * s, 255 * xg * s, 255 * xb * s, 255 * xa
+    return color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)}
+}
+
 func colorToFloats(c color.Color) (rr, gg, bb, aa float64) {
 	const M = float64(1<<16 - 1)
 	r, g, b, a := c.RGBA()

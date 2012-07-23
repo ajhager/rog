@@ -99,7 +99,6 @@ func handleEvents(window *Window) {
         case wde.KeyTypedEvent:
             window.Key = e.Glyph
 		case wde.ResizeEvent:
-			window.Dirty()
 		case wde.CloseEvent:
             window.win.Close()
 			wg.Done()
@@ -120,6 +119,7 @@ func Open(width, height int, title string, driver driver) {
 		dw.Show()
 
 		console := NewConsole(width, height)
+        backbuf := NewConsole(width, height)
 		window := &Window{console, dw, 0, 0, new(Mouse), ""}
 
 		f := font()
@@ -146,15 +146,17 @@ func Open(width, height int, title string, driver driver) {
 			// Render the console to the screen
 			for y := 0; y < window.h; y++ {
 				for x := 0; x < window.w; x++ {
-					if window.dirt[y][x] {
-						window.dirt[y][x] = false
+					bg := window.bg[y][x]
+					fg := window.fg[y][x]
+					ch := window.ch[y][x]
+					if bg != backbuf.bg[y][x] || fg != backbuf.fg[y][x] || ch != backbuf.ch[y][x] {
+                        backbuf.bg[y][x] = bg
+                        backbuf.fg[y][x] = fg
+                        backbuf.ch[y][x] = ch
 						r := mr.Add(image.Point{x * 16, y * 16})
-						bg := window.bg[y][x]
 						src := &image.Uniform{bg}
 						draw.Draw(screen, r, src, image.ZP, draw.Src)
 
-						ch := window.ch[y][x]
-						fg := window.fg[y][x]
 						if ch != ' ' {
 							src = &image.Uniform{fg}
 							draw.DrawMask(screen, r, src, image.ZP, mask, image.Point{int(ch%32) * 16, int(ch/32) * 16}, draw.Over)
