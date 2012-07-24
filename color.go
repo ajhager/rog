@@ -5,7 +5,6 @@ import (
 	"math"
 )
 
-// Utility
 func colorToFloats(c color.Color) (rr, gg, bb float64) {
 	const M = float64(1<<16 - 1)
 	r, g, b, _ := c.RGBA()
@@ -146,7 +145,7 @@ func alpha(top, bot color.Color, a float64) color.Color {
 	}
 }
 
-// RGB
+// RGB represents a traditional 24-bit alpha-premultiplied color, having 8 bits for each of red, green, and blue.
 type RGB struct {
     R, G, B uint8
 }
@@ -162,6 +161,7 @@ func (c RGB) RGBA() (r, g, b, a uint32) {
     return
 }
 
+// HEX returns parses a uint32 into RGB components.
 func HEX(n uint32) RGB {
     r := uint8((n >> 16) & 0xFF)
     g := uint8((n >> 8) & 0xFF)
@@ -169,47 +169,62 @@ func HEX(n uint32) RGB {
     return RGB{r, g, b}
 }
 
+// Multiply = old * new
 func (c RGB) Multiply(o color.Color) color.Color {
     return multiply(o, c)
 }
 
+// Dodge = new / (white - old)
 func (c RGB) Dodge(o color.Color) color.Color {
     return dodge(o, c)
 }
 
+// Screen = white - (white - old) * (white - new)
 func (c RGB) Screen(o color.Color) color.Color {
     return screen(o, c)
 }
 
+// Overlay = new.x <= 0.5 ? 2*new*old : white - 2*(white-new)*(white-old)
 func (c RGB) Overlay(o color.Color) color.Color {
     return overlay(o, c)
 }
 
+// Darken = MIN(old, new)
 func (c RGB) Darken(o color.Color) color.Color {
     return darken(o, c)
 }
 
+// Lighten = MIN(old, new)
+func (c RGB) Larken(o color.Color) color.Color {
+    return larken(o, c)
+}
+
+// Burn = old + new - white
 func (c RGB) Burn(o color.Color) color.Color {
     return burn(o, c)
 }
 
+// Scale = old * s
 func (c RGB) Scale(s float64) color.Color {
     return scale(c, s)
 }
 
+// Add = old + new
 func (c RGB) Add(o color.Color) color.Color {
     return add(o, c)
 }
 
+// AddAlpha = old + alpha*new
 func (c RGB) AddAlpha(o color.Color, a float64) color.Color {
     return addAlpha(o, c, a)
 }
 
+// Alpha = (1-alpha)*old + alpha*(new-old)
 func (c RGB) Alpha(o color.Color, a float64) color.Color {
     return alpha(o, c, a)
 }
 
-// Blenders
+// Blender
 type Blender func(color.Color) color.Color
 
 func Multiply(top color.Color) Blender {
