@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
-	_ "image/png"
+    "image/png"
+    "os"
 	"sync"
 	"time"
 	"github.com/skelterjohn/go.wde"
@@ -30,6 +31,17 @@ type Window struct {
 func (this *Window) Close() {
 	this.win.Close()
 	wg.Done()
+}
+
+func (this* Window) Screenshot(name string) (err error) {
+    file, err := os.Create(fmt.Sprintf("%v.%v", name, "png"))
+    if err != nil {
+        return
+    }
+    defer file.Close()
+
+    err = png.Encode(file, this.win.Screen())
+    return
 }
 
 func (this *Window) SetTitle(title string) {

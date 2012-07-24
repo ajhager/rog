@@ -105,6 +105,8 @@ func fovExample(w *rog.Window) {
         movePlayer(w, x - 1, y)
     case "l":
         movePlayer(w, x + 1, y)
+    case "p":
+        w.Screenshot("test")
     case "escape":
         w.Close()
     }

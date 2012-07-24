@@ -11,10 +11,10 @@ Plans
 -----
 * User supplied font sets and tilemaps.
 * Documentation and tutorials.
+* Test suite.
 * Noise generators.
 * Image scale and rotation.
 * Console to console blitting.
-* Saving screenshots.
 
 Notes
 -----
