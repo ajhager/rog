@@ -184,9 +184,10 @@ func Open(width, height int, title string, driver driver) {
 			}
 		}
 	}()
+    start()
 }
 
-func Start() {
+func start() {
 	go func() {
 		wg.Wait()
 		wde.Stop()

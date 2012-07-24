@@ -135,5 +135,5 @@ func fovExample(w *rog.Window) {
 
 func main() {
 	rog.Open(width, height, "FOV Example", fovExample)
-	rog.Start()
+//	rog.Start()
 }
