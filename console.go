@@ -38,12 +38,12 @@ func NewConsole(width, height int) *Console {
 func (con *Console) Fill(x0, y0, x1, y1 int, ch rune, fg, bg interface{}) {
 	for x := x0; x < x1; x++ {
 		for y := y0; y < y1; y++ {
-			con.Set(x, y, string(ch), fg, bg)
+			con.Set(x, y, fg, bg, string(ch))
 		}
 	}
 }
 
-func (con *Console) put(x, y int, ch rune, fg, bg interface{}) {
+func (con *Console) put(x, y int, fg, bg interface{}, ch rune) {
 	if ch > 0 {
 		con.ch[y][x] = ch
 	}
@@ -65,19 +65,15 @@ func (con *Console) put(x, y int, ch rune, fg, bg interface{}) {
     }
 }
 
-func (con *Console) Set(x, y int, data string, fg, bg interface{}) {
-    runes := []rune(data)
+func (con *Console) Set(x, y int, fg, bg interface{}, data string, rest ...interface{}) {
+    runes := []rune(fmt.Sprintf(data, rest...))
     if len(runes) > 0 {
-	    for xx := 0; xx < len(runes); xx++ {
-		    con.put(xx+x, y, runes[xx], fg, bg)
+	    for i := 0; i < len(runes); i++ {
+		    con.put(i+x, y, fg, bg, runes[i])
 	    }
     } else {
-		con.put(x, y, -1, fg, bg)
+		con.put(x, y, fg, bg, -1)
     }
-}
-
-func (con *Console) P(s string, rest ...interface{}) string {
-	return fmt.Sprintf(s, rest...)
 }
 
 func (con *Console) Width() int {

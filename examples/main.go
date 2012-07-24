@@ -64,7 +64,7 @@ func init() {
 
 func movePlayer(w *rog.Window, xx, yy int) {
     if xx >= 0 && yy > 0 && xx < width && yy < height-1 && tmap[yy][xx] == ' ' {
-	    w.Set(x, y, " ", white, nil)
+	    w.Set(x, y, white, nil, " ")
 	    x = xx
 	    y = yy
 	    fov.Update(x, y, 20, true, rog.FOVCircular)
@@ -111,25 +111,24 @@ func fovExample(w *rog.Window) {
 
 	for cy := 0; cy < fov.Height(); cy++ {
 		for cx := 0; cx < fov.Width(); cx++ {
-			w.Set(cx, cy, " ", nil, black)
+			w.Set(cx, cy, nil, black, " ")
 			if fov.Look(cx, cy) {
                 i := intensity(x, y, cx, cy, 20)
 				if tmap[cy][cx] == '#' {
-					w.Set(cx, cy, "", nil, wall.Scale(i))
+					w.Set(cx, cy, nil, wall.Scale(i), "")
 				} else {
-					w.Set(cx, cy, "✵", floor.Scale(i*1.5), floor.Scale(i))
-//					w.Set(cx, cy, "✵", rog.AddAlpha(dgrey, .2), floor.Scale(i))
+					w.Set(cx, cy, floor.Scale(i*1.5), floor.Scale(i), "✵")
 				}
 			}
 		}
 	}
-	w.Set(x, y, "웃", lgrey, nil)
+	w.Set(x, y, lgrey, nil, "웃")
 
 	runtime.ReadMemStats(&stats)
     w.Fill(0, 0, w.Width(), 1, ' ', lgrey, rog.Dodge(dgrey))
-    w.Set(0, 0, w.P("%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine()), nil, nil)
-    w.Fill(0, 30, w.Width(), 1, ' ', lgrey, rog.Dodge(dgrey))
-	w.Set(0, 31, w.P("Pos: %v %v Cell: %v %v", w.Mouse.Pos.X, w.Mouse.Pos.Y, w.Mouse.Cell.X, w.Mouse.Cell.Y), nil, nil)
+    w.Set(0, 0, nil, nil, "%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine())
+    w.Fill(0, 31, w.Width(), 32, ' ', lgrey, rog.Dodge(dgrey))
+	w.Set(0, 31, nil, nil, "Pos: %v %v Cell: %v %v", w.Mouse.Pos.X, w.Mouse.Pos.Y, w.Mouse.Cell.X, w.Mouse.Cell.Y)
 }
 
 func main() {
