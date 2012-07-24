@@ -2,7 +2,24 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package rog provides algorithms and data structures for creating roguelike games.
+/*
+Package rog provides algorithms and data structures for creating roguelike games.
+
+ import (
+  "github.com/ajhager/rog"
+ )
+
+ func main() {
+     rog.Open(48, 32, "FOV Example")
+     for rog.IsOpen() {
+         rog.Set(0, 0, nil, nil, "Hello, 世界")
+         if rog.Key == "escape" {
+             rog.Close()
+         }
+         rog.Flush()
+     }
+ }
+*/
 package rog
 
 import (
