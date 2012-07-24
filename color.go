@@ -195,8 +195,8 @@ func (c RGB) Darken(o color.Color) color.Color {
 }
 
 // Lighten = MIN(old, new)
-func (c RGB) Larken(o color.Color) color.Color {
-    return larken(o, c)
+func (c RGB) Lighten(o color.Color) color.Color {
+    return lighten(o, c)
 }
 
 // Burn = old + new - white
