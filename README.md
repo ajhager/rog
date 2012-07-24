@@ -2,17 +2,9 @@ rog
 ===
 ![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot.png)
 
-* Depends only on skelterjohn/go.wde.
-* 24bit, unicode console with built in font.
-
-Plans
------
-* User supplied font sets and tilemaps.
-* Documentation and tutorials.
-* Test suite.
-* Noise generators.
-* Image scale and rotation.
-* Console to console blitting.
+* 24bit color, unicode console with built in font.
+* Cross platform windowing via github.com/skelterjohn/go.wde.
+* Field of view and pathfinding algorithms.
 
 Notes
 -----
@@ -23,3 +15,15 @@ Thanks
 * libTCOD [http://doryen.eptalys.net/libtcod/]
 * John Asmuth [http://github.com/skelterjohn/go.wde]
 * Yamamushi [http://www.theasciiproject.com/]
+
+Plans
+-----
+* Documentation and tutorials.
+* Pathfinding.
+* World generation.
+* User supplied font sets and tilemaps.
+* Noise generators.
+* Image scale and rotation.
+* Console to console blitting.
+* Fold lighting into the library.
+* Test suite.
