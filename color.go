@@ -107,6 +107,15 @@ func burn(top, bot color.Color) color.Color {
 	}
 }
 
+func scale(bot color.Color, s float64) color.Color {
+	botr, botg, botb := colorToFloats(bot)
+    return RGB{
+        uint8(255 * botr * s),
+        uint8(255 * botg * s),
+        uint8(255 * botb * s),
+    }
+}
+
 func add(top, bot color.Color) color.Color {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
@@ -160,15 +169,6 @@ func HEX(n uint32) RGB {
     return RGB{r, g, b}
 }
 
-func (c RGB) Scale(s float64) RGB {
-	cr, cg, cb := colorToFloats(c)
-    return RGB{
-        uint8(255 * cr * s),
-        uint8(255 * cg * s),
-        uint8(255 * cb * s),
-    }
-}
-
 func (c RGB) Multiply(o color.Color) color.Color {
     return multiply(o, c)
 }
@@ -191,6 +191,10 @@ func (c RGB) Darken(o color.Color) color.Color {
 
 func (c RGB) Burn(o color.Color) color.Color {
     return burn(o, c)
+}
+
+func (c RGB) Scale(s float64) color.Color {
+    return scale(c, s)
 }
 
 func (c RGB) Add(o color.Color) color.Color {
@@ -247,6 +251,12 @@ func Darken(top color.Color) Blender {
 func Burn(top color.Color) Blender {
     return func(bot color.Color) color.Color {
         return burn(top, bot)
+    }
+}
+
+func Scale(s float64) Blender {
+    return func(bot color.Color) color.Color {
+        return scale(bot, s)
     }
 }
 
