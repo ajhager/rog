@@ -24,10 +24,12 @@ var (
     Key string
 )
 
+// IsOpen returns whether the rog window is open or not.
 func IsOpen() bool {
     return open
 }
 
+// Open creates a window and a root console with size width by height cells.
 func Open(width, height int, title string) (err error) {
 	window, err = wde.NewWindow(width*16, height*16)
 	if err != nil {
@@ -48,12 +50,15 @@ func Open(width, height int, title string) (err error) {
     return
 }
 
+// Close shuts down the windowing system.
+// No rog functions should be called after this.
 func Close() {
     open = false
 	window.Close()
     wde.Stop()
 }
 
+// Screenshot will save the window buffer as an image to name.png.
 func Screenshot(name string) (err error) {
     file, err := os.Create(fmt.Sprintf("%v.%v", name, "png"))
     if err != nil {
@@ -65,10 +70,12 @@ func Screenshot(name string) (err error) {
     return
 }
 
+// SetTitle changes the title of the window.
 func SetTitle(title string) {
 	window.SetTitle(title)
 }
 
+// Flush renders the root console to the window.
 func Flush() {
     handleEvents()
     if open {
@@ -78,30 +85,37 @@ func Flush() {
     stats.Update(time.Now())
 }
 
+// Dt returns length of the last frame in seconds.
 func Dt() float64 {
     return stats.Dt
 }
 
+// Fps returns the number of rendered frames per second.
 func Fps() int64 {
     return stats.Fps
 }
 
+// Set draws on the root console.
 func Set(x, y int, fg, bg interface{}, data string, rest ...interface{}) {
     console.Set(x, y, fg, bg, data, rest...)
 }
 
+// Set draws on the root console with wrapping bounds of x, y, w, h.
 func SetR(x, y, w, h int, fg, bg interface{}, data string, rest ...interface{}) {
     console.SetR(x, y, w, h, fg, bg, data, rest...)
 }
 
+// Fill draws a rect on the root console.
 func Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
     console.Fill(x, y, w, h, fg, bg, ch)
 }
 
+// Width returns the width of the root console in cells.
 func Width() int {
     return console.Width()
 }
 
+// Height returns the height of the root console in cells.
 func Height() int {
     return console.Height()
 }
