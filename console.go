@@ -8,6 +8,7 @@ import (
     "image/draw"
 )
 
+// Console is a double buffered grid of unicode characters that can be rendered to an image.Image.
 type Console struct {
 	bg, bgbuf, fg, fgbuf [][]color.Color
 	ch, chbuf [][]rune
@@ -15,6 +16,7 @@ type Console struct {
     font image.Image
 }
 
+// NewConsole creates an empty console.
 func NewConsole(width, height int) *Console {
 	bg := make([][]color.Color, height)
 	bgbuf := make([][]color.Color, height)
@@ -97,14 +99,18 @@ func (con *Console) set(i, j, x, y, w, h int, fg, bg interface{}, data string, r
     }
 }
 
+// Set draws a string starting at x,y onto the console, wrapping at the bounds if needed.
 func (con *Console) Set(x, y int, fg, bg interface{}, data string, rest ...interface{}) {
     con.set(x, y, 0, 0, con.w, con.h, fg, bg, data, rest...)
 }
 
+// Set draws a string starting at x,y onto the console, wrapping at the bounds created by x, y, w, h if needed.
+// If h is 0, the text will cut off at the bottom of the console, otherwise it will cut off after the y+h row.
 func (con *Console) SetR(x, y, w, h int, fg, bg interface{}, data string, rest ...interface{}) {
     con.set(x, y, x, y, w, h, fg, bg, data, rest...)
 }
 
+// Fill draws a rect on the root console using ch.
 func (con *Console) Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
 	for i := x; i < x+w; i++ {
 		for j := y; j < y+h; j++ {
@@ -113,6 +119,7 @@ func (con *Console) Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
 	}
 }
 
+// Render draws the console onto an image.
 func (c *Console) Render(im draw.Image) {
 	maskRect := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
 	for y := 0; y < c.h; y++ {
@@ -137,10 +144,12 @@ func (c *Console) Render(im draw.Image) {
 	}
 }
 
+// Width returns the width of the console in cells.
 func (con *Console) Width() int {
 	return con.w
 }
 
+// Height returns the height of the console in cells.
 func (con *Console) Height() int {
 	return con.h
 }
