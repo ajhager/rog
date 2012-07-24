@@ -35,10 +35,10 @@ func NewConsole(width, height int) *Console {
 	return con
 }
 
-func (con *Console) Fill(x0, y0, x1, y1 int, ch rune, fg, bg interface{}) {
-	for x := x0; x < x1; x++ {
-		for y := y0; y < y1; y++ {
-			con.Set(x, y, fg, bg, string(ch))
+func (con *Console) Fill(x, y, w, h int, ch rune, fg, bg interface{}) {
+	for i := x; i < x+w; i++ {
+		for j := y; j < y+h; j++ {
+			con.Set(i, j, fg, bg, string(ch))
 		}
 	}
 }

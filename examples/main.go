@@ -129,11 +129,10 @@ func fovExample(w *rog.Window) {
 	runtime.ReadMemStats(&stats)
     w.Fill(0, 0, w.Width(), 1, ' ', lgrey, rog.Dodge(dgrey))
     w.Set(0, 0, nil, nil, "%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine())
-    w.Fill(0, 31, w.Width(), 32, ' ', lgrey, rog.Dodge(dgrey))
+    w.Fill(0, 31, w.Width(), 1, ' ', lgrey, rog.Dodge(dgrey))
 	w.Set(0, 31, nil, nil, "Pos: %v %v Cell: %v %v", w.Mouse.Pos.X, w.Mouse.Pos.Y, w.Mouse.Cell.X, w.Mouse.Cell.Y)
 }
 
 func main() {
 	rog.Open(width, height, "FOV Example", fovExample)
-//	rog.Start()
 }
