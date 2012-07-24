@@ -7,6 +7,8 @@ rog
 * Field of view, lighting, and pathfinding algorithms.
 
 ```go
+package main
+
 import (
     "github.com/ajhager/rog"
 )
@@ -14,7 +16,7 @@ import (
 func main() {
     rog.Open(48, 32, "rog")
     for rog.IsOpen() {
-        rog.Set(0, 0, nil, nil, "Hello, 世界")
+        rog.Set(20, 15, nil, nil, "Hello, 世界")
         if rog.Key == "escape" {
             rog.Close()
         }
