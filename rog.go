@@ -6,11 +6,11 @@
 Package rog provides algorithms and data structures for creating roguelike games.
 
  import (
-  "github.com/ajhager/rog"
+     "github.com/ajhager/rog"
  )
 
  func main() {
-     rog.Open(48, 32, "FOV Example")
+     rog.Open(48, 32, "rog")
      for rog.IsOpen() {
          rog.Set(0, 0, nil, nil, "Hello, 世界")
          if rog.Key == "escape" {
