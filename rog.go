@@ -6,23 +6,17 @@ import (
 	"image"
 	"image/draw"
 	_ "image/png"
-	"runtime"
 	"sync"
 	"time"
 	"github.com/skelterjohn/go.wde"
 	_ "github.com/skelterjohn/go.wde/init"
 )
 
-func init() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-}
-
 var (
 	wg sync.WaitGroup
 )
 
 type driver func(*Window)
-type drawer func(draw.Image)
 
 type Window struct {
 	*Console
@@ -35,10 +29,7 @@ type Window struct {
 
 func (this *Window) Close() {
 	this.win.Close()
-}
-
-func (this *Window) Draw(drawer drawer) {
-	drawer(this.win.Screen())
+	wg.Done()
 }
 
 func (this *Window) SetTitle(title string) {
@@ -54,7 +45,7 @@ type Mouse struct {
 	Left, Right, Middle    MouseButton
 }
 
-func handleEvents(window *Window) {
+func handleEvents(window *Window) (done bool) {
 	window.Mouse.DPos.X = 0
 	window.Mouse.DPos.Y = 0
 	window.Mouse.DCell.X = 0
@@ -97,14 +88,15 @@ func handleEvents(window *Window) {
 				window.Mouse.Right.Released = true
 			}
         case wde.KeyTypedEvent:
-            window.Key = e.Glyph
+            window.Key = e.Key
 		case wde.ResizeEvent:
 		case wde.CloseEvent:
-            window.win.Close()
-			wg.Done()
+            window.Close()
+            done = true
 		}
 	default:
 	}
+    return
 }
 
 func Open(width, height int, title string, driver driver) {
@@ -135,10 +127,10 @@ func Open(width, height int, title string, driver driver) {
 		frames := int64(0)
 		mr := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
 		for {
-			screen := window.win.Screen()
-
             // Handle events.
-            handleEvents(window)
+            if handleEvents(window) {
+                break
+            }
 
 			// Update state of the console.
 			driver(window)
@@ -149,17 +141,19 @@ func Open(width, height int, title string, driver driver) {
 					bg := window.bg[y][x]
 					fg := window.fg[y][x]
 					ch := window.ch[y][x]
-					if bg != backbuf.bg[y][x] || fg != backbuf.fg[y][x] || ch != backbuf.ch[y][x] {
+					if bg != backbuf.bg[y][x] ||
+                       fg != backbuf.fg[y][x] ||
+                       ch != backbuf.ch[y][x] {
                         backbuf.bg[y][x] = bg
                         backbuf.fg[y][x] = fg
                         backbuf.ch[y][x] = ch
 						r := mr.Add(image.Point{x * 16, y * 16})
 						src := &image.Uniform{bg}
-						draw.Draw(screen, r, src, image.ZP, draw.Src)
+						draw.Draw(window.win.Screen(), r, src, image.ZP, draw.Src)
 
 						if ch != ' ' {
 							src = &image.Uniform{fg}
-							draw.DrawMask(screen, r, src, image.ZP, mask, image.Point{int(ch%32) * 16, int(ch/32) * 16}, draw.Over)
+							draw.DrawMask(window.win.Screen(), r, src, image.ZP, mask, image.Point{int(ch%32) * 16, int(ch/32) * 16}, draw.Over)
 						}
 					}
 				}
@@ -186,8 +180,4 @@ func Start() {
 		wde.Stop()
 	}()
 	wde.Run()
-}
-
-func Stop() {
-	wde.Stop()
 }
