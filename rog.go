@@ -16,7 +16,7 @@ import (
 )
 
 var (
-    running = false
+    open = false
     window wde.Window
     console *Console
     stats *timing
@@ -24,18 +24,8 @@ var (
     Key string
 )
 
-
-type mouseButton struct {
-	Pressed, Released bool
-}
-
-type mouse struct {
-	Pos, DPos, Cell, DCell image.Point
-	Left, Right, Middle mouseButton
-}
-
 func IsOpen() bool {
-    return running
+    return open
 }
 
 func Open(width, height int, title string) (err error) {
@@ -54,12 +44,12 @@ func Open(width, height int, title string) (err error) {
 	    wde.Run()
 	}()
 
-    running = true
+    open = true
     return
 }
 
 func Close() {
-    running = false
+    open = false
 	window.Close()
     wde.Stop()
 }
@@ -79,28 +69,9 @@ func SetTitle(title string) {
 	window.SetTitle(title)
 }
 
-type timing struct {
-    Then, Now time.Time
-    Elapsed, Dt float64
-    Frames, Fps int64
-}
-
-func (t *timing) Update(now time.Time) {
-    t.Then = t.Now
-    t.Now = now
-    t.Dt = t.Now.Sub(t.Then).Seconds()
-    t.Elapsed += t.Dt
-    t.Frames += 1
-	if t.Elapsed >= 1 {
-	    t.Fps = t.Frames
-        t.Frames = 0
-        t.Elapsed -= t.Elapsed
-    }
-}
-
 func Flush() {
     handleEvents()
-    if running {
+    if open {
         console.Render(window.Screen())
         window.FlushImage()
     }
@@ -185,4 +156,32 @@ func handleEvents() {
 		}
 	default:
 	}
+}
+
+type mouseButton struct {
+	Pressed, Released bool
+}
+
+type mouse struct {
+	Pos, DPos, Cell, DCell image.Point
+	Left, Right, Middle mouseButton
+}
+
+type timing struct {
+    Then, Now time.Time
+    Elapsed, Dt float64
+    Frames, Fps int64
+}
+
+func (t *timing) Update(now time.Time) {
+    t.Then = t.Now
+    t.Now = now
+    t.Dt = t.Now.Sub(t.Then).Seconds()
+    t.Elapsed += t.Dt
+    t.Frames += 1
+	if t.Elapsed >= 1 {
+	    t.Fps = t.Frames
+        t.Frames = 0
+        t.Elapsed -= t.Elapsed
+    }
 }
