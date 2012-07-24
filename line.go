@@ -5,7 +5,8 @@ import (
 	"math"
 )
 
-func NewLine(x0, y0, x1, y1 int) []image.Point {
+// Line returns the points on the grid that the line would pass through.
+func Line(x0, y0, x1, y1 int) []image.Point {
 	dx := int(math.Abs(float64(x1 - x0)))
 	dy := int(math.Abs(float64(y1 - y0)))
 	sx := 0
@@ -24,11 +25,8 @@ func NewLine(x0, y0, x1, y1 int) []image.Point {
 
 	err := dx - dy
 
-	// points := make(chan image.Point)
 	ps := make([]image.Point, 0)
-	// go func() {
 	for {
-		// points <- image.Pt(x0, y0)
 		ps = append(ps, image.Pt(x0, y0))
 		if x0 == x1 && y0 == y1 {
 			break
@@ -43,7 +41,5 @@ func NewLine(x0, y0, x1, y1 int) []image.Point {
 			y0 += sy
 		}
 	}
-	// close(points)
-	// }()
 	return ps
 }

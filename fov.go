@@ -93,7 +93,7 @@ func fovCircularCastRay(fov *FOVMap, xo, yo, xd, yd, r2 int, walls bool) {
 		in = true
 		fov.viewable[cury][curx] = true
 	}
-	for _, p := range NewLine(xo, yo, xd, yd) {
+	for _, p := range Line(xo, yo, xd, yd) {
 		curx = p.X
 		cury = p.Y
 		if r2 > 0 {
