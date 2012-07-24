@@ -3,9 +3,7 @@ rog
 ![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot.png)
 
 * Depends only on skelterjohn/go.wde.
-* 32bit, unicode console with built in font.
-* Supports opening multiple windows, each backed by their own console and input.
-* Takes inspiration from libtcod (the de facto roguelike library.)
+* 24bit, unicode console with built in font.
 
 Plans
 -----
