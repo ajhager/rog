@@ -119,7 +119,7 @@ func fovExample(w *rog.Window) {
 				if tmap[cy][cx] == '#' {
 					w.Set(cx, cy, nil, wall.Scale(i), "")
 				} else {
-					w.Set(cx, cy, floor.Scale(i*1.5), floor.Scale(i), "✵")
+					w.Set(cx, cy, rog.Scale(1.5), floor.Scale(i), "✵")
 				}
 			}
 		}
