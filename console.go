@@ -35,43 +35,44 @@ func NewConsole(width, height int) *Console {
 	return con
 }
 
-func (con *Console) Fill(x0, y0, x1, y1 int, ch rune, fg, bg color.Color, bl ...ColorBlend) {
+func (con *Console) Fill(x0, y0, x1, y1 int, ch rune, fg, bg interface{}) {
 	for x := x0; x < x1; x++ {
 		for y := y0; y < y1; y++ {
-			con.Set(x, y, string(ch), fg, bg, bl...)
+			con.Set(x, y, string(ch), fg, bg)
 		}
 	}
 }
 
-func (con *Console) put(x, y int, ch rune, fg, bg color.Color, blend ColorBlend) {
+func (con *Console) put(x, y int, ch rune, fg, bg interface{}) {
 	if ch > 0 {
 		con.ch[y][x] = ch
 	}
 
-	if fg != nil {
-		con.fg[y][x] = fg
-	}
-
-	if bg != nil {
-		con.bg[y][x] = blend(bg, con.bg[y][x])
+    switch bgcolor := bg.(type) {
+    case color.Color:
+		con.bg[y][x] = bgcolor
+    case Blender:
+	    con.bg[y][x] = bgcolor(con.bg[y][x])
+    default:
     }
 
+    switch fgcolor := fg.(type) {
+    case color.Color:
+		con.fg[y][x] = fgcolor
+    case Blender:
+		con.fg[y][x] = fgcolor(con.bg[y][x])
+    default:
+    }
 }
 
-func (con *Console) Set(x, y int, data string, fg, bg color.Color, bl ...ColorBlend) {
-    blend := Normal
-    if len(bl) > 0 {
-        blend = bl[0]
-    }
-
+func (con *Console) Set(x, y int, data string, fg, bg interface{}) {
     runes := []rune(data)
-    num := len(runes)
-    if num > 0 {
-	    for xx := 0; xx < num; xx++ {
-		    con.put(xx+x, y, runes[xx], fg, bg, blend)
+    if len(runes) > 0 {
+	    for xx := 0; xx < len(runes); xx++ {
+		    con.put(xx+x, y, runes[xx], fg, bg)
 	    }
     } else {
-		con.put(x, y, -1, fg, bg, blend)
+		con.put(x, y, -1, fg, bg)
     }
 }
 

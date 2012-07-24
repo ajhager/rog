@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image/color"
 	"github.com/ajhager/rog"
 	"runtime"
 )
@@ -10,18 +9,19 @@ var (
 	width  = 48
 	height = 32
 
-	darkWall   = color.RGBA{0, 0, 0, 255}
-	lightWall = color.RGBA{255, 180, 180, 255}
-	darkFloor  = color.RGBA{0, 0, 0, 255}
-	lightFloor  = color.RGBA{128, 70, 70, 255}
-    grey  = color.RGBA{200, 200, 200, 255}
-    umbra = color.RGBA{30, 30, 30, 255}
+	wall = rog.HEX(0xffb4b4)
+	floor = rog.HEX(0x804646)
+    black = rog.HEX(0x000000)
+    white = rog.HEX(0xffffff)
+    lgrey = rog.HEX(0xc8c8c8)
+    dgrey = rog.HEX(0x1e1e1e)
 
 	fov   = rog.NewFOVMap(width, height)
 	x     = 0
-	y     = 16
+	y     = 0
 	first = true
-	row = "                                                "
+	stats runtime.MemStats
+
 	tmap  = [][]rune{
 		[]rune("                                                "),
 		[]rune("                                                "),
@@ -56,13 +56,15 @@ var (
 		[]rune("                                                "),
 		[]rune("                                                "),
 	}
-
-	stats runtime.MemStats
 )
+
+func init() {
+    runtime.GOMAXPROCS(runtime.NumCPU())
+}
 
 func movePlayer(w *rog.Window, xx, yy int) {
     if xx >= 0 && yy > 0 && xx < width && yy < height-1 && tmap[yy][xx] == ' ' {
-	    w.Set(x, y, " ", color.White, nil)
+	    w.Set(x, y, " ", white, nil)
 	    x = xx
 	    y = yy
 	    fov.Update(x, y, 20, true, rog.FOVCircular)
@@ -103,28 +105,30 @@ func fovExample(w *rog.Window) {
         movePlayer(w, x - 1, y)
     case "l":
         movePlayer(w, x + 1, y)
+    case "escape":
+        w.Close()
     }
 
 	for cy := 0; cy < fov.Height(); cy++ {
 		for cx := 0; cx < fov.Width(); cx++ {
-            w.Set(cx, cy, "", nil, darkWall)
-			w.Set(cx, cy, " ", nil, darkFloor)
+			w.Set(cx, cy, " ", nil, black)
 			if fov.Look(cx, cy) {
                 i := intensity(x, y, cx, cy, 20)
 				if tmap[cy][cx] == '#' {
-					w.Set(cx, cy, "", nil, rog.ColorMul(lightWall, i))
+					w.Set(cx, cy, "", nil, wall.Scale(i))
 				} else {
-					w.Set(cx, cy, "✵", rog.ColorMul(lightFloor, i*1.5), rog.ColorMul(lightFloor, i), rog.Screen)
+					w.Set(cx, cy, "✵", floor.Scale(i*1.5), floor.Scale(i))
+//					w.Set(cx, cy, "✵", rog.AddAlpha(dgrey, .2), floor.Scale(i))
 				}
 			}
 		}
 	}
-	w.Set(x, y, "웃", grey, nil)
+	w.Set(x, y, "웃", lgrey, nil)
 
 	runtime.ReadMemStats(&stats)
-    w.Fill(0, 0, w.Width(), 1, ' ', grey, umbra, rog.Dodge)
+    w.Fill(0, 0, w.Width(), 1, ' ', lgrey, rog.Dodge(dgrey))
     w.Set(0, 0, w.P("%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine()), nil, nil)
-	w.Set(0, 31, row, grey, umbra, rog.Dodge)
+    w.Fill(0, 30, w.Width(), 1, ' ', lgrey, rog.Dodge(dgrey))
 	w.Set(0, 31, w.P("Pos: %v %v Cell: %v %v", w.Mouse.Pos.X, w.Mouse.Pos.Y, w.Mouse.Cell.X, w.Mouse.Cell.Y), nil, nil)
 }
 
