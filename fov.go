@@ -1,5 +1,6 @@
 package rog
 
+// FOVAlgo takes a FOVMap x,y vantage, radius of the view, whether to include walls and then marks in the map which cells are viewable.
 type FOVAlgo func(*FOVMap, int, int, int, bool)
 
 type FOVMap struct {
@@ -19,10 +20,12 @@ func NewFOVMap(width, height int) *FOVMap {
 	return &FOVMap{width, height, blocked, viewable}
 }
 
+// In returns whether the coordinate is inside the map bounds.
 func (this *FOVMap) In(x, y int) bool {
 	return x >= 0 && x < this.w && y >= 0 && y < this.h
 }
 
+// Update runs the give fov alogrithm on the map.
 func (this *FOVMap) Update(x, y, radius int, includeWalls bool, algo FOVAlgo) {
 	for y := 0; y < this.h; y++ {
 		for x := 0; x < this.w; x++ {
@@ -32,14 +35,17 @@ func (this *FOVMap) Update(x, y, radius int, includeWalls bool, algo FOVAlgo) {
 	algo(this, x, y, radius, includeWalls)
 }
 
+// Block sets a cell as blocking or not.
 func (this *FOVMap) Block(x, y int, blocked bool) {
 	this.blocked[y][x] = blocked
 }
 
+// Look indicates if the cell at the coordinate can be seen.
 func (this *FOVMap) Look(x, y int) bool {
 	return this.viewable[y][x]
 }
 
+// Clear resets the map to completely unblocked but unviewable.
 func (this *FOVMap) Clear() {
 	for y := 0; y < this.h; y++ {
 		for x := 0; x < this.w; x++ {
@@ -49,10 +55,12 @@ func (this *FOVMap) Clear() {
 	}
 }
 
+// Width returns the width in cells of the map.
 func (this *FOVMap) Width() int {
 	return this.w
 }
 
+// Height returns the height in cells of the map.
 func (this *FOVMap) Height() int {
 	return this.h
 }
@@ -136,6 +144,7 @@ func fovCircularPostProc(fov *FOVMap, x0, y0, x1, y1, dx, dy int) {
 	}
 }
 
+// FOVCicular raycasts out from the vantage in a circle.
 func FOVCircular(fov *FOVMap, x, y, r int, walls bool) {
 	xo := 0
 	yo := 0
