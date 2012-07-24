@@ -1,6 +1,6 @@
 rog
 ===
-![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot2.png)
+![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot.png)
 
 * Depends only on skelterjohn/go.wde.
 * 32bit, unicode console with built in font.
