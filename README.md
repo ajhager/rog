@@ -8,7 +8,7 @@ rog
 
 ```go
 import (
- "github.com/ajhager/rog"
+    "github.com/ajhager/rog"
 )
 
 func main() {
@@ -35,7 +35,6 @@ Thanks
 
 Plans
 -----
-* Documentation and tutorials.
 * Pathfinding.
 * World generation.
 * User supplied font sets and tilemaps.
