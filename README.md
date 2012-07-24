@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-    rog.Open(48, 32, "FOV Example")
+    rog.Open(48, 32, "rog")
     for rog.IsOpen() {
         rog.Set(0, 0, nil, nil, "Hello, 世界")
         if rog.Key == "escape" {
