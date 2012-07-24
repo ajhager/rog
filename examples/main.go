@@ -62,9 +62,9 @@ func init() {
     runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
-func movePlayer(w *rog.Window, xx, yy int) {
+func movePlayer(xx, yy int) {
     if xx >= 0 && yy > 0 && xx < width && yy < height-1 && tmap[yy][xx] == ' ' {
-	    w.Set(x, y, white, nil, " ")
+	    rog.Set(x, y, white, nil, " ")
 	    x = xx
 	    y = yy
 	    fov.Update(x, y, 20, true, rog.FOVCircular)
@@ -79,7 +79,7 @@ func intensity(px, py, cx, cy, r int) float64 {
     return coef2 / (1.0 - 1.0 / (1.0 + r2))
 }
 
-func fovExample(w *rog.Window) {
+func fovExample() {
 	if first {
 		first = false
 		for y := 0; y < height; y++ {
@@ -89,50 +89,54 @@ func fovExample(w *rog.Window) {
 				}
 			}
 		}
-        movePlayer(w, 27, 16)
+        movePlayer(27, 16)
 	}
 
-	if w.Mouse.Left.Released {
-        movePlayer(w, w.Mouse.Cell.X, w.Mouse.Cell.Y)
+	if rog.Mouse.Left.Released {
+        movePlayer(rog.Mouse.Cell.X, rog.Mouse.Cell.Y)
 	}
 
-    switch w.Key {
+    switch rog.Key {
     case "k":
-        movePlayer(w, x, y - 1)
+        movePlayer(x, y - 1)
     case "j":
-        movePlayer(w, x, y + 1)
+        movePlayer(x, y + 1)
     case "h":
-        movePlayer(w, x - 1, y)
+        movePlayer(x - 1, y)
     case "l":
-        movePlayer(w, x + 1, y)
+        movePlayer(x + 1, y)
     case "p":
-        w.Screenshot("test")
+        rog.Screenshot("test")
     case "escape":
-        w.Close()
+        rog.Close()
     }
 
 	for cy := 0; cy < fov.Height(); cy++ {
 		for cx := 0; cx < fov.Width(); cx++ {
-			w.Set(cx, cy, nil, black, " ")
+			rog.Set(cx, cy, nil, black, " ")
 			if fov.Look(cx, cy) {
                 i := intensity(x, y, cx, cy, 20)
 				if tmap[cy][cx] == '#' {
-					w.Set(cx, cy, nil, wall.Scale(i), "")
+					rog.Set(cx, cy, nil, wall.Scale(i), "")
 				} else {
-					w.Set(cx, cy, rog.Scale(1.5), floor.Scale(i), "✵")
+					rog.Set(cx, cy, rog.Scale(1.5), floor.Scale(i), "✵")
 				}
 			}
 		}
 	}
-	w.Set(x, y, lgrey, nil, "웃")
+	rog.Set(x, y, lgrey, nil, "웃")
 
 	runtime.ReadMemStats(&stats)
-    w.Fill(0, 0, w.Width(), 1, ' ', lgrey, rog.Dodge(dgrey))
-    w.Set(0, 0, nil, nil, "%vFS %vMB %vGC %vGR", w.Fps, stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine())
-    w.Fill(0, 31, w.Width(), 1, ' ', lgrey, rog.Dodge(dgrey))
-	w.Set(0, 31, nil, nil, "Pos: %v %v Cell: %v %v", w.Mouse.Pos.X, w.Mouse.Pos.Y, w.Mouse.Cell.X, w.Mouse.Cell.Y)
+    rog.Fill(0, 0, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')
+    rog.Set(0, 0, nil, nil, "%vFS %vMB %vGC %vGR", rog.Fps(), stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine())
+    rog.Fill(0, 31, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')
+	rog.Set(0, 31, nil, nil, "Pos: %v %v Cell: %v %v", rog.Mouse.Pos.X, rog.Mouse.Pos.Y, rog.Mouse.Cell.X, rog.Mouse.Cell.Y)
 }
 
 func main() {
-	rog.Open(width, height, "FOV Example", fovExample)
+	rog.Open(width, height, "FOV Example")
+    for rog.IsOpen() {
+        fovExample()
+        rog.Flush()
+    }
 }

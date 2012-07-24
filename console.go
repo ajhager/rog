@@ -2,33 +2,51 @@ package rog
 
 import (
 	"fmt"
+    "bytes"
+    "image"
 	"image/color"
+    "image/draw"
 )
 
 type Console struct {
-	bg, fg   [][]color.Color
-	ch       [][]rune
-	w, h     int
+	bg, bgbuf, fg, fgbuf [][]color.Color
+	ch, chbuf [][]rune
+	w, h int
+    font image.Image
 }
 
 func NewConsole(width, height int) *Console {
 	bg := make([][]color.Color, height)
+	bgbuf := make([][]color.Color, height)
 	fg := make([][]color.Color, height)
+	fgbuf := make([][]color.Color, height)
 	ch := make([][]rune, height)
+	chbuf := make([][]rune, height)
 
 	for y := 0; y < height; y++ {
 		bg[y] = make([]color.Color, width)
+		bgbuf[y] = make([]color.Color, width)
 		fg[y] = make([]color.Color, width)
+		fgbuf[y] = make([]color.Color, width)
 		ch[y] = make([]rune, width)
+		chbuf[y] = make([]rune, width)
 	}
 
-	con := &Console{bg, fg, ch, width, height}
+	mask, _, err := image.Decode(bytes.NewBuffer(font()))
+	if err != nil {
+		panic(err)
+	}
+    
+	con := &Console{bg, bgbuf, fg, fgbuf, ch, chbuf, width, height, mask}
 
 	for x := 0; x < con.w; x++ {
 		for y := 0; y < con.h; y++ {
-			con.ch[y][x] = ' '
-			con.fg[y][x] = color.White
 			con.bg[y][x] = color.Black
+			con.bgbuf[y][x] = color.Black
+			con.fg[y][x] = color.White
+			con.fgbuf[y][x] = color.White
+			con.ch[y][x] = ' '
+			con.chbuf[y][x] = ' '
 		}
 	}
 
@@ -87,10 +105,34 @@ func (con *Console) SetR(x, y, w, h int, fg, bg interface{}, data string, rest .
     con.set(x, y, x, y, w, h, fg, bg, data, rest...)
 }
 
-func (con *Console) Fill(x, y, w, h int, ch rune, fg, bg interface{}) {
+func (con *Console) Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
 	for i := x; i < x+w; i++ {
 		for j := y; j < y+h; j++ {
 			con.Set(i, j, fg, bg, string(ch))
+		}
+	}
+}
+
+func (c *Console) Render(im draw.Image) {
+	maskRect := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
+	for y := 0; y < c.h; y++ {
+		for x := 0; x < c.w; x++ {
+			bg := c.bg[y][x]
+			fg := c.fg[y][x]
+			ch := c.ch[y][x]
+			if bg != c.bgbuf[y][x] || fg != c.fgbuf[y][x] || ch != c.chbuf[y][x] {
+                c.bgbuf[y][x] = bg
+                c.fgbuf[y][x] = fg
+                c.chbuf[y][x] = ch
+				rect := maskRect.Add(image.Point{x * 16, y * 16})
+				src := &image.Uniform{bg}
+				draw.Draw(im, rect, src, image.ZP, draw.Src)
+                
+				if ch != ' ' {
+					src = &image.Uniform{fg}
+					draw.DrawMask(im, rect, src, image.ZP, c.font, image.Point{int(ch%32) * 16, int(ch/32) * 16}, draw.Over)
+				}
+			}
 		}
 	}
 }

@@ -4,7 +4,7 @@ rog
 
 * 24bit color, unicode console with built in font.
 * Cross platform windowing via github.com/skelterjohn/go.wde.
-* Field of view and pathfinding algorithms.
+* Field of view, lighting, and pathfinding algorithms.
 
 Notes
 -----
@@ -23,7 +23,7 @@ Plans
 * World generation.
 * User supplied font sets and tilemaps.
 * Noise generators.
-* Image scale and rotation.
+* Image scale and blitting.
 * Console to console blitting.
 * Fold lighting into the library.
 * Test suite.
