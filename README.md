@@ -25,9 +25,7 @@ func main() {
 }
 ```
 
-```
-http://hagerbot.com/docs
-```
+[Documentation](http://hagerbot.com/docs)
 
 Notes
 -----
