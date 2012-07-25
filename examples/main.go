@@ -9,12 +9,12 @@ var (
 	width  = 48
 	height = 32
 
-	wall = rog.HEX(0xffb4b4)
-	floor = rog.HEX(0x804646)
-    black = rog.HEX(0x000000)
-    white = rog.HEX(0xffffff)
-    lgrey = rog.HEX(0xc8c8c8)
-    dgrey = rog.HEX(0x1e1e1e)
+	wall = rog.Hex(0xffb4b4)
+	floorc = rog.Hex(0x804646)
+    black = rog.Hex(0x000000)
+    white = rog.Hex(0xffffff)
+    lgrey = rog.Hex(0xc8c8c8)
+    dgrey = rog.Hex(0x1e1e1e)
 
 	fov   = rog.NewFOVMap(width, height)
 	x     = 0
@@ -119,7 +119,7 @@ func fovExample() {
 				if tmap[cy][cx] == '#' {
 					rog.Set(cx, cy, nil, wall.Scale(i), "")
 				} else {
-					rog.Set(cx, cy, rog.Scale(1.5), floor.Scale(i), "✵")
+					rog.Set(cx, cy, rog.Scale(1.5), floorc.Scale(i), "✵")
 				}
 			}
 		}

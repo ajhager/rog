@@ -18,7 +18,7 @@ func clampF(low, high, value float64) float64 {
 	return math.Min(high, math.Max(low, value))
 }
 
-func multiply(top, bot color.Color) color.Color {
+func multiply(top, bot color.Color) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -37,7 +37,7 @@ func dodgeF(top, bot float64) (out uint8) {
 	return
 }
 
-func dodge(top, bot color.Color) color.Color {
+func dodge(top, bot color.Color) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -47,7 +47,7 @@ func dodge(top, bot color.Color) color.Color {
 	}
 }
 
-func screen(top, bot color.Color) color.Color {
+func screen(top, bot color.Color) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -66,7 +66,7 @@ func overlayF(top, bot float64) (out uint8) {
 	return
 }
 
-func overlay(top, bot color.Color) color.Color {
+func overlay(top, bot color.Color) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -76,7 +76,7 @@ func overlay(top, bot color.Color) color.Color {
 	}
 }
 
-func lighten(top, bot color.Color) color.Color {
+func lighten(top, bot color.Color) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -86,7 +86,7 @@ func lighten(top, bot color.Color) color.Color {
 	}
 }
 
-func darken(top, bot color.Color) color.Color {
+func darken(top, bot color.Color) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -96,7 +96,7 @@ func darken(top, bot color.Color) color.Color {
 	}
 }
 
-func burn(top, bot color.Color) color.Color {
+func burn(top, bot color.Color) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -106,7 +106,7 @@ func burn(top, bot color.Color) color.Color {
 	}
 }
 
-func scale(bot color.Color, s float64) color.Color {
+func scale(bot color.Color, s float64) RGB {
 	botr, botg, botb := colorToFloats(bot)
     return RGB{
         uint8(255 * botr * s),
@@ -115,7 +115,7 @@ func scale(bot color.Color, s float64) color.Color {
     }
 }
 
-func add(top, bot color.Color) color.Color {
+func add(top, bot color.Color) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -125,7 +125,7 @@ func add(top, bot color.Color) color.Color {
 	}
 }
 
-func addAlpha(top, bot color.Color, a float64) color.Color {
+func addAlpha(top, bot color.Color, a float64) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -135,7 +135,7 @@ func addAlpha(top, bot color.Color, a float64) color.Color {
 	}
 }
 
-func alpha(top, bot color.Color, a float64) color.Color {
+func alpha(top, bot color.Color, a float64) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -162,7 +162,7 @@ func (c RGB) RGBA() (r, g, b, a uint32) {
 }
 
 // HEX returns parses a uint32 into RGB components.
-func HEX(n uint32) RGB {
+func Hex(n uint32) RGB {
     r := uint8((n >> 16) & 0xFF)
     g := uint8((n >> 8) & 0xFF)
     b := uint8(n & 0xFF)
@@ -170,57 +170,57 @@ func HEX(n uint32) RGB {
 }
 
 // Multiply = old * new
-func (c RGB) Multiply(o color.Color) color.Color {
+func (c RGB) Multiply(o color.Color) RGB {
     return multiply(o, c)
 }
 
 // Dodge = new / (white - old)
-func (c RGB) Dodge(o color.Color) color.Color {
+func (c RGB) Dodge(o color.Color) RGB {
     return dodge(o, c)
 }
 
 // Screen = white - (white - old) * (white - new)
-func (c RGB) Screen(o color.Color) color.Color {
+func (c RGB) Screen(o color.Color) RGB {
     return screen(o, c)
 }
 
 // Overlay = new.x <= 0.5 ? 2*new*old : white - 2*(white-new)*(white-old)
-func (c RGB) Overlay(o color.Color) color.Color {
+func (c RGB) Overlay(o color.Color) RGB {
     return overlay(o, c)
 }
 
 // Darken = MIN(old, new)
-func (c RGB) Darken(o color.Color) color.Color {
+func (c RGB) Darken(o color.Color) RGB {
     return darken(o, c)
 }
 
 // Lighten = MIN(old, new)
-func (c RGB) Lighten(o color.Color) color.Color {
+func (c RGB) Lighten(o color.Color) RGB {
     return lighten(o, c)
 }
 
 // Burn = old + new - white
-func (c RGB) Burn(o color.Color) color.Color {
+func (c RGB) Burn(o color.Color) RGB {
     return burn(o, c)
 }
 
 // Scale = old * s
-func (c RGB) Scale(s float64) color.Color {
+func (c RGB) Scale(s float64) RGB {
     return scale(c, s)
 }
 
 // Add = old + new
-func (c RGB) Add(o color.Color) color.Color {
+func (c RGB) Add(o color.Color) RGB {
     return add(o, c)
 }
 
 // AddAlpha = old + alpha*new
-func (c RGB) AddAlpha(o color.Color, a float64) color.Color {
+func (c RGB) AddAlpha(o color.Color, a float64) RGB {
     return addAlpha(o, c, a)
 }
 
 // Alpha = (1-alpha)*old + alpha*(new-old)
-func (c RGB) Alpha(o color.Color, a float64) color.Color {
+func (c RGB) Alpha(o color.Color, a float64) RGB {
     return alpha(o, c, a)
 }
 
