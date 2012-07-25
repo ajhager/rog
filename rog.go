@@ -27,6 +27,7 @@ package rog
 import (
 	"fmt"
 	"image"
+    "image/draw"
     "image/png"
     "os"
 	"time"
@@ -38,6 +39,7 @@ var (
     open = false
     window wde.Window
     console *Console
+    drawer func(draw.Image)
     stats *timing
     Mouse *mouse
     Key string
@@ -99,9 +101,17 @@ func Flush() {
     handleEvents()
     if open {
         console.Render(window.Screen())
+        if drawer != nil {
+            drawer(window.Screen())
+        }
         window.FlushImage()
     }
     stats.Update(time.Now())
+}
+
+// SetDrawer registers a callback that runs after the console has been rendered, but before the buffer image is flushed to the window.
+func SetDrawer(d func(draw.Image)) {
+    drawer = d
 }
 
 // Dt returns length of the last frame in seconds.
