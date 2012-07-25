@@ -119,6 +119,11 @@ func (con *Console) Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
 	}
 }
 
+// Clear is a short hand to fill the entire screen with the given colors and rune.
+func (con *Console) Clear(fg, bg interface{}, ch rune) {
+    con.Fill(0, 0, con.w, con.h, fg, bg, ch)
+}
+
 // Render draws the console onto an image.
 func (c *Console) Render(im draw.Image) {
 	maskRect := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}

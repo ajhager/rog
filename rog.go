@@ -129,6 +129,11 @@ func Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
     console.Fill(x, y, w, h, fg, bg, ch)
 }
 
+// Clear draws a rect over the entire root console.
+func Clear(fg, bg interface{}, ch rune) {
+    console.Clear(fg, bg, ch)
+}
+
 // Width returns the width of the root console in cells.
 func Width() int {
     return console.Width()
