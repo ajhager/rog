@@ -25,6 +25,10 @@ func main() {
 }
 ```
 
+```
+http://hagerbot.com/docs
+```
+
 Notes
 -----
 * On Windows you can build your project with `go build -ldflags -Hwindowsgui` to inhibit the console window that pops up by default.
