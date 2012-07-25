@@ -17,7 +17,7 @@ var (
     lgrey = rog.Hex(0xc8c8c8)
     dgrey = rog.Hex(0x1e1e1e)
 
-	fov   = rog.NewFOVMap(width, height)
+	pmap  = rog.NewMap(width, height)
     path []image.Point
 	x     = 0
 	y     = 0
@@ -69,7 +69,7 @@ func movePlayer(xx, yy int) {
 	    rog.Set(x, y, white, nil, " ")
 	    x = xx
 	    y = yy
-	    fov.Update(x, y, 20, true, rog.FOVCircular)
+	    pmap.Fov(x, y, 20, true, rog.FOVCircular)
     }
 }
 
@@ -81,13 +81,13 @@ func intensity(px, py, cx, cy, r int) float64 {
     return coef2 / (1.0 - 1.0 / (1.0 + r2))
 }
 
-func fovExample() {
+func example() {
 	if first {
 		first = false
 		for y := 0; y < height; y++ {
 			for x := 0; x < width; x++ {
 				if tmap[y][x] == '#' {
-					fov.Block(x, y, true)
+					pmap.Block(x, y, true)
 				}
 			}
 		}
@@ -95,7 +95,7 @@ func fovExample() {
 	}
 
 	if rog.Mouse.Left.Released {
-        path = fov.Path(x, y, rog.Mouse.Cell.X, rog.Mouse.Cell.Y)
+        path = pmap.Path(x, y, rog.Mouse.Cell.X, rog.Mouse.Cell.Y)
 	}
 
     switch rog.Key {
@@ -113,10 +113,10 @@ func fovExample() {
         rog.Close()
     }
 
-	for cy := 0; cy < fov.Height(); cy++ {
-		for cx := 0; cx < fov.Width(); cx++ {
+	for cy := 0; cy < pmap.Height(); cy++ {
+		for cx := 0; cx < pmap.Width(); cx++ {
 			rog.Set(cx, cy, nil, black, " ")
-			if fov.Look(cx, cy) {
+			if pmap.Look(cx, cy) {
                 i := intensity(x, y, cx, cy, 20)
 				if tmap[cy][cx] == '#' {
 					rog.Set(cx, cy, nil, wall.Scale(i), "")
@@ -142,9 +142,9 @@ func fovExample() {
 }
 
 func main() {
-	rog.Open(width, height, "FOV Example")
+	rog.Open(width, height, "Example")
     for rog.IsOpen() {
-        fovExample()
+        example()
         rog.Flush()
     }
 }
