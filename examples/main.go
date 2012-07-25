@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/ajhager/rog"
+    "image"
 	"runtime"
 )
 
@@ -17,6 +18,7 @@ var (
     dgrey = rog.Hex(0x1e1e1e)
 
 	fov   = rog.NewFOVMap(width, height)
+    path []image.Point
 	x     = 0
 	y     = 0
 	first = true
@@ -93,7 +95,7 @@ func fovExample() {
 	}
 
 	if rog.Mouse.Left.Released {
-        movePlayer(rog.Mouse.Cell.X, rog.Mouse.Cell.Y)
+        path = fov.Path(x, y, rog.Mouse.Cell.X, rog.Mouse.Cell.Y)
 	}
 
     switch rog.Key {
@@ -125,6 +127,12 @@ func fovExample() {
 		}
 	}
 	rog.Set(x, y, lgrey, nil, "웃")
+
+    for _, p := range path {
+        if p.X != x || p.Y != y {
+	        rog.Set(p.X, p.Y, lgrey, nil, "*")
+        }
+    }
 
 	runtime.ReadMemStats(&stats)
     rog.Fill(0, 0, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')

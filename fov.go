@@ -1,5 +1,9 @@
 package rog
 
+import (
+    "image"
+)
+
 // FOVAlgo takes a FOVMap x,y vantage, radius of the view, whether to include walls and then marks in the map which cells are viewable.
 type FOVAlgo func(*FOVMap, int, int, int, bool)
 
@@ -35,6 +39,26 @@ func (this *FOVMap) Update(x, y, radius int, includeWalls bool, algo FOVAlgo) {
 	algo(this, x, y, radius, includeWalls)
 }
 
+// Performs astar and returns the list of cells on the path.
+func (this *FOVMap) Path(x0, y0, x1, y1 int) []image.Point {
+    data := NewMapData(this.w, this.h)
+	for y := 0; y < this.h; y++ {
+		for x := 0; x < this.w; x++ {
+            if this.blocked[y][x] {
+			    data[x][y] = WALL
+            } else {
+			    data[x][y] = LAND
+            }
+		}
+	}
+    nodes := Astar(data, x0, y0, x1, y1, true)
+    points := make([]image.Point, len(nodes))
+    for i := 0; i < len(nodes); i++ {
+        points[i] = image.Pt(nodes[i].X, nodes[i].Y)
+    }
+    return points
+}
+
 // Block sets a cell as blocking or not.
 func (this *FOVMap) Block(x, y int, blocked bool) {
 	this.blocked[y][x] = blocked
@@ -65,22 +89,18 @@ func (this *FOVMap) Height() int {
 	return this.h
 }
 
-func max(x, y int) (out int) {
-	if x > y {
-		out = x
-	} else {
-		out = y
+func max(a, b int) int {
+	if a > b {
+		return a
 	}
-	return
+	return b
 }
 
-func min(x, y int) (out int) {
-	if x < y {
-		out = x
-	} else {
-		out = y
+func min(a, b int) int {
+	if a < b {
+		return a
 	}
-	return
+	return b
 }
 
 // Circular Raycasting

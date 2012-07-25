@@ -39,7 +39,6 @@ Thanks
 
 Plans
 -----
-* Pathfinding.
 * World generation.
 * User supplied font sets and tilemaps.
 * Noise generators.
