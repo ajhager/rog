@@ -175,6 +175,15 @@ func handleEvents() {
 			Mouse.Cell.Y = e.Where.Y / 16
 			Mouse.DCell.X = e.From.X / 16
 			Mouse.DCell.Y = e.From.Y / 16
+		case wde.MouseDraggedEvent:
+			Mouse.Pos.X = e.Where.X
+			Mouse.Pos.Y = e.Where.Y
+			Mouse.DPos.X = e.From.X
+			Mouse.DPos.Y = e.From.Y
+			Mouse.Cell.X = e.Where.X / 16
+			Mouse.Cell.Y = e.Where.Y / 16
+			Mouse.DCell.X = e.From.X / 16
+			Mouse.DCell.Y = e.From.Y / 16
 		case wde.MouseDownEvent:
 			switch e.Which {
 			case wde.LeftButton:
@@ -182,7 +191,7 @@ func handleEvents() {
 			case wde.RightButton:
 				Mouse.Right.Pressed = true
 			case wde.MiddleButton:
-				Mouse.Right.Pressed = true
+				Mouse.Middle.Pressed = true
 			}
 		case wde.MouseUpEvent:
 			switch e.Which {
@@ -193,8 +202,8 @@ func handleEvents() {
 				Mouse.Right.Pressed = false
 				Mouse.Right.Released = true
 			case wde.MiddleButton:
-				Mouse.Right.Pressed = false
-				Mouse.Right.Released = true
+				Mouse.Middle.Pressed = false
+				Mouse.Middle.Released = true
 			}
         case wde.KeyTypedEvent:
             Key = e.Key
