@@ -45,5 +45,6 @@ Plans
 * Noise generators.
 * Image scale and blitting.
 * Console to console blitting.
+* Move console out into a separate package.
 * Fold lighting into the library.
 * Test suite.
