@@ -40,7 +40,7 @@ var (
     window wde.Window
     console *Console
     drawer func(draw.Image)
-    input = make(chan interface{}, 100)
+    input = make(chan interface{}, 16)
     stats *timing
     Mouse *mouse
     Key string
