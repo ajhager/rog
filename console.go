@@ -110,6 +110,11 @@ func (con *Console) SetR(x, y, w, h int, fg, bg interface{}, data string, rest .
     con.set(x, y, x, y, w, h, fg, bg, data, rest...)
 }
 
+// Get returns the fg, bg colors and rune of the cell.
+func (con *Console) Get(x, y int) (color.Color, color.Color, rune) {
+    return con.fg[y][x], con.bg[y][x], con.ch[y][x]
+}
+
 // Fill draws a rect on the root console using ch.
 func (con *Console) Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
 	for i := x; i < x+w; i++ {
