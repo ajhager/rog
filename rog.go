@@ -27,6 +27,7 @@ package rog
 import (
 	"fmt"
 	"image"
+    "image/color"
     "image/draw"
     "image/png"
     "os"
@@ -142,6 +143,11 @@ func Set(x, y int, fg, bg interface{}, data string, rest ...interface{}) {
 // Set draws on the root console with wrapping bounds of x, y, w, h.
 func SetR(x, y, w, h int, fg, bg interface{}, data string, rest ...interface{}) {
     console.SetR(x, y, w, h, fg, bg, data, rest...)
+}
+
+// Get returns the fg, bg colors and rune of the cell on the root console.
+func Get(x, y int) (color.Color, color.Color, rune) {
+    return console.Get(x, y)
 }
 
 // Fill draws a rect on the root console.
