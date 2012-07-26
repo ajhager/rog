@@ -40,6 +40,7 @@ var (
     window wde.Window
     console *Console
     drawer func(draw.Image)
+    input = make(chan interface{}, 100)
     stats *timing
     Mouse *mouse
     Key string
@@ -66,6 +67,12 @@ func Open(width, height int, title string) (err error) {
 	go func() {
 	    wde.Run()
 	}()
+
+    go func() {
+        for {
+            handleMouse()
+        }
+    }()
 
     open = true
     return
@@ -98,15 +105,18 @@ func SetTitle(title string) {
 
 // Flush renders the root console to the window.
 func Flush() {
-    handleEvents()
     if open {
+        handleEvents()
+
         console.Render(window.Screen())
         if drawer != nil {
             drawer(window.Screen())
         }
         window.FlushImage()
+
+        stats.Update(time.Now())
     }
-    stats.Update(time.Now())
+
 }
 
 // SetDrawer registers a callback that runs after the console has been rendered, but before the buffer image is flushed to the window.
@@ -164,26 +174,8 @@ func handleEvents() {
 	Mouse.Middle.Released = false
     Key = ""
 	select {
-	case ei := <-window.EventChan():
+	case ei := <-input:
 		switch e := ei.(type) {
-		case wde.MouseMovedEvent:
-			Mouse.Pos.X = e.Where.X
-			Mouse.Pos.Y = e.Where.Y
-			Mouse.DPos.X = e.From.X
-			Mouse.DPos.Y = e.From.Y
-			Mouse.Cell.X = e.Where.X / 16
-			Mouse.Cell.Y = e.Where.Y / 16
-			Mouse.DCell.X = e.From.X / 16
-			Mouse.DCell.Y = e.From.Y / 16
-		case wde.MouseDraggedEvent:
-			Mouse.Pos.X = e.Where.X
-			Mouse.Pos.Y = e.Where.Y
-			Mouse.DPos.X = e.From.X
-			Mouse.DPos.Y = e.From.Y
-			Mouse.Cell.X = e.Where.X / 16
-			Mouse.Cell.Y = e.Where.Y / 16
-			Mouse.DCell.X = e.From.X / 16
-			Mouse.DCell.Y = e.From.Y / 16
 		case wde.MouseDownEvent:
 			switch e.Which {
 			case wde.LeftButton:
@@ -210,6 +202,35 @@ func handleEvents() {
 		case wde.ResizeEvent:
 		case wde.CloseEvent:
             Close()
+		}
+	default:
+	}
+}
+
+func handleMouse() {
+	select {
+	case ei := <-window.EventChan():
+		switch e := ei.(type) {
+		case wde.MouseMovedEvent:
+			Mouse.Pos.X = e.Where.X
+			Mouse.Pos.Y = e.Where.Y
+			Mouse.DPos.X = e.From.X
+			Mouse.DPos.Y = e.From.Y
+			Mouse.Cell.X = e.Where.X / 16
+			Mouse.Cell.Y = e.Where.Y / 16
+			Mouse.DCell.X = e.From.X / 16
+			Mouse.DCell.Y = e.From.Y / 16
+		case wde.MouseDraggedEvent:
+			Mouse.Pos.X = e.Where.X
+			Mouse.Pos.Y = e.Where.Y
+			Mouse.DPos.X = e.From.X
+			Mouse.DPos.Y = e.From.Y
+			Mouse.Cell.X = e.Where.X / 16
+			Mouse.Cell.Y = e.Where.Y / 16
+			Mouse.DCell.X = e.From.X / 16
+			Mouse.DCell.Y = e.From.Y / 16
+        default:
+            input <- ei
 		}
 	default:
 	}
