@@ -99,17 +99,17 @@ func example() {
 	}
 
     switch rog.Key {
-    case "k":
+    case rog.K:
         movePlayer(x, y - 1)
-    case "j":
+    case rog.J:
         movePlayer(x, y + 1)
-    case "h":
+    case rog.H:
         movePlayer(x - 1, y)
-    case "l":
+    case rog.L:
         movePlayer(x + 1, y)
-    case "p":
+    case rog.P:
         rog.Screenshot("test")
-    case "escape":
+    case rog.Escape:
         rog.Close()
     }
 
@@ -136,7 +136,7 @@ func example() {
 
 	runtime.ReadMemStats(&stats)
     rog.Fill(0, 0, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')
-    rog.Set(0, 0, nil, nil, "%vFS %vMB %vGC %vGR", rog.Fps(), stats.Sys/1000000, stats.NumGC, runtime.NumGoroutine())
+    rog.Set(0, 0, nil, nil, "%vFPS %vMB %vGC %vGR", rog.Fps(), stats.HeapAlloc/1000000, stats.NumGC, runtime.NumGoroutine())
     rog.Fill(0, 31, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')
 	rog.Set(0, 31, nil, nil, "Pos: %v %v Cell: %v %v", rog.Mouse.Pos.X, rog.Mouse.Pos.Y, rog.Mouse.Cell.X, rog.Mouse.Cell.Y)
 }
