@@ -39,6 +39,7 @@ Thanks
 
 Plans
 -----
+* Better keyboard handling.
 * World generation.
 * User supplied font sets and tilemaps.
 * Noise generators.
@@ -47,3 +48,4 @@ Plans
 * Move console out into a separate package.
 * Fold lighting into the library.
 * Test suite.
+* Fixes to default font, especially box drawing glyphs.

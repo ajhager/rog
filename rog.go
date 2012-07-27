@@ -69,11 +69,7 @@ func Open(width, height int, title string) (err error) {
 	    wde.Run()
 	}()
 
-    go func() {
-        for {
-            handleMouse()
-        }
-    }()
+    go handleRealtimeEvents()
 
     open = true
     return
@@ -107,7 +103,7 @@ func SetTitle(title string) {
 // Flush renders the root console to the window.
 func Flush() {
     if open {
-        handleEvents()
+        handleFrameEvents()
 
         console.Render(window.Screen())
         if drawer != nil {
@@ -170,7 +166,7 @@ func Height() int {
     return console.Height()
 }
 
-func handleEvents() {
+func handleFrameEvents() {
 	Mouse.DPos.X = 0
 	Mouse.DPos.Y = 0
 	Mouse.DCell.X = 0
@@ -205,17 +201,13 @@ func handleEvents() {
 			}
         case wde.KeyTypedEvent:
             Key = e.Key
-		case wde.ResizeEvent:
-		case wde.CloseEvent:
-            Close()
 		}
 	default:
 	}
 }
 
-func handleMouse() {
-	select {
-	case ei := <-window.EventChan():
+func handleRealtimeEvents() {
+	for ei := range window.EventChan() {
 		switch e := ei.(type) {
 		case wde.MouseMovedEvent:
 			Mouse.Pos.X = e.Where.X
@@ -235,10 +227,11 @@ func handleMouse() {
 			Mouse.Cell.Y = e.Where.Y / 16
 			Mouse.DCell.X = e.From.X / 16
 			Mouse.DCell.Y = e.From.Y / 16
+		case wde.CloseEvent:
+            Close()
         default:
             input <- ei
 		}
-	default:
 	}
 }
 
