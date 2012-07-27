@@ -38,7 +38,7 @@ func NewConsole(width, height int) *Console {
 	if err != nil {
 		panic(err)
 	}
-    
+
 	con := &Console{bg, bgbuf, fg, fgbuf, ch, chbuf, width, height, mask}
 
 	for x := 0; x < con.w; x++ {
