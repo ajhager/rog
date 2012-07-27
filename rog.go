@@ -167,10 +167,8 @@ func Height() int {
 }
 
 func handleFrameEvents() {
-	Mouse.DPos.X = 0
-	Mouse.DPos.Y = 0
-	Mouse.DCell.X = 0
-	Mouse.DCell.Y = 0
+	Mouse.DPos = image.ZP
+	Mouse.DCell = image.ZP
 	Mouse.Left.Released = false
 	Mouse.Right.Released = false
 	Mouse.Middle.Released = false
@@ -210,23 +208,15 @@ func handleRealtimeEvents() {
 	for ei := range window.EventChan() {
 		switch e := ei.(type) {
 		case wde.MouseMovedEvent:
-			Mouse.Pos.X = e.Where.X
-			Mouse.Pos.Y = e.Where.Y
-			Mouse.DPos.X = e.From.X
-			Mouse.DPos.Y = e.From.Y
-			Mouse.Cell.X = e.Where.X / 16
-			Mouse.Cell.Y = e.Where.Y / 16
-			Mouse.DCell.X = e.From.X / 16
-			Mouse.DCell.Y = e.From.Y / 16
+			Mouse.Pos = e.Where
+			Mouse.DPos = e.From
+			Mouse.Cell = e.Where.Div(16)
+			Mouse.DCell = e.From.Div(16)
 		case wde.MouseDraggedEvent:
-			Mouse.Pos.X = e.Where.X
-			Mouse.Pos.Y = e.Where.Y
-			Mouse.DPos.X = e.From.X
-			Mouse.DPos.Y = e.From.Y
-			Mouse.Cell.X = e.Where.X / 16
-			Mouse.Cell.Y = e.Where.Y / 16
-			Mouse.DCell.X = e.From.X / 16
-			Mouse.DCell.Y = e.From.Y / 16
+			Mouse.Pos = e.Where
+			Mouse.DPos = e.From
+			Mouse.Cell = e.Where.Div(16)
+			Mouse.DCell = e.From.Div(16)
 		case wde.CloseEvent:
 			Close()
 		default:
