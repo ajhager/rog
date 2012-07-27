@@ -9,7 +9,6 @@ import (
 // A PriorityQueue implements heap.Interface and holds Items.
 type PriorityQueue []*Node
 
-
 /* sort.Interface */
 func (pq PriorityQueue) Len() int {
 	return len(pq)
@@ -17,51 +16,48 @@ func (pq PriorityQueue) Len() int {
 
 func (pq PriorityQueue) Less(i, j int) bool {
 	// We want Pop to give us the lowest, not highest, priority so we use smaller than here.
-    return pq[i].f < pq[j].f
+	return pq[i].f < pq[j].f
 }
 
 func (pq PriorityQueue) Swap(i, j int) {
-    pq[i], pq[j] = pq[j], pq[i]
-    pq[i].heap_index = i
-    pq[j].heap_index = j
+	pq[i], pq[j] = pq[j], pq[i]
+	pq[i].heap_index = i
+	pq[j].heap_index = j
 }
 
 /* heap.interface */
 func (pq *PriorityQueue) Push(x interface{}) {
-    // Push and Pop use pointer receivers because they modify the slice's length,
-    // not just its contents.
-    // To simplify indexing expressions in these methods, we save a copy of the
-    // slice object. We could instead write (*pq)[i].
-    a := *pq
-    n := len(a)
-    a = a[0 : n+1]
-    item := x.(*Node)
-    item.heap_index = n
-    a[n] = item
-    *pq = a
+	// Push and Pop use pointer receivers because they modify the slice's length,
+	// not just its contents.
+	// To simplify indexing expressions in these methods, we save a copy of the
+	// slice object. We could instead write (*pq)[i].
+	a := *pq
+	n := len(a)
+	a = a[0 : n+1]
+	item := x.(*Node)
+	item.heap_index = n
+	a[n] = item
+	*pq = a
 }
 
 func (pq *PriorityQueue) Pop() interface{} {
-    a := *pq
-    n := len(a)
-    item := a[n-1]
-    item.heap_index = -1 // for safety
-    *pq = a[0 : n-1]
-    return item
+	a := *pq
+	n := len(a)
+	item := a[n-1]
+	item.heap_index = -1 // for safety
+	*pq = a[0 : n-1]
+	return item
 }
-
-
 
 /* Node */
 
 func (pq *PriorityQueue) PushNode(n *Node) {
-		heap.Push(pq, n)
+	heap.Push(pq, n)
 }
 
-func (pq *PriorityQueue) PopNode() (*Node) {
-		return heap.Pop(pq).(*Node)
+func (pq *PriorityQueue) PopNode() *Node {
+	return heap.Pop(pq).(*Node)
 }
-
 
 func (pq *PriorityQueue) RemoveNode(n *Node) {
 	heap.Remove(pq, n.heap_index)
@@ -90,9 +86,7 @@ const (
 	COST_DIAGONAL = 1414
 )
 
-
 type MapData [][]int
-
 
 // Return a new MapData by value given some dimensions
 func NewMapData(rows, cols int) MapData {
@@ -103,7 +97,7 @@ func NewMapData(rows, cols int) MapData {
 	return result
 }
 
-func (m MapData) Clone() (MapData) {
+func (m MapData) Clone() MapData {
 	rows := len(m)
 	cols := len(m[0])
 	result := make([]([]int), rows)
@@ -142,20 +136,17 @@ func str_map(data MapData, nodes []*Node) string {
 	return result
 }
 
-
-
 /*** Node type ***/
 
 // X and Y are coordinates, parent is a link to where we came from. cost are the
 // estimated cost from start along the best known path. h is the heuristic value
 // (air line distance to goal).
 type Node struct {
-	X, Y int
-	parent *Node
-	f, g, h int
+	X, Y       int
+	parent     *Node
+	f, g, h    int
 	heap_index int // only used and maintained by pqueue
 }
-
 
 // Create a new Node
 func NewNode(x, y int) *Node {
@@ -170,49 +161,40 @@ func NewNode(x, y int) *Node {
 	return node
 }
 
-
 // Return string representation of the node
 func (n *Node) String() string {
-    return ""
-//	return fmt.Sprintf("<Node x:%d y:%d addr:%d>", n.X, n.Y, &n)
+	return ""
+	//	return fmt.Sprintf("<Node x:%d y:%d addr:%d>", n.X, n.Y, &n)
 }
-
-
-
 
 /*** nodeList type ***/
 
 type nodeList struct {
-	nodes map[int]*Node
+	nodes      map[int]*Node
 	rows, cols int
 }
-
 
 func newNodeList(rows, cols int) *nodeList {
 	return &nodeList{
 		nodes: make(map[int]*Node, rows*cols),
-		rows: rows,
-		cols: cols,
+		rows:  rows,
+		cols:  cols,
 	}
 }
 
-
-func (n *nodeList)addNode(node *Node) {
-	n.nodes[node.X + node.Y*n.rows] = node
+func (n *nodeList) addNode(node *Node) {
+	n.nodes[node.X+node.Y*n.rows] = node
 }
 
-
-func (n *nodeList)getNode(x, y int) *Node {
-	return n.nodes[x + y*n.rows]
+func (n *nodeList) getNode(x, y int) *Node {
+	return n.nodes[x+y*n.rows]
 }
 
-
-func (n *nodeList)removeNode(node *Node) {
-	delete(n.nodes, node.X + node.Y*n.rows)
+func (n *nodeList) removeNode(node *Node) {
+	delete(n.nodes, node.X+node.Y*n.rows)
 }
 
-
-func (n *nodeList)hasNode(node *Node) bool {
+func (n *nodeList) hasNode(node *Node) bool {
 	if n.getNode(node.X, node.Y) != nil {
 		return true
 	}
@@ -223,10 +205,9 @@ func (n *nodeList)hasNode(node *Node) bool {
 
 // Start, stop nodes and a slice of nodes
 type Graph struct {
-	nodes *nodeList  // Used to avoid duplicated nodes!
-	data MapData
+	nodes *nodeList // Used to avoid duplicated nodes!
+	data  MapData
 }
-
 
 // Return a Graph from a map of coordinates (those that are passible)
 func NewGraph(map_data MapData) *Graph {
@@ -236,7 +217,6 @@ func NewGraph(map_data MapData) *Graph {
 		data:  map_data,
 	}
 }
-
 
 // Get or create a *Node based on x, y coordinates. Avoids duplicated nodes!
 func (g *Graph) Node(x, y int) *Node {
@@ -251,9 +231,6 @@ func (g *Graph) Node(x, y int) *Node {
 	}
 	return node
 }
-
-
-
 
 /* Astar func */
 
@@ -271,12 +248,11 @@ func retracePath(current_node *Node) []*Node {
 	return path
 }
 
-
 // Diagonal/Chebyshev distance is used.
 func Heuristic(tile, stop *Node) (h int) {
 	h_diag := min(abs(tile.X-stop.X), abs(tile.Y-stop.Y))
 	h_stra := abs(tile.X-stop.X) + abs(tile.Y-stop.Y)
-	h = COST_DIAGONAL*h_diag + COST_STRAIGHT*(h_stra - 2*h_diag)
+	h = COST_DIAGONAL*h_diag + COST_STRAIGHT*(h_stra-2*h_diag)
 
 	/* TODO: Breaking ties:
 	dx1 := tile.X - stop.X
@@ -291,18 +267,17 @@ func Heuristic(tile, stop *Node) (h int) {
 
 // 8 directions adjecentDirs and costs
 var adjecentDirs8 = [][3]int{
-	{-1,-1,COST_DIAGONAL},{-1, 0,COST_STRAIGHT },{-1, 1,COST_DIAGONAL},
-	{ 0,-1,COST_STRAIGHT},                       { 0, 1,COST_STRAIGHT },
-	{ 1,-1,COST_DIAGONAL},{ 1, 0,COST_STRAIGHT },{ 1, 1,COST_DIAGONAL},
+	{-1, -1, COST_DIAGONAL}, {-1, 0, COST_STRAIGHT}, {-1, 1, COST_DIAGONAL},
+	{0, -1, COST_STRAIGHT}, {0, 1, COST_STRAIGHT},
+	{1, -1, COST_DIAGONAL}, {1, 0, COST_STRAIGHT}, {1, 1, COST_DIAGONAL},
 }
 
 // 4 directions adjecentDirs and costs
 var adjecentDirs4 = [][3]int{
-	                     {-1, 0,COST_STRAIGHT},
-	{ 0,-1,COST_STRAIGHT},                     { 0, 1,COST_STRAIGHT},
-	                     { 1, 0,COST_STRAIGHT},
+	{-1, 0, COST_STRAIGHT},
+	{0, -1, COST_STRAIGHT}, {0, 1, COST_STRAIGHT},
+	{1, 0, COST_STRAIGHT},
 }
-
 
 // A* search algorithm. See http://en.wikipedia.org/wiki/A*_search_algorithm
 func Astar(map_data MapData, startx, starty, stopx, stopy int, dir8 bool) []*Node {
@@ -343,7 +318,7 @@ func Astar(map_data MapData, startx, starty, stopx, stopy int, dir8 bool) []*Nod
 			return retracePath(current)
 		}
 
-		for _, adir := range(adjecentDirs) {
+		for _, adir := range adjecentDirs {
 			x, y := (current.X + adir[0]), (current.Y + adir[1])
 
 			// Check if x, y is inside the map:

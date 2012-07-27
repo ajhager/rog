@@ -26,73 +26,73 @@ package rog
 
 import (
 	"fmt"
-	"image"
-    "image/color"
-    "image/draw"
-    "image/png"
-    "os"
-	"time"
 	"github.com/skelterjohn/go.wde"
 	_ "github.com/skelterjohn/go.wde/init"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/png"
+	"os"
+	"time"
 )
 
 var (
-    open = false
-    window wde.Window
-    console *Console
-    drawer func(draw.Image)
-    input = make(chan interface{}, 16)
-    stats *timing
-    Mouse *mouse
-    Key string
+	open    = false
+	window  wde.Window
+	console *Console
+	drawer  func(draw.Image)
+	input   = make(chan interface{}, 16)
+	stats   *timing
+	Mouse   *mouse
+	Key     string
 )
 
 // IsOpen returns whether the rog window is open or not.
 func IsOpen() bool {
-    return open
+	return open
 }
 
 // Open creates a window and a root console with size width by height cells.
 func Open(width, height int, title string) (err error) {
 	window, err = wde.NewWindow(width*16, height*16)
 	if err != nil {
-        return
+		return
 	}
 	window.SetTitle(title)
 	window.Show()
-    
+
 	console = NewConsole(width, height)
-    stats = new(timing)
-    Mouse = new(mouse)
-    
+	stats = new(timing)
+	Mouse = new(mouse)
+
 	go func() {
-	    wde.Run()
+		wde.Run()
 	}()
 
-    go handleRealtimeEvents()
+	go handleRealtimeEvents()
 
-    open = true
-    return
+	open = true
+	return
 }
 
 // Close shuts down the windowing system.
 // No rog functions should be called after this.
 func Close() {
-    open = false
+	open = false
 	window.Close()
-    wde.Stop()
+	wde.Stop()
 }
 
 // Screenshot will save the window buffer as an image to name.png.
 func Screenshot(name string) (err error) {
-    file, err := os.Create(fmt.Sprintf("%v.%v", name, "png"))
-    if err != nil {
-        return
-    }
-    defer file.Close()
+	file, err := os.Create(fmt.Sprintf("%v.%v", name, "png"))
+	if err != nil {
+		return
+	}
+	defer file.Close()
 
-    err = png.Encode(file, window.Screen())
-    return
+	err = png.Encode(file, window.Screen())
+	return
 }
 
 // SetTitle changes the title of the window.
@@ -102,68 +102,68 @@ func SetTitle(title string) {
 
 // Flush renders the root console to the window.
 func Flush() {
-    if open {
-        handleFrameEvents()
+	if open {
+		handleFrameEvents()
 
-        console.Render(window.Screen())
-        if drawer != nil {
-            drawer(window.Screen())
-        }
-        window.FlushImage()
+		console.Render(window.Screen())
+		if drawer != nil {
+			drawer(window.Screen())
+		}
+		window.FlushImage()
 
-        stats.Update(time.Now())
-    }
+		stats.Update(time.Now())
+	}
 
 }
 
 // SetDrawer registers a callback that runs after the console has been rendered, but before the buffer image is flushed to the window.
 func SetDrawer(d func(draw.Image)) {
-    drawer = d
+	drawer = d
 }
 
 // Dt returns length of the last frame in seconds.
 func Dt() float64 {
-    return stats.Dt
+	return stats.Dt
 }
 
 // Fps returns the number of rendered frames per second.
 func Fps() int64 {
-    return stats.Fps
+	return stats.Fps
 }
 
 // Set draws on the root console.
 func Set(x, y int, fg, bg interface{}, data string, rest ...interface{}) {
-    console.Set(x, y, fg, bg, data, rest...)
+	console.Set(x, y, fg, bg, data, rest...)
 }
 
 // Set draws on the root console with wrapping bounds of x, y, w, h.
 func SetR(x, y, w, h int, fg, bg interface{}, data string, rest ...interface{}) {
-    console.SetR(x, y, w, h, fg, bg, data, rest...)
+	console.SetR(x, y, w, h, fg, bg, data, rest...)
 }
 
 // Get returns the fg, bg colors and rune of the cell on the root console.
 func Get(x, y int) (color.Color, color.Color, rune) {
-    return console.Get(x, y)
+	return console.Get(x, y)
 }
 
 // Fill draws a rect on the root console.
 func Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
-    console.Fill(x, y, w, h, fg, bg, ch)
+	console.Fill(x, y, w, h, fg, bg, ch)
 }
 
 // Clear draws a rect over the entire root console.
 func Clear(fg, bg interface{}, ch rune) {
-    console.Clear(fg, bg, ch)
+	console.Clear(fg, bg, ch)
 }
 
 // Width returns the width of the root console in cells.
 func Width() int {
-    return console.Width()
+	return console.Width()
 }
 
 // Height returns the height of the root console in cells.
 func Height() int {
-    return console.Height()
+	return console.Height()
 }
 
 func handleFrameEvents() {
@@ -174,7 +174,7 @@ func handleFrameEvents() {
 	Mouse.Left.Released = false
 	Mouse.Right.Released = false
 	Mouse.Middle.Released = false
-    Key = ""
+	Key = ""
 	select {
 	case ei := <-input:
 		switch e := ei.(type) {
@@ -199,8 +199,8 @@ func handleFrameEvents() {
 				Mouse.Middle.Pressed = false
 				Mouse.Middle.Released = true
 			}
-        case wde.KeyTypedEvent:
-            Key = e.Key
+		case wde.KeyTypedEvent:
+			Key = e.Key
 		}
 	default:
 	}
@@ -228,9 +228,9 @@ func handleRealtimeEvents() {
 			Mouse.DCell.X = e.From.X / 16
 			Mouse.DCell.Y = e.From.Y / 16
 		case wde.CloseEvent:
-            Close()
-        default:
-            input <- ei
+			Close()
+		default:
+			input <- ei
 		}
 	}
 }
@@ -241,24 +241,24 @@ type mouseButton struct {
 
 type mouse struct {
 	Pos, DPos, Cell, DCell image.Point
-	Left, Right, Middle mouseButton
+	Left, Right, Middle    mouseButton
 }
 
 type timing struct {
-    Then, Now time.Time
-    Elapsed, Dt float64
-    Frames, Fps int64
+	Then, Now   time.Time
+	Elapsed, Dt float64
+	Frames, Fps int64
 }
 
 func (t *timing) Update(now time.Time) {
-    t.Then = t.Now
-    t.Now = now
-    t.Dt = t.Now.Sub(t.Then).Seconds()
-    t.Elapsed += t.Dt
-    t.Frames += 1
+	t.Then = t.Now
+	t.Now = now
+	t.Dt = t.Now.Sub(t.Then).Seconds()
+	t.Elapsed += t.Dt
+	t.Frames += 1
 	if t.Elapsed >= 1 {
-	    t.Fps = t.Frames
-        t.Frames = 0
-        t.Elapsed -= t.Elapsed
-    }
+		t.Fps = t.Frames
+		t.Frames = 0
+		t.Elapsed -= t.Elapsed
+	}
 }
