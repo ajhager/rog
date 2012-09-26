@@ -6,8 +6,6 @@ rog
 * Cross platform windowing via github.com/skelterjohn/go.wde.
 * Field of view, lighting, and pathfinding algorithms.
 
-[Documentation](http://hagerbot.com/docs)
-
 ```go
 package main
 
