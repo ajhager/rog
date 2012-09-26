@@ -104,7 +104,7 @@ func (con *Console) Set(x, y int, fg, bg interface{}, data string, rest ...inter
 	con.set(x, y, 0, 0, con.w, con.h, fg, bg, data, rest...)
 }
 
-// Set draws a string starting at x,y onto the console, wrapping at the bounds created by x, y, w, h if needed.
+// SetR draws a string starting at x,y onto the console, wrapping at the bounds created by x, y, w, h if needed.
 // If h is 0, the text will cut off at the bottom of the console, otherwise it will cut off after the y+h row.
 func (con *Console) SetR(x, y, w, h int, fg, bg interface{}, data string, rest ...interface{}) {
 	con.set(x, y, x, y, w, h, fg, bg, data, rest...)

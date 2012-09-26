@@ -27,6 +27,10 @@ func main() {
 }
 ```
 
+Issues
+------
+* Input, drawing performance, and stability issues with go.wde.
+
 Notes
 -----
 * On Windows you can build your project with `go build -ldflags -Hwindowsgui` to inhibit the console window that pops up by default.
