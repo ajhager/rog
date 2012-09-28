@@ -145,6 +145,11 @@ func alpha(top, bot color.Color, a float64) RGB {
 	}
 }
 
+// Blender interface
+type Blender interface {
+    Blend(color.Color) color.Color
+}
+
 // RGB represents a traditional 24-bit alpha-premultiplied color, having 8 bits for each of red, green, and blue.
 type RGB struct {
 	R, G, B uint8
@@ -224,70 +229,80 @@ func (c RGB) Alpha(o color.Color, a float64) RGB {
 	return alpha(o, c, a)
 }
 
-// Blender
-type Blender func(color.Color) color.Color
+// RGB Blender interface
+func (c RGB) Blend(o color.Color) color.Color {
+    return c
+}
 
-func Multiply(top color.Color) Blender {
+// BlendFunc
+type BlendFunc func(color.Color) color.Color
+
+// BlendFunc Blender interface
+func (bf BlendFunc) Blend(o color.Color) color.Color {
+    return bf(o)
+}
+
+func Multiply(top color.Color) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return multiply(top, bot)
 	}
 }
 
-func Dodge(top color.Color) Blender {
+func Dodge(top color.Color) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return dodge(top, bot)
 	}
 }
 
-func Screen(top color.Color) Blender {
+func Screen(top color.Color) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return screen(top, bot)
 	}
 }
 
-func Overlay(top color.Color) Blender {
+func Overlay(top color.Color) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return overlay(top, bot)
 	}
 }
 
-func Lighten(top color.Color) Blender {
+func Lighten(top color.Color) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return lighten(top, bot)
 	}
 }
 
-func Darken(top color.Color) Blender {
+func Darken(top color.Color) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return darken(top, bot)
 	}
 }
 
-func Burn(top color.Color) Blender {
+func Burn(top color.Color) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return burn(top, bot)
 	}
 }
 
-func Scale(s float64) Blender {
+func Scale(s float64) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return scale(bot, s)
 	}
 }
 
-func Add(top color.Color) Blender {
+func Add(top color.Color) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return add(top, bot)
 	}
 }
 
-func AddAlpha(top color.Color, a float64) Blender {
+func AddAlpha(top color.Color, a float64) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return addAlpha(top, bot, a)
 	}
 }
 
-func Alpha(top color.Color, a float64) Blender {
+func Alpha(top color.Color, a float64) BlendFunc {
 	return func(bot color.Color) color.Color {
 		return addAlpha(top, bot, a)
 	}

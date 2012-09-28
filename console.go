@@ -55,29 +55,21 @@ func NewConsole(width, height int) *Console {
 	return con
 }
 
-func (con *Console) put(x, y int, fg, bg interface{}, ch rune) {
+func (con *Console) put(x, y int, fg, bg Blender, ch rune) {
 	if ch > 0 {
 		con.ch[y][x] = ch
 	}
 
-	switch bgcolor := bg.(type) {
-	case color.Color:
-		con.bg[y][x] = bgcolor
-	case Blender:
-		con.bg[y][x] = bgcolor(con.bg[y][x])
-	default:
-	}
+    if bg != nil {
+        con.bg[y][x] = bg.Blend(con.bg[y][x])
+    }
 
-	switch fgcolor := fg.(type) {
-	case color.Color:
-		con.fg[y][x] = fgcolor
-	case Blender:
-		con.fg[y][x] = fgcolor(con.bg[y][x])
-	default:
-	}
+    if fg != nil {
+        con.fg[y][x] = fg.Blend(con.bg[y][x])
+    }
 }
 
-func (con *Console) set(i, j, x, y, w, h int, fg, bg interface{}, data string, rest ...interface{}) {
+func (con *Console) set(i, j, x, y, w, h int, fg, bg Blender, data string, rest ...interface{}) {
 	runes := []rune(fmt.Sprintf(data, rest...))
 	if len(runes) > 0 {
 		if h == 0 {
@@ -100,13 +92,13 @@ func (con *Console) set(i, j, x, y, w, h int, fg, bg interface{}, data string, r
 }
 
 // Set draws a string starting at x,y onto the console, wrapping at the bounds if needed.
-func (con *Console) Set(x, y int, fg, bg interface{}, data string, rest ...interface{}) {
+func (con *Console) Set(x, y int, fg, bg Blender, data string, rest ...interface{}) {
 	con.set(x, y, 0, 0, con.w, con.h, fg, bg, data, rest...)
 }
 
 // SetR draws a string starting at x,y onto the console, wrapping at the bounds created by x, y, w, h if needed.
 // If h is 0, the text will cut off at the bottom of the console, otherwise it will cut off after the y+h row.
-func (con *Console) SetR(x, y, w, h int, fg, bg interface{}, data string, rest ...interface{}) {
+func (con *Console) SetR(x, y, w, h int, fg, bg Blender, data string, rest ...interface{}) {
 	con.set(x, y, x, y, w, h, fg, bg, data, rest...)
 }
 
@@ -116,7 +108,7 @@ func (con *Console) Get(x, y int) (color.Color, color.Color, rune) {
 }
 
 // Fill draws a rect on the root console using ch.
-func (con *Console) Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
+func (con *Console) Fill(x, y, w, h int, fg, bg Blender, ch rune) {
 	for i := x; i < x+w; i++ {
 		for j := y; j < y+h; j++ {
 			con.Set(i, j, fg, bg, string(ch))
@@ -125,7 +117,7 @@ func (con *Console) Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
 }
 
 // Clear is a short hand to fill the entire screen with the given colors and rune.
-func (con *Console) Clear(fg, bg interface{}, ch rune) {
+func (con *Console) Clear(fg, bg Blender, ch rune) {
 	con.Fill(0, 0, con.w, con.h, fg, bg, ch)
 }
 
