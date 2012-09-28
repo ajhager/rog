@@ -132,12 +132,12 @@ func Fps() int64 {
 }
 
 // Set draws on the root console.
-func Set(x, y int, fg, bg interface{}, data string, rest ...interface{}) {
+func Set(x, y int, fg, bg Blender, data string, rest ...interface{}) {
 	console.Set(x, y, fg, bg, data, rest...)
 }
 
 // Set draws on the root console with wrapping bounds of x, y, w, h.
-func SetR(x, y, w, h int, fg, bg interface{}, data string, rest ...interface{}) {
+func SetR(x, y, w, h int, fg, bg Blender, data string, rest ...interface{}) {
 	console.SetR(x, y, w, h, fg, bg, data, rest...)
 }
 
@@ -147,12 +147,12 @@ func Get(x, y int) (color.Color, color.Color, rune) {
 }
 
 // Fill draws a rect on the root console.
-func Fill(x, y, w, h int, fg, bg interface{}, ch rune) {
+func Fill(x, y, w, h int, fg, bg Blender, ch rune) {
 	console.Fill(x, y, w, h, fg, bg, ch)
 }
 
 // Clear draws a rect over the entire root console.
-func Clear(fg, bg interface{}, ch rune) {
+func Clear(fg, bg Blender, ch rune) {
 	console.Clear(fg, bg, ch)
 }
 
