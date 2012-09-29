@@ -41,11 +41,13 @@ Thanks
 
 Plans
 -----
-* Better keyboard handling.
-* World generation.
-* User supplied font sets and tilemaps.
-* Noise generators.
-* Image scale and blitting.
-* Console to console blitting.
-* Move console out into a separate package.
-* Fold lighting into the library.
+* Input and Render interfaces to prepare for..
+* Multiple back ends that can be selected at compile time
+* Blitter interface for blitting consoles, images, etc. on to consoles
+* User supplied and non-square fonts
+* World creation
+* Noise generators
+* Random color Blenders
+* Palette support
+* Lighting
+* More fov algorithms
