@@ -11,8 +11,8 @@ var (
 	width  = 48
 	height = 32
 
-	wall   = rog.Hex(0xffb4b4)
-	floorc = rog.Hex(0x804646)
+	wall   = rog.Hex(0xffbb99)
+	floorc = rog.Hex(0x885040)
 	black  = rog.Hex(0x000000)
 	white  = rog.Hex(0xffffff)
 	lgrey  = rog.Hex(0xc8c8c8)
