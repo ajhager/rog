@@ -46,3 +46,4 @@ Plans
 * Palette support
 * Lighting
 * More fov algorithms
+* Website, documentation, tutorial, and more examples.
