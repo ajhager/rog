@@ -147,7 +147,7 @@ func alpha(top, bot color.Color, a float64) RGB {
 
 // Blender interface
 type Blender interface {
-    Blend(color.Color) color.Color
+	Blend(color.Color) color.Color
 }
 
 // RGB represents a traditional 24-bit alpha-premultiplied color, having 8 bits for each of red, green, and blue.
@@ -231,7 +231,7 @@ func (c RGB) Alpha(o color.Color, a float64) RGB {
 
 // RGB Blender interface
 func (c RGB) Blend(o color.Color) color.Color {
-    return c
+	return c
 }
 
 // BlendFunc
@@ -239,7 +239,7 @@ type BlendFunc func(color.Color) color.Color
 
 // BlendFunc Blender interface
 func (bf BlendFunc) Blend(o color.Color) color.Color {
-    return bf(o)
+	return bf(o)
 }
 
 func Multiply(top color.Color) BlendFunc {

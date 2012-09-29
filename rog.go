@@ -15,7 +15,7 @@ Package rog provides algorithms and data structures for creating roguelike games
      rog.Open(48, 32, "rog")
      for rog.IsOpen() {
          rog.Set(20, 15, nil, nil, "Hello, 世界")
-         if rog.Key == rog.Escape {
+         if rog.Key() == rog.Escape {
              rog.Close()
          }
          rog.Flush()
@@ -26,59 +26,36 @@ package rog
 
 import (
 	"fmt"
-	"github.com/skelterjohn/go.wde"
-	_ "github.com/skelterjohn/go.wde/init"
-	"image"
 	"image/color"
 	"image/png"
 	"os"
-	"time"
 )
 
 var (
-	open    = false
-	window  wde.Window
-	console *Console
-	input   = make(chan interface{}, 16)
-	stats   *timing
-	Mouse   *mouse
-	Key     string
+	workspace Workspace
+	console   *Console
+	timing    *stats
 )
 
 // IsOpen returns whether the rog window is open or not.
 func IsOpen() bool {
-	return open
+	return workspace.IsOpen()
 }
 
 // Open creates a window and a root console with size width by height cells.
-func Open(width, height int, title string) (err error) {
-	window, err = wde.NewWindow(width*16, height*16)
-	if err != nil {
-		return
-	}
-	window.SetTitle(title)
-	window.Show()
-
+func Open(width, height int, title string, ws Workspace) {
+	timing = new(stats)
 	console = NewConsole(width, height)
-	stats = new(timing)
-	Mouse = new(mouse)
 
-	go func() {
-		wde.Run()
-	}()
-
-	go handleRealtimeEvents()
-
-	open = true
-	return
+	workspace = ws
+	workspace.Open(width, height)
+	workspace.Name(title)
 }
 
 // Close shuts down the windowing system.
 // No rog functions should be called after this.
 func Close() {
-	open = false
-	window.Close()
-	wde.Stop()
+	workspace.Close()
 }
 
 // Screenshot will save the window buffer as an image to name.png.
@@ -89,34 +66,39 @@ func Screenshot(name string) (err error) {
 	}
 	defer file.Close()
 
-	err = png.Encode(file, window.Screen())
+	err = png.Encode(file, workspace.Screen())
 	return
 }
 
 // SetTitle changes the title of the window.
 func SetTitle(title string) {
-	window.SetTitle(title)
+	workspace.Name(title)
 }
 
 // Flush renders the root console to the window.
 func Flush() {
-	if open {
-		handleFrameEvents()
-		console.Render(window.Screen())
-		window.FlushImage()
-		stats.Update(time.Now())
-	}
+	workspace.Render(console)
+	timing.Update()
+}
 
+// Mouse returns a struct representing the state of the mouse.
+func Mouse() *MouseData {
+	return workspace.Mouse()
+}
+
+// Key returns the last key typed this frame.
+func Key() string {
+	return workspace.Key()
 }
 
 // Dt returns length of the last frame in seconds.
 func Dt() float64 {
-	return stats.Dt
+	return timing.Dt
 }
 
 // Fps returns the number of rendered frames per second.
 func Fps() int64 {
-	return stats.Fps
+	return timing.Fps
 }
 
 // Set draws on the root console.
@@ -152,91 +134,4 @@ func Width() int {
 // Height returns the height of the root console in cells.
 func Height() int {
 	return console.Height()
-}
-
-func handleFrameEvents() {
-	Mouse.DPos = image.ZP
-	Mouse.DCell = image.ZP
-	Mouse.Left.Released = false
-	Mouse.Right.Released = false
-	Mouse.Middle.Released = false
-	Key = ""
-	select {
-	case ei := <-input:
-		switch e := ei.(type) {
-		case wde.MouseDownEvent:
-			switch e.Which {
-			case wde.LeftButton:
-				Mouse.Left.Pressed = true
-			case wde.RightButton:
-				Mouse.Right.Pressed = true
-			case wde.MiddleButton:
-				Mouse.Middle.Pressed = true
-			}
-		case wde.MouseUpEvent:
-			switch e.Which {
-			case wde.LeftButton:
-				Mouse.Left.Pressed = false
-				Mouse.Left.Released = true
-			case wde.RightButton:
-				Mouse.Right.Pressed = false
-				Mouse.Right.Released = true
-			case wde.MiddleButton:
-				Mouse.Middle.Pressed = false
-				Mouse.Middle.Released = true
-			}
-		case wde.KeyTypedEvent:
-			Key = e.Key
-		}
-	default:
-	}
-}
-
-func handleRealtimeEvents() {
-	for ei := range window.EventChan() {
-		switch e := ei.(type) {
-		case wde.MouseMovedEvent:
-			Mouse.Pos = e.Where
-			Mouse.DPos = e.From
-			Mouse.Cell = e.Where.Div(16)
-			Mouse.DCell = e.From.Div(16)
-		case wde.MouseDraggedEvent:
-			Mouse.Pos = e.Where
-			Mouse.DPos = e.From
-			Mouse.Cell = e.Where.Div(16)
-			Mouse.DCell = e.From.Div(16)
-		case wde.CloseEvent:
-			Close()
-		default:
-			input <- ei
-		}
-	}
-}
-
-type mouseButton struct {
-	Pressed, Released bool
-}
-
-type mouse struct {
-	Pos, DPos, Cell, DCell image.Point
-	Left, Right, Middle    mouseButton
-}
-
-type timing struct {
-	Then, Now   time.Time
-	Elapsed, Dt float64
-	Frames, Fps int64
-}
-
-func (t *timing) Update(now time.Time) {
-	t.Then = t.Now
-	t.Now = now
-	t.Dt = t.Now.Sub(t.Then).Seconds()
-	t.Elapsed += t.Dt
-	t.Frames += 1
-	if t.Elapsed >= 1 {
-		t.Fps = t.Frames
-		t.Frames = 0
-		t.Elapsed -= t.Elapsed
-	}
 }

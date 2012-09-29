@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/ajhager/rog"
+	"github.com/ajhager/rog/wde"
 	"image"
 	"runtime"
 )
@@ -94,11 +95,11 @@ func example() {
 		movePlayer(27, 16)
 	}
 
-	if rog.Mouse.Left.Released {
-		path = pmap.Path(x, y, rog.Mouse.Cell.X, rog.Mouse.Cell.Y)
+	if rog.Mouse().Left.Released {
+		path = pmap.Path(x, y, rog.Mouse().Cell.X, rog.Mouse().Cell.Y)
 	}
 
-	switch rog.Key {
+	switch rog.Key() {
 	case rog.K:
 		movePlayer(x, y-1)
 	case rog.J:
@@ -138,11 +139,11 @@ func example() {
 	rog.Fill(0, 0, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')
 	rog.Set(0, 0, nil, nil, "%vFPS %vMB %vGC %vGR", rog.Fps(), stats.HeapAlloc/1000000, stats.NumGC, runtime.NumGoroutine())
 	rog.Fill(0, 31, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')
-	rog.Set(0, 31, nil, nil, "Pos: %v %v Cell: %v %v", rog.Mouse.Pos.X, rog.Mouse.Pos.Y, rog.Mouse.Cell.X, rog.Mouse.Cell.Y)
+	rog.Set(0, 31, nil, nil, "Pos: %v %v Cell: %v %v", rog.Mouse().Pos.X, rog.Mouse().Pos.Y, rog.Mouse().Cell.X, rog.Mouse().Cell.Y)
 }
 
 func main() {
-	rog.Open(width, height, "Example")
+	rog.Open(width, height, "Example", wde.Backend())
 	for rog.IsOpen() {
 		example()
 		rog.Flush()

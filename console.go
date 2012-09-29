@@ -5,33 +5,26 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/draw"
 )
 
 // Console is a double buffered grid of unicode characters that can be rendered to an image.Image.
 type Console struct {
-	bg, bgbuf, fg, fgbuf [][]color.Color
-	ch, chbuf            [][]rune
-	w, h                 int
-	font                 image.Image
+	bg, fg [][]color.Color
+	ch     [][]rune
+	w, h   int
+	Font   image.Image
 }
 
 // NewConsole creates an empty console.
 func NewConsole(width, height int) *Console {
 	bg := make([][]color.Color, height)
-	bgbuf := make([][]color.Color, height)
 	fg := make([][]color.Color, height)
-	fgbuf := make([][]color.Color, height)
 	ch := make([][]rune, height)
-	chbuf := make([][]rune, height)
 
 	for y := 0; y < height; y++ {
 		bg[y] = make([]color.Color, width)
-		bgbuf[y] = make([]color.Color, width)
 		fg[y] = make([]color.Color, width)
-		fgbuf[y] = make([]color.Color, width)
 		ch[y] = make([]rune, width)
-		chbuf[y] = make([]rune, width)
 	}
 
 	mask, _, err := image.Decode(bytes.NewBuffer(font()))
@@ -39,16 +32,13 @@ func NewConsole(width, height int) *Console {
 		panic(err)
 	}
 
-	con := &Console{bg, bgbuf, fg, fgbuf, ch, chbuf, width, height, mask}
+	con := &Console{bg, fg, ch, width, height, mask}
 
 	for x := 0; x < con.w; x++ {
 		for y := 0; y < con.h; y++ {
 			con.bg[y][x] = color.Black
-			con.bgbuf[y][x] = color.Black
 			con.fg[y][x] = color.White
-			con.fgbuf[y][x] = color.White
 			con.ch[y][x] = ' '
-			con.chbuf[y][x] = ' '
 		}
 	}
 
@@ -60,13 +50,13 @@ func (con *Console) put(x, y int, fg, bg Blender, ch rune) {
 		con.ch[y][x] = ch
 	}
 
-    if bg != nil {
-        con.bg[y][x] = bg.Blend(con.bg[y][x])
-    }
+	if bg != nil {
+		con.bg[y][x] = bg.Blend(con.bg[y][x])
+	}
 
-    if fg != nil {
-        con.fg[y][x] = fg.Blend(con.bg[y][x])
-    }
+	if fg != nil {
+		con.fg[y][x] = fg.Blend(con.bg[y][x])
+	}
 }
 
 func (con *Console) set(i, j, x, y, w, h int, fg, bg Blender, data string, rest ...interface{}) {
@@ -104,7 +94,7 @@ func (con *Console) SetR(x, y, w, h int, fg, bg Blender, data string, rest ...in
 
 // Get returns the fg, bg colors and rune of the cell.
 func (con *Console) Get(x, y int) (color.Color, color.Color, rune) {
-	return con.fg[y][x], con.bg[y][x], con.ch[y][x]
+	return con.bg[y][x], con.fg[y][x], con.ch[y][x]
 }
 
 // Fill draws a rect on the root console using ch.
@@ -119,31 +109,6 @@ func (con *Console) Fill(x, y, w, h int, fg, bg Blender, ch rune) {
 // Clear is a short hand to fill the entire screen with the given colors and rune.
 func (con *Console) Clear(fg, bg Blender, ch rune) {
 	con.Fill(0, 0, con.w, con.h, fg, bg, ch)
-}
-
-// Render draws the console onto an image.
-func (c *Console) Render(im draw.Image) {
-	maskRect := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
-	for y := 0; y < c.h; y++ {
-		for x := 0; x < c.w; x++ {
-			bg := c.bg[y][x]
-			fg := c.fg[y][x]
-			ch := c.ch[y][x]
-			if bg != c.bgbuf[y][x] || fg != c.fgbuf[y][x] || ch != c.chbuf[y][x] {
-				c.bgbuf[y][x] = bg
-				c.fgbuf[y][x] = fg
-				c.chbuf[y][x] = ch
-				rect := maskRect.Add(image.Point{x * 16, y * 16})
-				src := &image.Uniform{bg}
-				draw.Draw(im, rect, src, image.ZP, draw.Src)
-
-				if ch != ' ' {
-					src = &image.Uniform{fg}
-					draw.DrawMask(im, rect, src, image.ZP, c.font, image.Point{int(ch%32) * 16, int(ch/32) * 16}, draw.Over)
-				}
-			}
-		}
-	}
 }
 
 // Width returns the width of the console in cells.
