@@ -1,7 +1,7 @@
 package rog
 
 import (
-	"image/draw"
+	"image"
 )
 
 type Workspace interface {
@@ -10,7 +10,7 @@ type Workspace interface {
 	Close()
 	Name(string)
 	Render(*Console)
-	Screen() draw.Image
+	Screen() image.Image
 	Mouse() *MouseData
 	Key() string
 }
