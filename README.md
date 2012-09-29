@@ -11,23 +11,20 @@ package main
 
 import (
     "github.com/ajhager/rog"
+    "github.com/ajhager/rog/wde"
 )
 
 func main() {
-    rog.Open(48, 32, "rog")
+    rog.Open(48, 32, "rog", wde.Backend())
     for rog.IsOpen() {
         rog.Set(20, 15, nil, nil, "Hello, 世界")
-        if rog.Key == rog.Escape {
+        if rog.Key() == rog.Escape {
             rog.Close()
         }
         rog.Flush()
     }
 }
 ```
-
-Issues
-------
-* Input, drawing performance, and stability issues with go.wde.
 
 Notes
 -----
@@ -41,8 +38,6 @@ Thanks
 
 Plans
 -----
-* Input and Render interfaces to prepare for..
-* Multiple back ends that can be selected at compile time
 * Blitter interface for blitting consoles, images, etc. on to consoles
 * User supplied and non-square fonts
 * World creation
