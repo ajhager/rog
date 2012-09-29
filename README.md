@@ -3,8 +3,9 @@ rog
 ![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot.png)
 
 * 24bit color, unicode console with built in font.
-* Cross platform windowing via github.com/skelterjohn/go.wde.
+* Cross platform with pluggable backends.
 * Field of view, lighting, and pathfinding algorithms.
+* Procedural color functions.
 
 ```go
 package main
@@ -33,8 +34,9 @@ Notes
 Thanks
 ------
 * libTCOD [http://doryen.eptalys.net/libtcod/]
-* John Asmuth [http://github.com/skelterjohn/go.wde]
 * Yamamushi [http://www.theasciiproject.com/]
+* John Asmuth [http://github.com/skelterjohn/go.wde]
+* jteeuwen [https://github.com/jteeuwen/glfw]
 
 Plans
 -----
@@ -44,6 +46,6 @@ Plans
 * Noise generators
 * Random color Blenders
 * Palette support
-* Lighting
+* Merge in lighting
 * More fov algorithms
 * Website, documentation, tutorial, and more examples.
