@@ -1,9 +1,7 @@
 package rog
 
 import (
-	"bytes"
 	"fmt"
-	"image"
 	"image/color"
 )
 
@@ -12,7 +10,6 @@ type Console struct {
 	bg, fg [][]color.Color
 	ch     [][]rune
 	w, h   int
-	Font   image.Image
 }
 
 // NewConsole creates an empty console.
@@ -27,12 +24,7 @@ func NewConsole(width, height int) *Console {
 		ch[y] = make([]rune, width)
 	}
 
-	mask, _, err := image.Decode(bytes.NewBuffer(font()))
-	if err != nil {
-		panic(err)
-	}
-
-	con := &Console{bg, fg, ch, width, height, mask}
+	con := &Console{bg, fg, ch, width, height}
 
 	for x := 0; x < con.w; x++ {
 		for y := 0; y < con.h; y++ {

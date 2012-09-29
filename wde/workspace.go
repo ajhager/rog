@@ -1,6 +1,7 @@
 package wde
 
 import (
+	"bytes"
 	"github.com/ajhager/rog"
 	"github.com/skelterjohn/go.wde"
 	_ "github.com/skelterjohn/go.wde/init"
@@ -21,6 +22,7 @@ type wdeWorkspace struct {
 	key          string
 	bgbuf, fgbuf [][]color.Color
 	chbuf        [][]rune
+	font         image.Image
 }
 
 func (w *wdeWorkspace) Open(width, height int) {
@@ -43,6 +45,12 @@ func (w *wdeWorkspace) Open(width, height int) {
 		w.chbuf[y] = make([]rune, width)
 	}
 
+	font, _, err := image.Decode(bytes.NewBuffer(rog.FontData()))
+	if err != nil {
+		panic(err)
+	}
+	w.font = font
+
 	w.open = true
 }
 
@@ -61,10 +69,10 @@ func (w *wdeWorkspace) Name(title string) {
 }
 
 func (w *wdeWorkspace) Render(console *rog.Console) {
-	if w.open {
+	if w.IsOpen() {
 		w.handleFrameEvents()
 
-		im := w.Screen()
+		im := w.window.Screen()
 		maskRect := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
@@ -79,7 +87,7 @@ func (w *wdeWorkspace) Render(console *rog.Console) {
 
 					if ch != ' ' {
 						src = &image.Uniform{fg}
-						draw.DrawMask(im, rect, src, image.ZP, console.Font, image.Point{int(ch%32) * 16, int(ch/32) * 16}, draw.Over)
+						draw.DrawMask(im, rect, src, image.ZP, w.font, image.Point{int(ch%256) * 16, int(ch/256) * 16}, draw.Over)
 					}
 				}
 			}
@@ -89,7 +97,7 @@ func (w *wdeWorkspace) Render(console *rog.Console) {
 	}
 }
 
-func (w *wdeWorkspace) Screen() draw.Image {
+func (w *wdeWorkspace) Screen() image.Image {
 	return w.window.Screen()
 }
 
