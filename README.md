@@ -30,6 +30,7 @@ func main() {
 Notes
 -----
 * On Windows you can build your project with `go build -ldflags -Hwindowsgui` to inhibit the console window that pops up by default.
+* The glfw backend is the most performant and stable backend at the moment, but wde has less dependencies.
 
 Thanks
 ------
@@ -40,17 +41,17 @@ Thanks
 
 Plans
 -----
-* Better keyboard input
-* Image blitting
+* Website, documentation, tutorial, and more examples.
+* Window resizing and fullscreen
 * Termbox backend
-* User supplied and non-square fonts
-* World creation
-* Noise generators
+* Better keyboard handling
+* User supplied, non-square, and possilby ttf fonts
+* Image blitting
 * Random color Blenders
 * Palette support
 * Merge in lighting
+* World creation
+* Noise generators
 * More fov algorithms
-* Common GUI widgets
 * Curses like API
-* Window resizing and fullscreen
-* Website, documentation, tutorial, and more examples.
+* Common GUI widgets
