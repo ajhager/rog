@@ -1,16 +1,18 @@
 package rog
 
 import (
-	"image/color"
 	"math"
 )
 
-func colorToFloats(c color.Color) (rr, gg, bb float64) {
-	const M = float64(1<<16 - 1)
-	r, g, b, _ := c.RGBA()
-	rr = float64(r) / M
-	gg = float64(g) / M
-	bb = float64(b) / M
+var (
+    Black RGB = RGB{0, 0, 0}
+    White RGB = RGB{255, 255, 255}
+)
+
+func colorToFloats(c RGB) (r, g, b float64) {
+	r = float64(c.R) / 255.0
+	g = float64(c.G) / 255.0
+	b = float64(c.B) / 255.0
 	return
 }
 
@@ -18,7 +20,7 @@ func clampF(low, high, value float64) float64 {
 	return math.Min(high, math.Max(low, value))
 }
 
-func multiply(top, bot color.Color) RGB {
+func multiply(top, bot RGB) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -37,7 +39,7 @@ func dodgeF(top, bot float64) (out uint8) {
 	return
 }
 
-func dodge(top, bot color.Color) RGB {
+func dodge(top, bot RGB) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -47,7 +49,7 @@ func dodge(top, bot color.Color) RGB {
 	}
 }
 
-func screen(top, bot color.Color) RGB {
+func screen(top, bot RGB) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -66,7 +68,7 @@ func overlayF(top, bot float64) (out uint8) {
 	return
 }
 
-func overlay(top, bot color.Color) RGB {
+func overlay(top, bot RGB) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -76,7 +78,7 @@ func overlay(top, bot color.Color) RGB {
 	}
 }
 
-func lighten(top, bot color.Color) RGB {
+func lighten(top, bot RGB) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -86,7 +88,7 @@ func lighten(top, bot color.Color) RGB {
 	}
 }
 
-func darken(top, bot color.Color) RGB {
+func darken(top, bot RGB) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -96,7 +98,7 @@ func darken(top, bot color.Color) RGB {
 	}
 }
 
-func burn(top, bot color.Color) RGB {
+func burn(top, bot RGB) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -106,7 +108,7 @@ func burn(top, bot color.Color) RGB {
 	}
 }
 
-func scale(bot color.Color, s float64) RGB {
+func scale(bot RGB, s float64) RGB {
 	botr, botg, botb := colorToFloats(bot)
 	return RGB{
 		uint8(255 * botr * s),
@@ -115,7 +117,7 @@ func scale(bot color.Color, s float64) RGB {
 	}
 }
 
-func add(top, bot color.Color) RGB {
+func add(top, bot RGB) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -125,7 +127,7 @@ func add(top, bot color.Color) RGB {
 	}
 }
 
-func addAlpha(top, bot color.Color, a float64) RGB {
+func addAlpha(top, bot RGB, a float64) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -135,7 +137,7 @@ func addAlpha(top, bot color.Color, a float64) RGB {
 	}
 }
 
-func alpha(top, bot color.Color, a float64) RGB {
+func alpha(top, bot RGB, a float64) RGB {
 	topR, topG, topB := colorToFloats(top)
 	botR, botG, botB := colorToFloats(bot)
 	return RGB{
@@ -147,7 +149,7 @@ func alpha(top, bot color.Color, a float64) RGB {
 
 // Blender interface
 type Blender interface {
-	Blend(color.Color) color.Color
+	Blend(RGB) RGB
 }
 
 // RGB represents a traditional 24-bit alpha-premultiplied color, having 8 bits for each of red, green, and blue.
@@ -175,37 +177,37 @@ func Hex(n uint32) RGB {
 }
 
 // Multiply = old * new
-func (c RGB) Multiply(o color.Color) RGB {
+func (c RGB) Multiply(o RGB) RGB {
 	return multiply(o, c)
 }
 
 // Dodge = new / (white - old)
-func (c RGB) Dodge(o color.Color) RGB {
+func (c RGB) Dodge(o RGB) RGB {
 	return dodge(o, c)
 }
 
 // Screen = white - (white - old) * (white - new)
-func (c RGB) Screen(o color.Color) RGB {
+func (c RGB) Screen(o RGB) RGB {
 	return screen(o, c)
 }
 
 // Overlay = new.x <= 0.5 ? 2*new*old : white - 2*(white-new)*(white-old)
-func (c RGB) Overlay(o color.Color) RGB {
+func (c RGB) Overlay(o RGB) RGB {
 	return overlay(o, c)
 }
 
 // Darken = MIN(old, new)
-func (c RGB) Darken(o color.Color) RGB {
+func (c RGB) Darken(o RGB) RGB {
 	return darken(o, c)
 }
 
 // Lighten = MIN(old, new)
-func (c RGB) Lighten(o color.Color) RGB {
+func (c RGB) Lighten(o RGB) RGB {
 	return lighten(o, c)
 }
 
 // Burn = old + new - white
-func (c RGB) Burn(o color.Color) RGB {
+func (c RGB) Burn(o RGB) RGB {
 	return burn(o, c)
 }
 
@@ -215,95 +217,95 @@ func (c RGB) Scale(s float64) RGB {
 }
 
 // Add = old + new
-func (c RGB) Add(o color.Color) RGB {
+func (c RGB) Add(o RGB) RGB {
 	return add(o, c)
 }
 
 // AddAlpha = old + alpha*new
-func (c RGB) AddAlpha(o color.Color, a float64) RGB {
+func (c RGB) AddAlpha(o RGB, a float64) RGB {
 	return addAlpha(o, c, a)
 }
 
 // Alpha = (1-alpha)*old + alpha*(new-old)
-func (c RGB) Alpha(o color.Color, a float64) RGB {
+func (c RGB) Alpha(o RGB, a float64) RGB {
 	return alpha(o, c, a)
 }
 
 // RGB Blender interface
-func (c RGB) Blend(o color.Color) color.Color {
+func (c RGB) Blend(o RGB) RGB {
 	return c
 }
 
 // BlendFunc
-type BlendFunc func(color.Color) color.Color
+type BlendFunc func(RGB) RGB
 
 // BlendFunc Blender interface
-func (bf BlendFunc) Blend(o color.Color) color.Color {
+func (bf BlendFunc) Blend(o RGB) RGB {
 	return bf(o)
 }
 
-func Multiply(top color.Color) BlendFunc {
-	return func(bot color.Color) color.Color {
+func Multiply(top RGB) BlendFunc {
+	return func(bot RGB) RGB {
 		return multiply(top, bot)
 	}
 }
 
-func Dodge(top color.Color) BlendFunc {
-	return func(bot color.Color) color.Color {
+func Dodge(top RGB) BlendFunc {
+	return func(bot RGB) RGB {
 		return dodge(top, bot)
 	}
 }
 
-func Screen(top color.Color) BlendFunc {
-	return func(bot color.Color) color.Color {
+func Screen(top RGB) BlendFunc {
+	return func(bot RGB) RGB {
 		return screen(top, bot)
 	}
 }
 
-func Overlay(top color.Color) BlendFunc {
-	return func(bot color.Color) color.Color {
+func Overlay(top RGB) BlendFunc {
+	return func(bot RGB) RGB {
 		return overlay(top, bot)
 	}
 }
 
-func Lighten(top color.Color) BlendFunc {
-	return func(bot color.Color) color.Color {
+func Lighten(top RGB) BlendFunc {
+	return func(bot RGB) RGB {
 		return lighten(top, bot)
 	}
 }
 
-func Darken(top color.Color) BlendFunc {
-	return func(bot color.Color) color.Color {
+func Darken(top RGB) BlendFunc {
+	return func(bot RGB) RGB {
 		return darken(top, bot)
 	}
 }
 
-func Burn(top color.Color) BlendFunc {
-	return func(bot color.Color) color.Color {
+func Burn(top RGB) BlendFunc {
+	return func(bot RGB) RGB {
 		return burn(top, bot)
 	}
 }
 
 func Scale(s float64) BlendFunc {
-	return func(bot color.Color) color.Color {
+	return func(bot RGB) RGB {
 		return scale(bot, s)
 	}
 }
 
-func Add(top color.Color) BlendFunc {
-	return func(bot color.Color) color.Color {
+func Add(top RGB) BlendFunc {
+	return func(bot RGB) RGB {
 		return add(top, bot)
 	}
 }
 
-func AddAlpha(top color.Color, a float64) BlendFunc {
-	return func(bot color.Color) color.Color {
+func AddAlpha(top RGB, a float64) BlendFunc {
+	return func(bot RGB) RGB {
 		return addAlpha(top, bot, a)
 	}
 }
 
-func Alpha(top color.Color, a float64) BlendFunc {
-	return func(bot color.Color) color.Color {
+func Alpha(top RGB, a float64) BlendFunc {
+	return func(bot RGB) RGB {
 		return addAlpha(top, bot, a)
 	}
 }
