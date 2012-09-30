@@ -10,32 +10,32 @@ import (
 	"image/draw"
 )
 
-func Backend() *wdeWorkspace {
-	return new(wdeWorkspace)
+func Backend() rog.Backend {
+	return new(wdeBackend)
 }
 
-type NearestNeighborImage struct {
+type nearestNeighborImage struct {
     image image.Image
     Zoom int
 }
 
-func (nni NearestNeighborImage) ColorModel() color.Model {
+func (nni nearestNeighborImage) ColorModel() color.Model {
     return nni.image.ColorModel()
 }
 
-func (nni NearestNeighborImage) Bounds() image.Rectangle {
+func (nni nearestNeighborImage) Bounds() image.Rectangle {
     b := nni.image.Bounds()
     return image.Rect(b.Min.X, b.Min.Y, b.Max.X*nni.Zoom, b.Max.Y*nni.Zoom)
 }
 
-func (nni NearestNeighborImage) At(x, y int) color.Color {
+func (nni nearestNeighborImage) At(x, y int) color.Color {
     x = (x - x % nni.Zoom) / nni.Zoom
     y = (y - y % nni.Zoom) / nni.Zoom
     return nni.image.At(x, y)
 }
 
 
-type wdeWorkspace struct {
+type wdeBackend struct {
 	open         bool
 	window       wde.Window
 	input        chan interface{}
@@ -47,7 +47,7 @@ type wdeWorkspace struct {
     zoom int
 }
 
-func (w *wdeWorkspace) Open(width, height, zoom int) {
+func (w *wdeBackend) Open(width, height, zoom int) {
 	w.window, _ = wde.NewWindow(width*16*zoom, height*16*zoom)
 	w.window.Show()
 	go func() {
@@ -72,26 +72,26 @@ func (w *wdeWorkspace) Open(width, height, zoom int) {
 	if err != nil {
 		panic(err)
 	}
-	w.font = NearestNeighborImage{font, zoom}
+	w.font = nearestNeighborImage{font, zoom}
 
 	w.open = true
 }
 
-func (w *wdeWorkspace) IsOpen() bool {
+func (w *wdeBackend) IsOpen() bool {
 	return w.open
 }
 
-func (w *wdeWorkspace) Close() {
+func (w *wdeBackend) Close() {
 	w.open = false
 	w.window.Close()
 	wde.Stop()
 }
 
-func (w *wdeWorkspace) Name(title string) {
+func (w *wdeBackend) Name(title string) {
 	w.window.SetTitle(title)
 }
 
-func (w *wdeWorkspace) Render(console *rog.Console) {
+func (w *wdeBackend) Render(console *rog.Console) {
 	if w.IsOpen() {
 		w.handleFrameEvents()
 
@@ -120,19 +120,19 @@ func (w *wdeWorkspace) Render(console *rog.Console) {
 	}
 }
 
-func (w *wdeWorkspace) Screen() image.Image {
+func (w *wdeBackend) Screen() image.Image {
 	return w.window.Screen()
 }
 
-func (w *wdeWorkspace) Mouse() *rog.MouseData {
+func (w *wdeBackend) Mouse() *rog.MouseData {
 	return w.mouse
 }
 
-func (w *wdeWorkspace) Key() string {
+func (w *wdeBackend) Key() string {
 	return w.key
 }
 
-func (w *wdeWorkspace) handleRealtimeEvents() {
+func (w *wdeBackend) handleRealtimeEvents() {
 	for ei := range w.window.EventChan() {
 		switch e := ei.(type) {
 		case wde.MouseMovedEvent:
@@ -153,7 +153,7 @@ func (w *wdeWorkspace) handleRealtimeEvents() {
 	}
 }
 
-func (w *wdeWorkspace) handleFrameEvents() {
+func (w *wdeBackend) handleFrameEvents() {
 	w.mouse.DPos = image.ZP
 	w.mouse.DCell = image.ZP
 	w.mouse.Left.Released = false
