@@ -32,8 +32,8 @@ import (
 
 var (
 	backend Backend
-	console   *Console
-	timing    *stats
+	console *Console
+	timing  *stats
 )
 
 // IsOpen returns whether the rog window is open or not.
@@ -101,7 +101,7 @@ func Fps() int64 {
 }
 
 func Blit(con *Console, x, y int) {
-    console.Blit(con, x, y)
+	console.Blit(con, x, y)
 }
 
 // Set draws on the root console.

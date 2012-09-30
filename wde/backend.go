@@ -15,25 +15,24 @@ func Backend() rog.Backend {
 }
 
 type nearestNeighborImage struct {
-    image image.Image
-    Zoom int
+	image image.Image
+	Zoom  int
 }
 
 func (nni nearestNeighborImage) ColorModel() color.Model {
-    return nni.image.ColorModel()
+	return nni.image.ColorModel()
 }
 
 func (nni nearestNeighborImage) Bounds() image.Rectangle {
-    b := nni.image.Bounds()
-    return image.Rect(b.Min.X, b.Min.Y, b.Max.X*nni.Zoom, b.Max.Y*nni.Zoom)
+	b := nni.image.Bounds()
+	return image.Rect(b.Min.X, b.Min.Y, b.Max.X*nni.Zoom, b.Max.Y*nni.Zoom)
 }
 
 func (nni nearestNeighborImage) At(x, y int) color.Color {
-    x = (x - x % nni.Zoom) / nni.Zoom
-    y = (y - y % nni.Zoom) / nni.Zoom
-    return nni.image.At(x, y)
+	x = (x - x%nni.Zoom) / nni.Zoom
+	y = (y - y%nni.Zoom) / nni.Zoom
+	return nni.image.At(x, y)
 }
-
 
 type wdeBackend struct {
 	open         bool
@@ -44,7 +43,7 @@ type wdeBackend struct {
 	bgbuf, fgbuf [][]color.Color
 	chbuf        [][]rune
 	font         image.Image
-    zoom int
+	zoom         int
 }
 
 func (w *wdeBackend) Open(width, height, zoom int) {
@@ -60,7 +59,7 @@ func (w *wdeBackend) Open(width, height, zoom int) {
 	w.bgbuf = make([][]color.Color, height)
 	w.fgbuf = make([][]color.Color, height)
 	w.chbuf = make([][]rune, height)
-    w.zoom = zoom
+	w.zoom = zoom
 
 	for y := 0; y < height; y++ {
 		w.bgbuf[y] = make([]color.Color, width)
@@ -96,7 +95,7 @@ func (w *wdeBackend) Render(console *rog.Console) {
 		w.handleFrameEvents()
 
 		im := w.window.Screen()
-		maskRect := image.Rectangle{image.Point{0, 0}, image.Point{16*w.zoom, 16*w.zoom}}
+		maskRect := image.Rectangle{image.Point{0, 0}, image.Point{16 * w.zoom, 16 * w.zoom}}
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
 				fg, bg, ch := console.Get(x, y)
@@ -104,13 +103,13 @@ func (w *wdeBackend) Render(console *rog.Console) {
 					w.bgbuf[y][x] = bg
 					w.fgbuf[y][x] = fg
 					w.chbuf[y][x] = ch
-					rect := maskRect.Add(image.Point{x*16*w.zoom, y*16*w.zoom})
+					rect := maskRect.Add(image.Point{x * 16 * w.zoom, y * 16 * w.zoom})
 					src := &image.Uniform{bg}
 					draw.Draw(im, rect, src, image.ZP, draw.Src)
 
 					if ch != ' ' {
 						src = &image.Uniform{fg}
-						draw.DrawMask(im, rect, src, image.ZP, w.font, image.Point{int(ch%256)*16*w.zoom, int(ch/256)*16*w.zoom}, draw.Over)
+						draw.DrawMask(im, rect, src, image.ZP, w.font, image.Point{int(ch%256) * 16 * w.zoom, int(ch/256) * 16 * w.zoom}, draw.Over)
 					}
 				}
 			}
@@ -138,13 +137,13 @@ func (w *wdeBackend) handleRealtimeEvents() {
 		case wde.MouseMovedEvent:
 			w.mouse.Pos = e.Where
 			w.mouse.DPos = e.From
-			w.mouse.Cell = e.Where.Div(16*w.zoom)
-			w.mouse.DCell = e.From.Div(16*w.zoom)
+			w.mouse.Cell = e.Where.Div(16 * w.zoom)
+			w.mouse.DCell = e.From.Div(16 * w.zoom)
 		case wde.MouseDraggedEvent:
 			w.mouse.Pos = e.Where
 			w.mouse.DPos = e.From
-			w.mouse.Cell = e.Where.Div(16*w.zoom)
-			w.mouse.DCell = e.From.Div(16*w.zoom)
+			w.mouse.Cell = e.Where.Div(16 * w.zoom)
+			w.mouse.DCell = e.From.Div(16 * w.zoom)
 		case wde.CloseEvent:
 			w.Close()
 		default:
