@@ -31,30 +31,30 @@ import (
 )
 
 var (
-	workspace Workspace
+	backend Backend
 	console   *Console
 	timing    *stats
 )
 
 // IsOpen returns whether the rog window is open or not.
 func IsOpen() bool {
-	return workspace.IsOpen()
+	return backend.IsOpen()
 }
 
 // Open creates a window and a root console with size width by height cells.
-func Open(width, height, zoom int, title string, ws Workspace) {
+func Open(width, height, zoom int, title string, be Backend) {
 	timing = new(stats)
 	console = NewConsole(width, height)
 
-	workspace = ws
-	workspace.Open(width, height, zoom)
-	workspace.Name(title)
+	backend = be
+	backend.Open(width, height, zoom)
+	backend.Name(title)
 }
 
 // Close shuts down the windowing system.
 // No rog functions should be called after this.
 func Close() {
-	workspace.Close()
+	backend.Close()
 }
 
 // Screenshot will save the window buffer as an image to name.png.
@@ -65,29 +65,29 @@ func Screenshot(name string) (err error) {
 	}
 	defer file.Close()
 
-	err = png.Encode(file, workspace.Screen())
+	err = png.Encode(file, backend.Screen())
 	return
 }
 
 // SetTitle changes the title of the window.
 func SetTitle(title string) {
-	workspace.Name(title)
+	backend.Name(title)
 }
 
 // Flush renders the root console to the window.
 func Flush() {
-	workspace.Render(console)
+	backend.Render(console)
 	timing.Update()
 }
 
 // Mouse returns a struct representing the state of the mouse.
 func Mouse() *MouseData {
-	return workspace.Mouse()
+	return backend.Mouse()
 }
 
 // Key returns the last key typed this frame.
 func Key() string {
-	return workspace.Key()
+	return backend.Key()
 }
 
 // Dt returns length of the last frame in seconds.

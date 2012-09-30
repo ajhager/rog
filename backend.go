@@ -4,7 +4,7 @@ import (
 	"image"
 )
 
-type Workspace interface {
+type Backend interface {
 	Open(int, int, int)
 	IsOpen() bool
 	Close()

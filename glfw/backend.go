@@ -10,11 +10,11 @@ import (
     "image/draw"
 )
 
-func Backend() *glfwWorkspace {
-	return new(glfwWorkspace)
+func Backend() rog.Backend {
+	return new(glfwBackend)
 }
 
-type glfwWorkspace struct {
+type glfwBackend struct {
 	open         bool
 	mouse        *rog.MouseData
 	key          string
@@ -22,7 +22,7 @@ type glfwWorkspace struct {
     zoom int
 }
 
-func (w *glfwWorkspace) Open(width, height, zoom int) {
+func (w *glfwBackend) Open(width, height, zoom int) {
     if err := glfw.Init(); err != nil {
         panic(err)
     }
@@ -54,21 +54,21 @@ func (w *glfwWorkspace) Open(width, height, zoom int) {
 	w.open = true
 }
 
-func (w *glfwWorkspace) IsOpen() bool {
+func (w *glfwBackend) IsOpen() bool {
 	return w.open && glfw.WindowParam(glfw.Opened) == 1
 }
 
-func (w *glfwWorkspace) Close() {
+func (w *glfwBackend) Close() {
 	w.open = false
     glfw.CloseWindow()
     glfw.Terminate()
 }
 
-func (w *glfwWorkspace) Name(title string) {
+func (w *glfwBackend) Name(title string) {
     glfw.SetWindowTitle(title)
 }
 
-func (w *glfwWorkspace) Render(console *rog.Console) {
+func (w *glfwBackend) Render(console *rog.Console) {
 	if w.IsOpen() {
 	    w.mouse.Left.Released = false
 	    w.mouse.Right.Released = false
@@ -95,22 +95,22 @@ func (w *glfwWorkspace) Render(console *rog.Console) {
 	}
 }
 
-func (w *glfwWorkspace) Screen() image.Image {
+func (w *glfwBackend) Screen() image.Image {
 	return &image.Uniform{rog.RGB{255, 255, 255}}
 }
 
-func (w *glfwWorkspace) Mouse() *rog.MouseData {
+func (w *glfwBackend) Mouse() *rog.MouseData {
 	return w.mouse
 }
 
-func (w *glfwWorkspace) mouseMove(x, y int) {
+func (w *glfwBackend) mouseMove(x, y int) {
     w.mouse.Pos.X = x
     w.mouse.Pos.Y = y
     w.mouse.Cell.X = x / (16 * w.zoom)
     w.mouse.Cell.Y = y / (16 * w.zoom)
 }
 
-func (w *glfwWorkspace) mousePress(button, state int) {
+func (w *glfwBackend) mousePress(button, state int) {
     switch state {
     case glfw.KeyPress:
         switch button {
@@ -136,11 +136,11 @@ func (w *glfwWorkspace) mousePress(button, state int) {
     }
 }
 
-func (w *glfwWorkspace) Key() string {
+func (w *glfwBackend) Key() string {
 	return w.key
 }
 
-func (w *glfwWorkspace) setKey(key, state int) {
+func (w *glfwBackend) setKey(key, state int) {
     if state == glfw.KeyPress {
         rogKey, exists := glfwToRogKey[key]
         if exists {
@@ -199,7 +199,7 @@ func glInit(width, height int, font image.Image) {
 }
 
 // Draw a letter at a certain coordinate
-func (w *glfwWorkspace) letter(lx, ly int, c rune) {
+func (w *glfwBackend) letter(lx, ly int, c rune) {
     b := w.font.Bounds()
     fc := float32(16*w.zoom)
     cx := float32(lx) * fc
