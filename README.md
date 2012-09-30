@@ -2,7 +2,7 @@ rog
 ===
 ![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot.png)
 
-* 24bit color, unicode console with built in font
+* 24bit, scaling console with built in unicode font
 * Cross platform with pluggable backends
 * Field of view, lighting, and pathfinding algorithms
 * Procedural color and palette creation
@@ -16,9 +16,9 @@ import (
 )
 
 func main() {
-    rog.Open(48, 32, "rog", wde.Backend())
+    rog.Open(20, 11, 2, "rog", wde.Backend())
     for rog.IsOpen() {
-        rog.Set(20, 15, nil, nil, "Hello, 世界")
+        rog.Set(5, 5, nil, nil, "Hello, 世界!")
         if rog.Key() == rog.Escape {
             rog.Close()
         }
@@ -50,7 +50,6 @@ Plans
 * Palette support
 * Merge in lighting
 * More fov algorithms
-* Zoom level for rendering
 * Common GUI widgets
 * Curses like API
 * Window resizing and fullscreen

@@ -5,7 +5,7 @@ import (
 )
 
 type Workspace interface {
-	Open(int, int)
+	Open(int, int, int)
 	IsOpen() bool
 	Close()
 	Name(string)

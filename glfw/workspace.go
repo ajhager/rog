@@ -19,15 +19,18 @@ type glfwWorkspace struct {
 	mouse        *rog.MouseData
 	key          string
 	font   image.Image
+    zoom int
 }
 
-func (w *glfwWorkspace) Open(width, height int) {
+func (w *glfwWorkspace) Open(width, height, zoom int) {
     if err := glfw.Init(); err != nil {
         panic(err)
     }
 
+    w.zoom = zoom
+
     glfw.OpenWindowHint(glfw.WindowNoResize, gl.TRUE)
-    err := glfw.OpenWindow(width*16, height*16, 8, 8, 8, 8, 0, 0, glfw.Windowed)
+    err := glfw.OpenWindow(width*16*zoom, height*16*zoom, 8, 8, 8, 8, 0, 0, glfw.Windowed)
     if err != nil {
         panic(err)
     }
@@ -46,7 +49,7 @@ func (w *glfwWorkspace) Open(width, height int) {
 	}
     w.font = font
 
-    glInit(width*16, height*16, w.font)
+    glInit(width*16*zoom, height*16*zoom, w.font)
 
 	w.open = true
 }
@@ -103,8 +106,8 @@ func (w *glfwWorkspace) Mouse() *rog.MouseData {
 func (w *glfwWorkspace) mouseMove(x, y int) {
     w.mouse.Pos.X = x
     w.mouse.Pos.Y = y
-    w.mouse.Cell.X = x / 16
-    w.mouse.Cell.Y = y / 16
+    w.mouse.Cell.X = x / (16 * w.zoom)
+    w.mouse.Cell.Y = y / (16 * w.zoom)
 }
 
 func (w *glfwWorkspace) mousePress(button, state int) {
@@ -198,7 +201,7 @@ func glInit(width, height int, font image.Image) {
 // Draw a letter at a certain coordinate
 func (w *glfwWorkspace) letter(lx, ly int, c rune) {
     b := w.font.Bounds()
-    fc := float32(16)
+    fc := float32(16*w.zoom)
     cx := float32(lx) * fc
     cy := float32(ly) * fc
     verts := []float32{cx, cy, cx, cy+fc, cx+fc, cy+fc, cx+fc, cy, cx, cy}

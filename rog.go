@@ -42,12 +42,12 @@ func IsOpen() bool {
 }
 
 // Open creates a window and a root console with size width by height cells.
-func Open(width, height int, title string, ws Workspace) {
+func Open(width, height, zoom int, title string, ws Workspace) {
 	timing = new(stats)
 	console = NewConsole(width, height)
 
 	workspace = ws
-	workspace.Open(width, height)
+	workspace.Open(width, height, zoom)
 	workspace.Name(title)
 }
 
