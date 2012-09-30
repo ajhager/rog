@@ -102,6 +102,16 @@ func (con *Console) Clear(fg, bg Blender, ch rune) {
 	con.Fill(0, 0, con.w, con.h, fg, bg, ch)
 }
 
+// Blit draws con onto this console with top left starting at x, y.
+func (con *Console) Blit(o *Console, x, y int) {
+    for i := 0; i < o.Width(); i++ {
+        for j := 0; j < o.Height(); j++ {
+            fg, bg, ch := o.Get(i, j)
+            con.Set(x+i, y+j, fg, bg, string(ch))
+        }
+    }
+}
+
 // Width returns the width of the console in cells.
 func (con *Console) Width() int {
 	return con.w

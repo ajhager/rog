@@ -101,12 +101,7 @@ func Fps() int64 {
 }
 
 func Blit(con *Console, x, y int) {
-    for i := 0; i < con.Width(); i++ {
-        for j := 0; j < con.Height(); j++ {
-            fg, bg, ch := con.Get(i, j)
-            console.Set(x+i, y+j, fg, bg, string(byte(ch)))
-        }
-    }
+    console.Blit(con, x, y)
 }
 
 // Set draws on the root console.
