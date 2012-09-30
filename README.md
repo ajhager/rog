@@ -2,10 +2,10 @@ rog
 ===
 ![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot.png)
 
-* 24bit color, unicode console with built in font.
-* Cross platform with pluggable backends.
-* Field of view, lighting, and pathfinding algorithms.
-* Procedural color functions.
+* 24bit color, unicode console with built in font
+* Cross platform with pluggable backends
+* Field of view, lighting, and pathfinding algorithms
+* Procedural color and palette creation
 
 ```go
 package main
@@ -40,7 +40,8 @@ Thanks
 
 Plans
 -----
-* Blitter interface for blitting consoles, images, etc. on to consoles
+* Better keyboard input
+* Image blitting
 * Termbox backend
 * User supplied and non-square fonts
 * World creation
