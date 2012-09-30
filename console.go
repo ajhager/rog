@@ -85,7 +85,7 @@ func (con *Console) SetR(x, y, w, h int, fg, bg Blender, data string, rest ...in
 
 // Get returns the fg, bg colors and rune of the cell.
 func (con *Console) Get(x, y int) (RGB, RGB, rune) {
-	return con.bg[y][x], con.fg[y][x], con.ch[y][x]
+	return con.fg[y][x], con.bg[y][x], con.ch[y][x]
 }
 
 // Fill draws a rect on the root console using ch.

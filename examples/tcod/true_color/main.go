@@ -70,7 +70,7 @@ func render() {
 
     for x := 0; x < SAMPLEWIDTH; x++ {
         for y := 0; y < SAMPLEHEIGHT; y++ {
-            col, _, _ := sampleConsole.Get(x, y)
+            _, col, _ := sampleConsole.Get(x, y)
             col = col.Alpha(black, 0.5)
             sampleConsole.Set(x, y, col, nil, string(rand.Int31n(26)+97))
         }

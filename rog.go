@@ -26,7 +26,6 @@ package rog
 
 import (
 	"fmt"
-	"image/color"
 	"image/png"
 	"os"
 )
@@ -104,7 +103,7 @@ func Fps() int64 {
 func Blit(con *Console, x, y int) {
     for i := 0; i < con.Width(); i++ {
         for j := 0; j < con.Height(); j++ {
-            bg, fg, ch := con.Get(i, j)
+            fg, bg, ch := con.Get(i, j)
             console.Set(x+i, y+j, fg, bg, string(byte(ch)))
         }
     }
@@ -121,7 +120,7 @@ func SetR(x, y, w, h int, fg, bg Blender, data string, rest ...interface{}) {
 }
 
 // Get returns the fg, bg colors and rune of the cell on the root console.
-func Get(x, y int) (color.Color, color.Color, rune) {
+func Get(x, y int) (RGB, RGB, rune) {
 	return console.Get(x, y)
 }
 
