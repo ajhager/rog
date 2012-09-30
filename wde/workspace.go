@@ -76,7 +76,7 @@ func (w *wdeWorkspace) Render(console *rog.Console) {
 		maskRect := image.Rectangle{image.Point{0, 0}, image.Point{16, 16}}
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
-				bg, fg, ch := console.Get(x, y)
+				fg, bg, ch := console.Get(x, y)
 				if bg != w.bgbuf[y][x] || fg != w.fgbuf[y][x] || ch != w.chbuf[y][x] {
 					w.bgbuf[y][x] = bg
 					w.fgbuf[y][x] = fg

@@ -76,7 +76,7 @@ func (w *glfwWorkspace) Render(console *rog.Console) {
 
         for y := 0; y < console.Height(); y++ {
             for x := 0; x < console.Width(); x++ {
-				bg, fg, ch := console.Get(x, y)
+				fg, bg, ch := console.Get(x, y)
 
                 setColor(bg)
                 w.letter(x, y, 0)
