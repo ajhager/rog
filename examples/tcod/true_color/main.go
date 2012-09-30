@@ -76,7 +76,7 @@ func render() {
 }
 
 func main() {
-    rog.Open(width, height+2, "tcod true color", wde.Backend())
+    rog.Open(width, height+2, 1, "tcod true color", wde.Backend())
     for rog.IsOpen() {
         render()
         rog.Blit(sampleConsole, 0, 1)

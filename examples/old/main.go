@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	width  = 48
-	height = 32
+	width  = 40
+	height = 20
 
 	wall   = rog.Hex(0xffbb99)
 	floorc = rog.Hex(0x885040)
@@ -26,38 +26,26 @@ var (
 	stats runtime.MemStats
 
 	tmap = [][]rune{
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("####################    ########################"),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("    #               ####        #  #  #         "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("##################              #######         "),
-		[]rune("#                                               "),
-		[]rune("#                #                              "),
-		[]rune("#                #                              "),
-		[]rune("#################### ## ## ## ## ## ## ## ## ###"),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
-		[]rune("                                                "),
+		[]rune("                                        "),
+		[]rune("                                        "),
+		[]rune("                                        "),
+		[]rune("                                        "),
+		[]rune("################    ####################"),
+		[]rune("                                        "),
+		[]rune("                                        "),
+		[]rune("    #           ####        #  #  #     "),
+		[]rune("                                        "),
+		[]rune("                                        "),
+		[]rune("                                        "),
+		[]rune("##############              #######     "),
+		[]rune("#                                       "),
+		[]rune("#            #                          "),
+		[]rune("#            #                          "),
+		[]rune("################ ## ## ## ## ## ## ## ##"),
+		[]rune("                                        "),
+		[]rune("                                        "),
+		[]rune("                                        "),
+		[]rune("                                        "),
 	}
 )
 
@@ -92,7 +80,7 @@ func example() {
 				}
 			}
 		}
-		movePlayer(27, 16)
+		movePlayer(23, 9)
 	}
 
 	if rog.Mouse().Left.Released {
@@ -138,12 +126,12 @@ func example() {
 	runtime.ReadMemStats(&stats)
 	rog.Fill(0, 0, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')
 	rog.Set(0, 0, nil, nil, "%vFPS %vMB %vGC %vGR", rog.Fps(), stats.HeapAlloc/1000000, stats.NumGC, runtime.NumGoroutine())
-	rog.Fill(0, 31, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')
-	rog.Set(0, 31, nil, nil, "Pos: %v %v Cell: %v %v", rog.Mouse().Pos.X, rog.Mouse().Pos.Y, rog.Mouse().Cell.X, rog.Mouse().Cell.Y)
+	rog.Fill(0, height-1, rog.Width(), 1, lgrey, rog.Dodge(dgrey), ' ')
+	rog.Set(0, height-1, nil, nil, "Pos: %v %v Cell: %v %v", rog.Mouse().Pos.X, rog.Mouse().Pos.Y, rog.Mouse().Cell.X, rog.Mouse().Cell.Y)
 }
 
 func main() {
-	rog.Open(width, height, "Example", wde.Backend())
+	rog.Open(width, height, 1, "Example", wde.Backend())
 	for rog.IsOpen() {
 		example()
 		rog.Flush()
