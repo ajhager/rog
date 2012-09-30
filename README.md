@@ -30,7 +30,7 @@ func main() {
 Notes
 -----
 * On Windows you can build your project with `go build -ldflags -Hwindowsgui` to inhibit the console window that pops up by default.
-* The glfw backend is the most performant and stable backend at the moment, but wde has less dependencies.
+* The glfw backend is the most performant and stable at the moment, but wde has less dependencies.
 
 Thanks
 ------
