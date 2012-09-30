@@ -7,18 +7,16 @@ import (
 )
 
 const (
-    TOPLEFT = 0
-    TOPRIGHT = 1
-    BOTTOMLEFT = 2
-    BOTTOMRIGHT = 3
-    SAMPLEX = 0
-    SAMPLEY = 1
-    SAMPLEWIDTH = 40
-    SAMPLEHEIGHT = 20
+    topLeft = 0
+    topRight = 1
+    botLeft = 2
+    botRight = 3
+    width = 40
+    height = 20
 )
 
 var (
-    sampleConsole *rog.Console = rog.NewConsole(SAMPLEWIDTH, SAMPLEHEIGHT)
+    sampleConsole *rog.Console = rog.NewConsole(width, height)
     colors []rog.RGB = []rog.RGB{
         rog.RGB{50, 40, 150},
         rog.RGB{240, 85, 5},
@@ -32,7 +30,7 @@ var (
 
 func render() {
     for c := 0; c < 4; c++ {
-        switch rand.Int31n(2) {
+        switch rand.Int31n(3) {
         case 0:
             colors[c].R += uint8(5 * dirR[c])
             if colors[c].R == 255 {
@@ -57,19 +55,19 @@ func render() {
         }
     }
 
-    for x := 0; x < SAMPLEWIDTH; x++ {
-        xcoef := float64(x) / float64(SAMPLEWIDTH - 1)
-        top := colors[TOPLEFT].Alpha(colors[TOPRIGHT], xcoef)
-        bot := colors[BOTTOMLEFT].Alpha(colors[BOTTOMRIGHT], xcoef)
-        for y := 0; y < SAMPLEHEIGHT; y++ {
-            ycoef := float64(y) / float64(SAMPLEHEIGHT - 1)
+    for x := 0; x < width; x++ {
+        xcoef := float64(x) / float64(width - 1)
+        top := colors[topLeft].Alpha(colors[topRight], xcoef)
+        bot := colors[botLeft].Alpha(colors[botRight], xcoef)
+        for y := 0; y < height; y++ {
+            ycoef := float64(y) / float64(height - 1)
             cur := top.Alpha(bot, ycoef)
             sampleConsole.Set(x, y, nil, cur, "")
         }
     }
 
-    for x := 0; x < SAMPLEWIDTH; x++ {
-        for y := 0; y < SAMPLEHEIGHT; y++ {
+    for x := 0; x < width; x++ {
+        for y := 0; y < height; y++ {
             _, col, _ := sampleConsole.Get(x, y)
             col = col.Alpha(black, 0.5)
             sampleConsole.Set(x, y, col, nil, string(rand.Int31n(26)+97))
@@ -78,11 +76,11 @@ func render() {
 }
 
 func main() {
-    rog.Open(SAMPLEWIDTH, SAMPLEHEIGHT+2, "tcod true color", wde.Backend())
+    rog.Open(width, height+2, "tcod true color", wde.Backend())
     for rog.IsOpen() {
         render()
-        rog.Blit(sampleConsole, SAMPLEX, SAMPLEY)
-        rog.Set(0, SAMPLEHEIGHT+1, nil, nil, "%v", rog.Fps())
+        rog.Blit(sampleConsole, 0, 1)
+        rog.Set(0, height+1, nil, nil, "%v", rog.Fps())
         if rog.Key() == rog.Escape {
             rog.Close()
         }
