@@ -105,9 +105,7 @@ func Blit(con *Console, x, y int) {
     for i := 0; i < con.Width(); i++ {
         for j := 0; j < con.Height(); j++ {
             bg, fg, ch := con.Get(i, j)
-            rb, gb, bb, _ := bg.RGBA()
-            rf, gf, bf, _ := fg.RGBA()
-            console.Set(x+i, y+j, RGB{uint8(rf), uint8(gf), uint8(bf)}, RGB{uint8(rb), uint8(gb), uint8(bb)}, string(byte(ch)))
+            console.Set(x+i, y+j, fg, bg, string(byte(ch)))
         }
     }
 }

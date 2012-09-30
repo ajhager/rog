@@ -2,25 +2,24 @@ package rog
 
 import (
 	"fmt"
-	"image/color"
 )
 
 // Console is a double buffered grid of unicode characters that can be rendered to an image.Image.
 type Console struct {
-	bg, fg [][]color.Color
+	bg, fg [][]RGB
 	ch     [][]rune
 	w, h   int
 }
 
 // NewConsole creates an empty console.
 func NewConsole(width, height int) *Console {
-	bg := make([][]color.Color, height)
-	fg := make([][]color.Color, height)
+	bg := make([][]RGB, height)
+	fg := make([][]RGB, height)
 	ch := make([][]rune, height)
 
 	for y := 0; y < height; y++ {
-		bg[y] = make([]color.Color, width)
-		fg[y] = make([]color.Color, width)
+		bg[y] = make([]RGB, width)
+		fg[y] = make([]RGB, width)
 		ch[y] = make([]rune, width)
 	}
 
@@ -28,8 +27,8 @@ func NewConsole(width, height int) *Console {
 
 	for x := 0; x < con.w; x++ {
 		for y := 0; y < con.h; y++ {
-			con.bg[y][x] = color.Black
-			con.fg[y][x] = color.White
+			con.bg[y][x] = Black
+			con.fg[y][x] = White
 			con.ch[y][x] = ' '
 		}
 	}
@@ -85,7 +84,7 @@ func (con *Console) SetR(x, y, w, h int, fg, bg Blender, data string, rest ...in
 }
 
 // Get returns the fg, bg colors and rune of the cell.
-func (con *Console) Get(x, y int) (color.Color, color.Color, rune) {
+func (con *Console) Get(x, y int) (RGB, RGB, rune) {
 	return con.bg[y][x], con.fg[y][x], con.ch[y][x]
 }
 

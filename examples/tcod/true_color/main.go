@@ -2,7 +2,7 @@ package main
 
 import (
     "github.com/ajhager/rog"
-    "github.com/ajhager/rog/glfw"
+    "github.com/ajhager/rog/wde"
     "math/rand"
 )
 
@@ -70,18 +70,15 @@ func render() {
 
     for x := 0; x < SAMPLEWIDTH; x++ {
         for y := 0; y < SAMPLEHEIGHT; y++ {
-            color, _, _ := sampleConsole.Get(x, y)
-            r, g, b, _ := color.RGBA()
-            col := rog.RGB{uint8(r), uint8(g), uint8(b)}
+            col, _, _ := sampleConsole.Get(x, y)
             col = col.Alpha(black, 0.5)
-            c := rune(rand.Int31n(26) + 97)
-            sampleConsole.Set(x, y, col, nil, string(byte(c)))
+            sampleConsole.Set(x, y, col, nil, string(rand.Int31n(26)+97))
         }
     }
 }
 
 func main() {
-    rog.Open(SAMPLEWIDTH, SAMPLEHEIGHT+2, "tcod true color", glfw.Backend())
+    rog.Open(SAMPLEWIDTH, SAMPLEHEIGHT+2, "tcod true color", wde.Backend())
     for rog.IsOpen() {
         render()
         rog.Blit(sampleConsole, SAMPLEX, SAMPLEY)
