@@ -41,6 +41,7 @@ Thanks
 Plans
 -----
 * Blitter interface for blitting consoles, images, etc. on to consoles
+* Termbox backend
 * User supplied and non-square fonts
 * World creation
 * Noise generators
@@ -48,4 +49,8 @@ Plans
 * Palette support
 * Merge in lighting
 * More fov algorithms
+* Zoom level for rendering
+* Common GUI widgets
+* Curses like API
+* Window resizing and fullscreen
 * Website, documentation, tutorial, and more examples.
