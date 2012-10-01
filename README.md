@@ -37,13 +37,13 @@ Thanks
 * libTCOD [http://doryen.eptalys.net/libtcod/]
 * Yamamushi [http://www.theasciiproject.com/]
 * John Asmuth [http://github.com/skelterjohn/go.wde]
-* jteeuwen [https://github.com/jteeuwen/glfw]
+* jteeuwen [http://github.com/jteeuwen/glfw]
+* nsf [http://github.com/nsf/termbox-go]
 
 Plans
 -----
 * Website, documentation, tutorial, and more examples.
 * Window resizing and fullscreen
-* Termbox backend
 * Better keyboard handling
 * User supplied, non-square, and possilby ttf fonts
 * Image blitting
