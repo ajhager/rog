@@ -7,6 +7,8 @@ rog
 * Field of view, lighting, and pathfinding algorithms
 * Procedural color and palette creation
 
+[Documentation](http://go.pkgdoc.org/github.com/ajhager/rog "Documentation")
+
 ```go
 package main
 
@@ -26,8 +28,6 @@ func main() {
     }
 }
 ```
-
-[Documentation](http://go.pkgdoc.org/github.com/ajhager/rog "Documentation")
 
 Notes
 -----
