@@ -9,12 +9,13 @@ Package rog provides algorithms and data structures for creating roguelike games
 
  import (
      "github.com/ajhager/rog"
+     "github.com/ajhager/rog/wde"
  )
 
  func main() {
-     rog.Open(48, 32, "rog")
+     rog.Open(20, 11, 2, "rog", wde.Backend())
      for rog.IsOpen() {
-         rog.Set(20, 15, nil, nil, "Hello, 世界")
+         rog.Set(5, 5, nil, nil, "Hello, 世界!")
          if rog.Key() == rog.Escape {
              rog.Close()
          }
