@@ -1,21 +1,21 @@
 package rog
 
 const (
-    Backspace = 8
-    Tab = 9
-    Return = 13
-    Escape = 27
-    Space = 32
-    Delete = 127
+	Backspace = 8
+	Tab       = 9
+	Return    = 13
+	Escape    = 27
+	Space     = 32
+	Delete    = 127
 )
 
 const (
 	LSuper = 256 + iota
 	RSuper
-    LShift
-    RShift
-    LControl
-    RControl
+	LShift
+	RShift
+	LControl
+	RControl
 	LAlt
 	RAlt
 	F1
@@ -34,7 +34,7 @@ const (
 	F14
 	F15
 	F16
-    Up
+	Up
 	Down
 	Left
 	Right

@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-    rog.SetBackend(new(termboxBackend))
+	rog.SetBackend(new(termboxBackend))
 }
 
 type termboxBackend struct {
@@ -146,12 +146,12 @@ func (w *termboxBackend) pollKeys() {
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
 			if ev.Ch == 0 {
-		        rogKey, exists := termToRogKey[ev.Key]
-		        if exists {
-			        w.key = rogKey
-		        }
+				rogKey, exists := termToRogKey[ev.Key]
+				if exists {
+					w.key = rogKey
+				}
 			} else {
-                w.key = int(ev.Ch)
+				w.key = int(ev.Ch)
 			}
 		}
 	}
@@ -161,29 +161,29 @@ func (w *termboxBackend) Key() int {
 	return w.key
 }
 
-var termToRogKey map[termbox.Key]int = map[termbox.Key]int {
-	termbox.KeyBackspace: rog.Backspace,
-	termbox.KeyTab:       rog.Tab,
-	termbox.KeyEsc:       rog.Escape,
-	termbox.KeySpace:     rog.Space,
-	termbox.KeyDelete:       rog.Delete,
-	termbox.KeyF1:        rog.F1,
-	termbox.KeyF2:        rog.F2,
-	termbox.KeyF3:        rog.F3,
-	termbox.KeyF4:        rog.F4,
-	termbox.KeyF5:        rog.F5,
-	termbox.KeyF6:        rog.F6,
-	termbox.KeyF7:        rog.F7,
-	termbox.KeyF8:        rog.F8,
-	termbox.KeyF9:        rog.F9,
-	termbox.KeyF10:       rog.F10,
-	termbox.KeyF11:       rog.F11,
-	termbox.KeyF12:       rog.F12,
-	termbox.KeyArrowUp:        rog.Up,
-	termbox.KeyArrowDown:      rog.Down,
-	termbox.KeyArrowLeft:      rog.Left,
-	termbox.KeyArrowRight:     rog.Right,
-	termbox.KeyEnter:     rog.Return,
-	termbox.KeyInsert:    rog.Insert,
-	termbox.KeyHome:      rog.Home,
-	termbox.KeyEnd:       rog.End}
+var termToRogKey map[termbox.Key]int = map[termbox.Key]int{
+	termbox.KeyBackspace:  rog.Backspace,
+	termbox.KeyTab:        rog.Tab,
+	termbox.KeyEsc:        rog.Escape,
+	termbox.KeySpace:      rog.Space,
+	termbox.KeyDelete:     rog.Delete,
+	termbox.KeyF1:         rog.F1,
+	termbox.KeyF2:         rog.F2,
+	termbox.KeyF3:         rog.F3,
+	termbox.KeyF4:         rog.F4,
+	termbox.KeyF5:         rog.F5,
+	termbox.KeyF6:         rog.F6,
+	termbox.KeyF7:         rog.F7,
+	termbox.KeyF8:         rog.F8,
+	termbox.KeyF9:         rog.F9,
+	termbox.KeyF10:        rog.F10,
+	termbox.KeyF11:        rog.F11,
+	termbox.KeyF12:        rog.F12,
+	termbox.KeyArrowUp:    rog.Up,
+	termbox.KeyArrowDown:  rog.Down,
+	termbox.KeyArrowLeft:  rog.Left,
+	termbox.KeyArrowRight: rog.Right,
+	termbox.KeyEnter:      rog.Return,
+	termbox.KeyInsert:     rog.Insert,
+	termbox.KeyHome:       rog.Home,
+	termbox.KeyEnd:        rog.End}

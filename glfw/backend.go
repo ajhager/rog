@@ -8,11 +8,11 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-    _ "image/png"
+	_ "image/png"
 )
 
 func init() {
-    rog.SetBackend(new(glfwBackend))
+	rog.SetBackend(new(glfwBackend))
 }
 
 type glfwBackend struct {
@@ -144,9 +144,9 @@ func (w *glfwBackend) setKey(key, state int) {
 			w.key = rogKey
 		}
 
-        if key < 256 {
-            w.key = key
-        }
+		if key < 256 {
+			w.key = key
+		}
 	}
 }
 
@@ -203,61 +203,60 @@ func setColor(c color.Color) {
 	gl.Color3ub(uint8(r), uint8(g), uint8(b))
 }
 
-var glfwToRogKey map[int]int = map[int]int {
-	glfw.KeyBackspace: rog.Backspace,
-	glfw.KeyTab:       rog.Tab,
-	glfw.KeyEsc:       rog.Escape,
-	glfw.KeySpace:     rog.Space,
-	glfw.KeyDel:       rog.Delete,
-	glfw.KeyLsuper:    rog.LSuper,
-	glfw.KeyRsuper:    rog.RSuper,
-	glfw.KeyLshift:    rog.LShift,
-	glfw.KeyRshift:    rog.RShift,
-	glfw.KeyLctrl:     rog.LControl,
-	glfw.KeyRctrl:     rog.RControl,
-	glfw.KeyLalt:      rog.LAlt,
-	glfw.KeyRalt:      rog.RAlt,
-	glfw.KeyF1:        rog.F1,
-	glfw.KeyF2:        rog.F2,
-	glfw.KeyF3:        rog.F3,
-	glfw.KeyF4:        rog.F4,
-	glfw.KeyF5:        rog.F5,
-	glfw.KeyF6:        rog.F6,
-	glfw.KeyF7:        rog.F7,
-	glfw.KeyF8:        rog.F8,
-	glfw.KeyF9:        rog.F9,
-	glfw.KeyF10:       rog.F10,
-	glfw.KeyF11:       rog.F11,
-	glfw.KeyF12:       rog.F12,
-	glfw.KeyF13:       rog.F13,
-	glfw.KeyF14:       rog.F14,
-	glfw.KeyF15:       rog.F15,
-	glfw.KeyF16:       rog.F16,
-	glfw.KeyUp:        rog.Up,
-	glfw.KeyDown:      rog.Down,
-	glfw.KeyLeft:      rog.Left,
-	glfw.KeyRight:     rog.Right,
-	glfw.KeyEnter:     rog.Return,
-	glfw.KeyInsert:    rog.Insert,
-	glfw.KeyHome:      rog.Home,
-	glfw.KeyEnd:       rog.End,
-	glfw.KeyCapslock:  rog.Capslock,
-	glfw.KeyKPDidivde: rog.KPDivide,
+var glfwToRogKey map[int]int = map[int]int{
+	glfw.KeyBackspace:  rog.Backspace,
+	glfw.KeyTab:        rog.Tab,
+	glfw.KeyEsc:        rog.Escape,
+	glfw.KeySpace:      rog.Space,
+	glfw.KeyDel:        rog.Delete,
+	glfw.KeyLsuper:     rog.LSuper,
+	glfw.KeyRsuper:     rog.RSuper,
+	glfw.KeyLshift:     rog.LShift,
+	glfw.KeyRshift:     rog.RShift,
+	glfw.KeyLctrl:      rog.LControl,
+	glfw.KeyRctrl:      rog.RControl,
+	glfw.KeyLalt:       rog.LAlt,
+	glfw.KeyRalt:       rog.RAlt,
+	glfw.KeyF1:         rog.F1,
+	glfw.KeyF2:         rog.F2,
+	glfw.KeyF3:         rog.F3,
+	glfw.KeyF4:         rog.F4,
+	glfw.KeyF5:         rog.F5,
+	glfw.KeyF6:         rog.F6,
+	glfw.KeyF7:         rog.F7,
+	glfw.KeyF8:         rog.F8,
+	glfw.KeyF9:         rog.F9,
+	glfw.KeyF10:        rog.F10,
+	glfw.KeyF11:        rog.F11,
+	glfw.KeyF12:        rog.F12,
+	glfw.KeyF13:        rog.F13,
+	glfw.KeyF14:        rog.F14,
+	glfw.KeyF15:        rog.F15,
+	glfw.KeyF16:        rog.F16,
+	glfw.KeyUp:         rog.Up,
+	glfw.KeyDown:       rog.Down,
+	glfw.KeyLeft:       rog.Left,
+	glfw.KeyRight:      rog.Right,
+	glfw.KeyEnter:      rog.Return,
+	glfw.KeyInsert:     rog.Insert,
+	glfw.KeyHome:       rog.Home,
+	glfw.KeyEnd:        rog.End,
+	glfw.KeyCapslock:   rog.Capslock,
+	glfw.KeyKPDidivde:  rog.KPDivide,
 	glfw.KeyKPMultiply: rog.KPMultiply,
 	glfw.KeyKPSubtract: rog.KPSubtract,
-	glfw.KeyKPAdd: rog.KPAdd,
-	glfw.KeyKPDecimal: rog.KPDecimal,
-	glfw.KeyKPEqual: rog.KPEqual,
-	glfw.KeyKPEnter: rog.KPEnter,
-	glfw.KeyKPNumlock: rog.KPNumlock,
-	glfw.KeyKP0: rog.KP0,
-	glfw.KeyKP1: rog.KP1,
-	glfw.KeyKP2: rog.KP2,
-	glfw.KeyKP3: rog.KP3,
-	glfw.KeyKP4: rog.KP4,
-	glfw.KeyKP5: rog.KP5,
-	glfw.KeyKP6: rog.KP6,
-	glfw.KeyKP7: rog.KP7,
-	glfw.KeyKP8: rog.KP8,
-	glfw.KeyKP9: rog.KP9}
-
+	glfw.KeyKPAdd:      rog.KPAdd,
+	glfw.KeyKPDecimal:  rog.KPDecimal,
+	glfw.KeyKPEqual:    rog.KPEqual,
+	glfw.KeyKPEnter:    rog.KPEnter,
+	glfw.KeyKPNumlock:  rog.KPNumlock,
+	glfw.KeyKP0:        rog.KP0,
+	glfw.KeyKP1:        rog.KP1,
+	glfw.KeyKP2:        rog.KP2,
+	glfw.KeyKP3:        rog.KP3,
+	glfw.KeyKP4:        rog.KP4,
+	glfw.KeyKP5:        rog.KP5,
+	glfw.KeyKP6:        rog.KP6,
+	glfw.KeyKP7:        rog.KP7,
+	glfw.KeyKP8:        rog.KP8,
+	glfw.KeyKP9:        rog.KP9}

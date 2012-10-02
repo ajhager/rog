@@ -33,7 +33,7 @@ var (
 
 // SetBackend registers a backend and isn't normally used by the user.
 func SetBackend(b Backend) {
-    backend = b
+	backend = b
 }
 
 // IsOpen returns whether the rog window is open or not.
