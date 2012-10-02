@@ -3,7 +3,6 @@ package term
 import (
 	"github.com/ajhager/rog"
 	"github.com/nsf/termbox-go"
-	"image"
 )
 
 func Backend() rog.Backend {
@@ -136,10 +135,6 @@ func (w *termboxBackend) Render(console *rog.Console) {
 		}
 		termbox.Flush()
 	}
-}
-
-func (w *termboxBackend) Screen() image.Image {
-	return &image.Uniform{rog.RGB{255, 255, 255}}
 }
 
 func (w *termboxBackend) Mouse() *rog.MouseData {

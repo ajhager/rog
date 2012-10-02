@@ -119,10 +119,6 @@ func (w *wdeBackend) Render(console *rog.Console) {
 	}
 }
 
-func (w *wdeBackend) Screen() image.Image {
-	return w.window.Screen()
-}
-
 func (w *wdeBackend) Mouse() *rog.MouseData {
 	return w.mouse
 }
