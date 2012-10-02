@@ -7,5 +7,5 @@ type Backend interface {
 	Name(string)
 	Render(*Console)
 	Mouse() *MouseData
-	Key() string
+	Key() int
 }

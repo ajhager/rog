@@ -69,7 +69,7 @@ func Mouse() *MouseData {
 }
 
 // Key returns the last key typed this frame.
-func Key() string {
+func Key() int {
 	return backend.Key()
 }
 

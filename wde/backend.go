@@ -40,7 +40,7 @@ type wdeBackend struct {
 	window       wde.Window
 	input        chan interface{}
 	mouse        *rog.MouseData
-	key          string
+	key          int
 	bgbuf, fgbuf [][]color.Color
 	chbuf        [][]rune
 	font         image.Image
@@ -124,7 +124,7 @@ func (w *wdeBackend) Mouse() *rog.MouseData {
 	return w.mouse
 }
 
-func (w *wdeBackend) Key() string {
+func (w *wdeBackend) Key() int {
 	return w.key
 }
 
@@ -149,7 +149,7 @@ func (w *wdeBackend) handleFrameEvents() {
 	w.mouse.Left.Released = false
 	w.mouse.Right.Released = false
 	w.mouse.Middle.Released = false
-	w.key = ""
+	w.key = -1
 	select {
 	case ei := <-w.input:
 		switch e := ei.(type) {
@@ -175,8 +175,105 @@ func (w *wdeBackend) handleFrameEvents() {
 				w.mouse.Middle.Released = true
 			}
 		case wde.KeyTypedEvent:
-			w.key = e.Key
+            if key, ok := wdeToRogKey[e.Key]; ok {
+			    w.key = key
+            }
 		}
 	default:
 	}
 }
+
+var wdeToRogKey map[string]int = map[string]int {
+	wde.KeyBackspace: rog.Backspace,
+	wde.KeyTab: rog.Tab,
+	wde.KeySpace: rog.Space,
+	wde.KeyDelete: rog.Delete,
+	wde.KeyReturn: rog.Return,
+	wde.KeyA: 65,
+	wde.KeyB: 66,
+	wde.KeyC: 67,
+	wde.KeyD: 68,
+	wde.KeyE: 69,
+	wde.KeyF: 70,
+	wde.KeyG: 71,
+	wde.KeyH: 72,
+	wde.KeyI: 73,
+	wde.KeyJ: 74,
+	wde.KeyK: 75,
+	wde.KeyL: 76,
+	wde.KeyM: 77,
+	wde.KeyN: 78,
+	wde.KeyO: 79,
+	wde.KeyP: 80,
+	wde.KeyQ: 81,
+	wde.KeyR: 82,
+	wde.KeyS: 83,
+	wde.KeyT: 84,
+	wde.KeyU: 85,
+	wde.KeyV: 86,
+	wde.KeyW: 87,
+	wde.KeyX: 88,
+	wde.KeyY: 89,
+	wde.KeyZ: 90,
+	wde.Key0: 48,
+	wde.Key1: 49,
+	wde.Key2: 50,
+	wde.Key3: 51,
+	wde.Key4: 52,
+	wde.Key5: 53,
+	wde.Key6: 54,
+	wde.Key7: 55,
+	wde.Key8: 56,
+	wde.Key9: 57,
+	wde.KeyLeftSuper: rog.LSuper,
+	wde.KeyRightSuper: rog.RSuper,
+	wde.KeyLeftShift: rog.LShift,
+	wde.KeyRightShift: rog.RShift,
+	wde.KeyLeftControl: rog.LControl,
+	wde.KeyRightControl: rog.RControl,
+	wde.KeyLeftAlt: rog.LAlt,
+	wde.KeyRightAlt: rog.RAlt,
+	wde.KeyF1: rog.F1,
+	wde.KeyF2: rog.F2,
+	wde.KeyF3: rog.F3,
+	wde.KeyF4: rog.F4,
+	wde.KeyF5: rog.F5,
+	wde.KeyF6: rog.F6,
+	wde.KeyF7: rog.F7,
+	wde.KeyF8: rog.F8,
+	wde.KeyF9: rog.F9,
+	wde.KeyF10: rog.F10,
+	wde.KeyF11: rog.F11,
+	wde.KeyF12: rog.F12,
+	wde.KeyF13: rog.F13,
+	wde.KeyF14: rog.F14,
+	wde.KeyF15: rog.F15,
+	wde.KeyF16: rog.F16,
+	wde.KeyUpArrow: rog.Up,
+	wde.KeyDownArrow: rog.Down,
+	wde.KeyLeftArrow: rog.Left,
+	wde.KeyRightArrow: rog.Right,
+	wde.KeyInsert: rog.Insert,
+	wde.KeyHome: rog.Home,
+	wde.KeyEnd: rog.End,
+	wde.KeyCapsLock: rog.Capslock,
+	wde.KeyPadSlash: rog.KPDivide,
+	wde.KeyPadStar: rog.KPMultiply,
+	wde.KeyPadMinus: rog.KPSubtract,
+	wde.KeyPadPlus: rog.KPAdd,
+	wde.KeyPadDot: rog.KPDecimal,
+	wde.KeyPadEqual: rog.KPEqual,
+	wde.KeyPadEnter: rog.KPEnter,
+	wde.KeyNumlock: rog.KPNumlock,
+	wde.KeyBackTick: 96,
+	wde.KeyMinus: 45,
+	wde.KeyEqual: 61,
+	wde.KeyLeftBracket: 91,
+	wde.KeyRightBracket: 93,
+	wde.KeyBackslash: 92,
+	wde.KeySemicolon: 59,
+	wde.KeyQuote: 39,
+	wde.KeyComma: 44,
+	wde.KeyPeriod: 46,
+	wde.KeySlash: 47,
+	wde.KeyEscape: rog.Escape}
