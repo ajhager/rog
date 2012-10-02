@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/ajhager/rog"
-	"github.com/ajhager/rog/wde"
+	_ "github.com/ajhager/rog/wde"
 	"image"
 	"runtime"
 )
@@ -129,7 +129,7 @@ func example() {
 }
 
 func main() {
-	rog.Open(width, height, 1, "Example", wde.Backend())
+	rog.Open(width, height, 1, "Example")
 	for rog.IsOpen() {
 		example()
 		rog.Flush()

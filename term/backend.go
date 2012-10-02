@@ -5,8 +5,8 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-func Backend() rog.Backend {
-	return new(termboxBackend)
+func init() {
+    rog.SetBackend(new(termboxBackend))
 }
 
 type termboxBackend struct {

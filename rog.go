@@ -9,11 +9,11 @@ Package rog provides algorithms and data structures for creating roguelike games
 
  import (
      "github.com/ajhager/rog"
-     "github.com/ajhager/rog/wde"
+     _ "github.com/ajhager/rog/wde"
  )
 
  func main() {
-     rog.Open(20, 11, 2, "rog", wde.Backend())
+     rog.Open(20, 11, 2, "rog")
      for rog.IsOpen() {
          rog.Set(5, 5, nil, nil, "Hello, 世界!")
          if rog.Key() == rog.Escape {
@@ -31,17 +31,21 @@ var (
 	timing  *stats
 )
 
+// SetBackend registers a backend and isn't normally used by the user.
+func SetBackend(b Backend) {
+    backend = b
+}
+
 // IsOpen returns whether the rog window is open or not.
 func IsOpen() bool {
 	return backend.IsOpen()
 }
 
 // Open creates a window and a root console with size width by height cells.
-func Open(width, height, zoom int, title string, be Backend) {
+func Open(width, height, zoom int, title string) {
 	timing = new(stats)
 	console = NewConsole(width, height)
 
-	backend = be
 	backend.Open(width, height, zoom)
 	backend.Name(title)
 }

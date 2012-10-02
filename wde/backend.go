@@ -11,8 +11,8 @@ import (
     _ "image/png"
 )
 
-func Backend() rog.Backend {
-	return new(wdeBackend)
+func init() {
+    rog.SetBackend(new(wdeBackend))
 }
 
 type nearestNeighborImage struct {

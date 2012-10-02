@@ -14,11 +14,11 @@ package main
 
 import (
     "github.com/ajhager/rog"
-    "github.com/ajhager/rog/wde"
+    _ "github.com/ajhager/rog/wde"
 )
 
 func main() {
-    rog.Open(20, 11, 2, "rog", wde.Backend())
+    rog.Open(20, 11, 2, "rog")
     for rog.IsOpen() {
         rog.Set(5, 5, nil, nil, "Hello, 世界!")
         if rog.Key() == rog.Escape {
@@ -32,7 +32,7 @@ func main() {
 Notes
 -----
 * On Windows you can build your project with `go build -ldflags -Hwindowsgui` to inhibit the console window that pops up by default.
-* The glfw backend is the most performant and stable at the moment, but wde has less dependencies.
+* The glfw backend is the most performant and stable at the moment, but wde has less dependencies; The termbox backend is still needs work.
 
 Thanks
 ------

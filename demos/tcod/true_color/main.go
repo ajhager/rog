@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/ajhager/rog"
-	"github.com/ajhager/rog/wde"
+	_ "github.com/ajhager/rog/wde"
 	"math/rand"
 )
 
@@ -76,7 +76,7 @@ func render() {
 }
 
 func main() {
-	rog.Open(width, height+2, 1, "tcod true color", wde.Backend())
+	rog.Open(width, height+2, 1, "tcod true color")
 	for rog.IsOpen() {
 		render()
 		rog.Blit(sampleConsole, 0, 1)
