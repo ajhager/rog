@@ -9,6 +9,6 @@ type MouseButton struct {
 }
 
 type MouseData struct {
-	Pos, DPos, Cell, DCell image.Point
+	Pos, Cell image.Point
 	Left, Right, Middle    MouseButton
 }

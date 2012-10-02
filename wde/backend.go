@@ -132,14 +132,10 @@ func (w *wdeBackend) handleRealtimeEvents() {
 		switch e := ei.(type) {
 		case wde.MouseMovedEvent:
 			w.mouse.Pos = e.Where
-			w.mouse.DPos = e.From
 			w.mouse.Cell = e.Where.Div(16 * w.zoom)
-			w.mouse.DCell = e.From.Div(16 * w.zoom)
 		case wde.MouseDraggedEvent:
 			w.mouse.Pos = e.Where
-			w.mouse.DPos = e.From
 			w.mouse.Cell = e.Where.Div(16 * w.zoom)
-			w.mouse.DCell = e.From.Div(16 * w.zoom)
 		case wde.CloseEvent:
 			w.Close()
 		default:
@@ -149,8 +145,6 @@ func (w *wdeBackend) handleRealtimeEvents() {
 }
 
 func (w *wdeBackend) handleFrameEvents() {
-	w.mouse.DPos = image.ZP
-	w.mouse.DCell = image.ZP
 	w.mouse.Left.Released = false
 	w.mouse.Right.Released = false
 	w.mouse.Middle.Released = false
