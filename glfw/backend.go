@@ -11,8 +11,8 @@ import (
     _ "image/png"
 )
 
-func Backend() rog.Backend {
-	return new(glfwBackend)
+func init() {
+    rog.SetBackend(new(glfwBackend))
 }
 
 type glfwBackend struct {
