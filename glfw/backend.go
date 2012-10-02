@@ -18,7 +18,7 @@ func Backend() rog.Backend {
 type glfwBackend struct {
 	open  bool
 	mouse *rog.MouseData
-	key   string
+	key   int
 	font  image.Image
 	zoom  int
 }
@@ -74,7 +74,7 @@ func (w *glfwBackend) Render(console *rog.Console) {
 		w.mouse.Left.Released = false
 		w.mouse.Right.Released = false
 		w.mouse.Middle.Released = false
-		w.key = ""
+		w.key = -1
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
@@ -133,7 +133,7 @@ func (w *glfwBackend) mousePress(button, state int) {
 	}
 }
 
-func (w *glfwBackend) Key() string {
+func (w *glfwBackend) Key() int {
 	return w.key
 }
 
@@ -143,31 +143,11 @@ func (w *glfwBackend) setKey(key, state int) {
 		if exists {
 			w.key = rogKey
 		}
+
+        if key < 256 {
+            w.key = key
+        }
 	}
-	// KeyPageup
-	// KeyPagedown
-	// KeyKP0
-	// KeyKP1
-	// KeyKP2
-	// KeyKP3
-	// KeyKP4
-	// KeyKP5
-	// KeyKP6
-	// KeyKP7
-	// KeyKP8
-	// KeyKP9
-	// KeyKPDidivde
-	// KeyKPMultiply
-	// KeyKPSubtract
-	// KeyKPAdd
-	// KeyKPDecimal
-	// KeyKPEqual
-	// KeyKPEnter
-	// KeyKPNumlock
-	// KeyScrolllock
-	// KeyPause
-	// KeyMenu
-	// KeyLast = KeyMenu
 }
 
 func glInit(width, height int, font image.Image) {
@@ -223,9 +203,20 @@ func setColor(c color.Color) {
 	gl.Color3ub(uint8(r), uint8(g), uint8(b))
 }
 
-var glfwToRogKey map[int]string = map[int]string{
-	glfw.KeySpace:     rog.Space,
+var glfwToRogKey map[int]int = map[int]int {
+	glfw.KeyBackspace: rog.Backspace,
+	glfw.KeyTab:       rog.Tab,
 	glfw.KeyEsc:       rog.Escape,
+	glfw.KeySpace:     rog.Space,
+	glfw.KeyDel:       rog.Delete,
+	glfw.KeyLsuper:    rog.LSuper,
+	glfw.KeyRsuper:    rog.RSuper,
+	glfw.KeyLshift:    rog.LShift,
+	glfw.KeyRshift:    rog.RShift,
+	glfw.KeyLctrl:     rog.LControl,
+	glfw.KeyRctrl:     rog.RControl,
+	glfw.KeyLalt:      rog.LAlt,
+	glfw.KeyRalt:      rog.RAlt,
 	glfw.KeyF1:        rog.F1,
 	glfw.KeyF2:        rog.F2,
 	glfw.KeyF3:        rog.F3,
@@ -246,55 +237,27 @@ var glfwToRogKey map[int]string = map[int]string{
 	glfw.KeyDown:      rog.Down,
 	glfw.KeyLeft:      rog.Left,
 	glfw.KeyRight:     rog.Right,
-	glfw.KeyLshift:    rog.LShift,
-	glfw.KeyRshift:    rog.RShift,
-	glfw.KeyLctrl:     rog.LControl,
-	glfw.KeyRctrl:     rog.RControl,
-	glfw.KeyLalt:      rog.LAlt,
-	glfw.KeyRalt:      rog.RAlt,
-	glfw.KeyLsuper:    rog.LSuper,
-	glfw.KeyRsuper:    rog.RSuper,
-	glfw.KeyTab:       rog.Tab,
-	glfw.KeyEnter:     rog.PadEnter,
-	glfw.KeyBackspace: rog.Backspace,
+	glfw.KeyEnter:     rog.Return,
 	glfw.KeyInsert:    rog.Insert,
-	glfw.KeyDel:       rog.Delete,
 	glfw.KeyHome:      rog.Home,
 	glfw.KeyEnd:       rog.End,
-	glfw.KeyCapslock:  rog.CapsLock,
-	48:                rog.N0,
-	49:                rog.N1,
-	50:                rog.N2,
-	51:                rog.N3,
-	52:                rog.N4,
-	53:                rog.N5,
-	54:                rog.N6,
-	55:                rog.N7,
-	56:                rog.N8,
-	57:                rog.N9,
-	65:                rog.A,
-	66:                rog.B,
-	67:                rog.C,
-	68:                rog.D,
-	69:                rog.E,
-	70:                rog.F,
-	71:                rog.G,
-	72:                rog.H,
-	73:                rog.I,
-	74:                rog.J,
-	75:                rog.K,
-	76:                rog.L,
-	77:                rog.M,
-	78:                rog.N,
-	79:                rog.O,
-	80:                rog.P,
-	81:                rog.Q,
-	82:                rog.R,
-	83:                rog.S,
-	84:                rog.T,
-	85:                rog.U,
-	86:                rog.V,
-	87:                rog.W,
-	88:                rog.X,
-	89:                rog.Y,
-	90:                rog.Z}
+	glfw.KeyCapslock:  rog.Capslock,
+	glfw.KeyKPDidivde: rog.KPDivide,
+	glfw.KeyKPMultiply: rog.KPMultiply,
+	glfw.KeyKPSubtract: rog.KPSubtract,
+	glfw.KeyKPAdd: rog.KPAdd,
+	glfw.KeyKPDecimal: rog.KPDecimal,
+	glfw.KeyKPEqual: rog.KPEqual,
+	glfw.KeyKPEnter: rog.KPEnter,
+	glfw.KeyKPNumlock: rog.KPNumlock,
+	glfw.KeyKP0: rog.KP0,
+	glfw.KeyKP1: rog.KP1,
+	glfw.KeyKP2: rog.KP2,
+	glfw.KeyKP3: rog.KP3,
+	glfw.KeyKP4: rog.KP4,
+	glfw.KeyKP5: rog.KP5,
+	glfw.KeyKP6: rog.KP6,
+	glfw.KeyKP7: rog.KP7,
+	glfw.KeyKP8: rog.KP8,
+	glfw.KeyKP9: rog.KP9}
+

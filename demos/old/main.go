@@ -88,13 +88,13 @@ func example() {
 	}
 
 	switch rog.Key() {
-	case rog.K:
+	case 'K':
 		movePlayer(x, y-1)
-	case rog.J:
+	case 'J':
 		movePlayer(x, y+1)
-	case rog.H:
+	case 'H':
 		movePlayer(x-1, y)
-	case rog.L:
+	case 'L':
 		movePlayer(x+1, y)
 	case rog.Escape:
 		rog.Close()

@@ -12,7 +12,7 @@ func Backend() rog.Backend {
 type termboxBackend struct {
 	open  bool
 	mouse *rog.MouseData
-	key   string
+	key   int
 }
 
 func (w *termboxBackend) Open(width, height, zoom int) {
@@ -124,7 +124,7 @@ func rgbToAnsi(c rog.RGB) termbox.Attribute {
 
 func (w *termboxBackend) Render(console *rog.Console) {
 	if w.IsOpen() {
-		w.key = ""
+		w.key = -1
 
 		termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 		for y := 0; y < console.Height(); y++ {
@@ -146,26 +146,44 @@ func (w *termboxBackend) pollKeys() {
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
 			if ev.Ch == 0 {
-				switch ev.Key {
-				case termbox.KeyEsc:
-					w.key = rog.Escape
-				}
+		        rogKey, exists := termToRogKey[ev.Key]
+		        if exists {
+			        w.key = rogKey
+		        }
 			} else {
-				switch ev.Ch {
-				case 'h':
-					w.key = rog.H
-				case 'j':
-					w.key = rog.J
-				case 'k':
-					w.key = rog.K
-				case 'l':
-					w.key = rog.L
-				}
+                w.key = int(ev.Ch)
 			}
 		}
 	}
 }
 
-func (w *termboxBackend) Key() string {
+func (w *termboxBackend) Key() int {
 	return w.key
 }
+
+var termToRogKey map[termbox.Key]int = map[termbox.Key]int {
+	termbox.KeyBackspace: rog.Backspace,
+	termbox.KeyTab:       rog.Tab,
+	termbox.KeyEsc:       rog.Escape,
+	termbox.KeySpace:     rog.Space,
+	termbox.KeyDelete:       rog.Delete,
+	termbox.KeyF1:        rog.F1,
+	termbox.KeyF2:        rog.F2,
+	termbox.KeyF3:        rog.F3,
+	termbox.KeyF4:        rog.F4,
+	termbox.KeyF5:        rog.F5,
+	termbox.KeyF6:        rog.F6,
+	termbox.KeyF7:        rog.F7,
+	termbox.KeyF8:        rog.F8,
+	termbox.KeyF9:        rog.F9,
+	termbox.KeyF10:       rog.F10,
+	termbox.KeyF11:       rog.F11,
+	termbox.KeyF12:       rog.F12,
+	termbox.KeyArrowUp:        rog.Up,
+	termbox.KeyArrowDown:      rog.Down,
+	termbox.KeyArrowLeft:      rog.Left,
+	termbox.KeyArrowRight:     rog.Right,
+	termbox.KeyEnter:     rog.Return,
+	termbox.KeyInsert:    rog.Insert,
+	termbox.KeyHome:      rog.Home,
+	termbox.KeyEnd:       rog.End}
