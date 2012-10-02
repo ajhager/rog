@@ -8,6 +8,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+    _ "image/png"
 )
 
 func Backend() rog.Backend {
