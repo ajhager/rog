@@ -24,12 +24,6 @@ Package rog provides algorithms and data structures for creating roguelike games
 */
 package rog
 
-import (
-	"fmt"
-	"image/png"
-	"os"
-)
-
 var (
 	backend Backend
 	console *Console
@@ -55,18 +49,6 @@ func Open(width, height, zoom int, title string, be Backend) {
 // No rog functions should be called after this.
 func Close() {
 	backend.Close()
-}
-
-// Screenshot will save the window buffer as an image to name.png.
-func Screenshot(name string) (err error) {
-	file, err := os.Create(fmt.Sprintf("%v.%v", name, "png"))
-	if err != nil {
-		return
-	}
-	defer file.Close()
-
-	err = png.Encode(file, backend.Screen())
-	return
 }
 
 // SetTitle changes the title of the window.

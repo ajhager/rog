@@ -42,11 +42,12 @@ Thanks
 
 Plans
 -----
-* Website, documentation, tutorial, and more examples.
+* Website, documentation, tutorial, and more examples
 * Window resizing and fullscreen
 * Better keyboard handling
 * User supplied, non-square, and possilby ttf fonts
 * Image blitting
+* Standard colors by name
 * Random color Blenders
 * Palette support
 * Merge in lighting

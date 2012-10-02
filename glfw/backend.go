@@ -95,10 +95,6 @@ func (w *glfwBackend) Render(console *rog.Console) {
 	}
 }
 
-func (w *glfwBackend) Screen() image.Image {
-	return &image.Uniform{rog.RGB{255, 255, 255}}
-}
-
 func (w *glfwBackend) Mouse() *rog.MouseData {
 	return w.mouse
 }
