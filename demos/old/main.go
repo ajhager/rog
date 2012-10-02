@@ -96,8 +96,6 @@ func example() {
 		movePlayer(x-1, y)
 	case rog.L:
 		movePlayer(x+1, y)
-	case rog.P:
-		rog.Screenshot("test")
 	case rog.Escape:
 		rog.Close()
 	}
