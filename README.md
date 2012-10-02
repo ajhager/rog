@@ -29,10 +29,16 @@ func main() {
 }
 ```
 
+Backends
+--------
+* wde:   No dependencies, software rasterizer, somewhat unstable
+* glfw:  GLFW dynamic libs needed, opengl rendering, fast and stable
+* term:  Runs in a terminal, RGB->Ansi color, not feature complete yet
+* html:  Coming soon?
+
 Notes
 -----
 * On Windows you can build your project with `go build -ldflags -Hwindowsgui` to inhibit the console window that pops up by default.
-* The glfw backend is the most performant and stable at the moment, but wde has less dependencies; The termbox backend is still needs work.
 
 Thanks
 ------
@@ -44,9 +50,9 @@ Thanks
 
 Plans
 -----
-* Website, documentation, tutorial, and more examples
+* Website, tutorial, and more demos
 * Window resizing and fullscreen
-* User supplied, non-square, and possilby ttf fonts
+* User supplied, non-square, and ttf fonts
 * Image blitting
 * Standard colors by name
 * Random color Blenders
