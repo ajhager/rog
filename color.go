@@ -2,6 +2,7 @@ package rog
 
 import (
 	"math"
+    "math/rand"
 )
 
 func colorToFloats(c RGB) (r, g, b float64) {
@@ -171,6 +172,14 @@ func Hex(n uint32) RGB {
 	return RGB{r, g, b}
 }
 
+// Rand returns a random RGB color
+func Rand() RGB {
+    return RGB{
+        uint8(rand.Int31n(256)),
+        uint8(rand.Int31n(256)),
+        uint8(rand.Int31n(256))}
+}
+
 // Multiply = old * new
 func (c RGB) Multiply(o RGB) RGB {
 	return multiply(o, c)
@@ -224,6 +233,11 @@ func (c RGB) AddAlpha(o RGB, a float64) RGB {
 // Alpha = (1-alpha)*old + alpha*(new-old)
 func (c RGB) Alpha(o RGB, a float64) RGB {
 	return alpha(o, c, a)
+}
+
+// Scale the color a random amount.
+func (c RGB) RandScale() RGB {
+    return scale(c, rand.Float64())
 }
 
 // RGB Blender interface
@@ -284,6 +298,12 @@ func Burn(top RGB) BlendFunc {
 func Scale(s float64) BlendFunc {
 	return func(bot RGB) RGB {
 		return scale(bot, s)
+	}
+}
+
+func RandScale() BlendFunc {
+	return func(bot RGB) RGB {
+		return bot.RandScale()
 	}
 }
 
