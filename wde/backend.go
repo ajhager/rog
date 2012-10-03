@@ -183,7 +183,7 @@ func (w *wdeBackend) handleFrameEvents() {
 	}
 }
 
-var wdeToRogKey map[string]int = map[string]int{
+var wdeToRogKey = map[string]int{
 	wde.KeyBackspace:    rog.Backspace,
 	wde.KeyTab:          rog.Tab,
 	wde.KeySpace:        rog.Space,

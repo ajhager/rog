@@ -16,16 +16,15 @@ const (
 )
 
 var (
-	sampleConsole *rog.Console = rog.NewConsole(width, height)
-	colors        []rog.RGB    = []rog.RGB{
+	sampleConsole = rog.NewConsole(width, height)
+	colors        = []rog.RGB{
 		rog.RGB{50, 40, 150},
 		rog.RGB{240, 85, 5},
 		rog.RGB{50, 35, 240},
 		rog.RGB{10, 200, 130}}
-	dirR  []int   = []int{1, -1, 1, 1}
-	dirG  []int   = []int{1, -1, -1, 1}
-	dirB  []int   = []int{1, 1, 1, -1}
-	black rog.RGB = rog.RGB{0, 0, 0}
+	dirR = []int{1, -1, 1, 1}
+	dirG = []int{1, -1, -1, 1}
+	dirB = []int{1, 1, 1, -1}
 )
 
 func render() {
@@ -69,7 +68,7 @@ func render() {
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
 			_, col, _ := sampleConsole.Get(x, y)
-			col = col.Alpha(black, 0.5)
+			col = col.Alpha(rog.Black, 0.5)
 			sampleConsole.Set(x, y, col, nil, string(rand.Int31n(26)+97))
 		}
 	}

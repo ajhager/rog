@@ -203,7 +203,7 @@ func setColor(c color.Color) {
 	gl.Color3ub(uint8(r), uint8(g), uint8(b))
 }
 
-var glfwToRogKey map[int]int = map[int]int{
+var glfwToRogKey = map[int]int{
 	glfw.KeyBackspace:  rog.Backspace,
 	glfw.KeyTab:        rog.Tab,
 	glfw.KeyEsc:        rog.Escape,
