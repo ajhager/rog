@@ -10,6 +10,13 @@ type stats struct {
 	Frames, Fps int64
 }
 
+func NewStats() *stats {
+    st := new(stats)
+    st.Update()
+    st.Update()
+    return st
+}
+
 func (t *stats) Update() {
 	now := time.Now()
 	t.Then = t.Now
