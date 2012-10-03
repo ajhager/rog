@@ -4,11 +4,6 @@ import (
 	"math"
 )
 
-var (
-	Black = RGB{0, 0, 0}
-	White = RGB{255, 255, 255}
-)
-
 func colorToFloats(c RGB) (r, g, b float64) {
 	r = float64(c.R) / 255.0
 	g = float64(c.G) / 255.0
@@ -309,3 +304,207 @@ func Alpha(top RGB, a float64) BlendFunc {
 		return addAlpha(top, bot, a)
 	}
 }
+
+var (
+	Black        = RGB{0, 0, 0}
+	DarkestGrey  = RGB{31, 31, 31}
+	DarkerGrey   = RGB{63, 63, 63}
+	DarkGrey     = RGB{95, 95, 95}
+	Grey         = RGB{127, 127, 127}
+	LightGrey    = RGB{159, 159, 159}
+	LighterGrey  = RGB{191, 191, 191}
+	LightestGrey = RGB{223, 223, 223}
+	White        = RGB{255, 255, 255}
+
+	DarkestSepia  = RGB{31, 24, 15}
+	DarkerSepia   = RGB{63, 50, 31}
+	DarkSepia     = RGB{94, 75, 47}
+	Sepia         = RGB{127, 101, 63}
+	LightSepia    = RGB{158, 134, 100}
+	LighterSepia  = RGB{191, 171, 143}
+	LightestSepia = RGB{222, 211, 195}
+
+	DesaturatedRed        = RGB{127, 63, 63}
+	DesaturatedFlame      = RGB{127, 79, 63}
+	DesaturatedOrange     = RGB{127, 95, 63}
+	DesaturatedAmber      = RGB{127, 111, 63}
+	DesaturatedYellow     = RGB{127, 127, 63}
+	DesaturatedLime       = RGB{111, 127, 63}
+	DesaturatedChartreuse = RGB{95, 127, 63}
+	DesaturatedGreen      = RGB{63, 127, 63}
+	DesaturatedSea        = RGB{63, 127, 95}
+	DesaturatedTurquoise  = RGB{63, 127, 111}
+	DesaturatedCyan       = RGB{63, 127, 127}
+	DesaturatedSky        = RGB{63, 111, 127}
+	DesaturatedAzure      = RGB{63, 95, 127}
+	DesaturatedBlue       = RGB{63, 63, 127}
+	DesaturatedHan        = RGB{79, 63, 127}
+	DesaturatedViolet     = RGB{95, 63, 127}
+	DesaturatedPurple     = RGB{111, 63, 127}
+	DesaturatedFuchsia    = RGB{127, 63, 127}
+	DesaturatedMagenta    = RGB{127, 63, 111}
+	DesaturatedPink       = RGB{127, 63, 95}
+	DesaturatedCrimson    = RGB{127, 63, 79}
+
+	LightestRed        = RGB{255, 191, 191}
+	LightestFlame      = RGB{255, 207, 191}
+	LightestOrange     = RGB{255, 223, 191}
+	LightestAmber      = RGB{255, 239, 191}
+	LightestYellow     = RGB{255, 255, 191}
+	LightestLime       = RGB{239, 255, 191}
+	LightestChartreuse = RGB{223, 255, 191}
+	LightestGreen      = RGB{191, 255, 191}
+	LightestSea        = RGB{191, 255, 223}
+	LightestTurquoise  = RGB{191, 255, 239}
+	LightestCyan       = RGB{191, 255, 255}
+	LightestSky        = RGB{191, 239, 255}
+	LightestAzure      = RGB{191, 223, 255}
+	LightestBlue       = RGB{191, 191, 255}
+	LightestHan        = RGB{207, 191, 255}
+	LightestViolet     = RGB{223, 191, 255}
+	LightestPurple     = RGB{239, 191, 255}
+	LightestFuchsia    = RGB{255, 191, 255}
+	LightestMagenta    = RGB{255, 191, 239}
+	LightestPink       = RGB{255, 191, 223}
+	LightestCrimson    = RGB{255, 191, 207}
+
+	LighterRed        = RGB{255, 127, 127}
+	LighterFlame      = RGB{255, 159, 127}
+	LighterOrange     = RGB{255, 191, 127}
+	LighterAmber      = RGB{255, 223, 127}
+	LighterYellow     = RGB{255, 255, 127}
+	LighterLime       = RGB{223, 255, 127}
+	LighterChartreuse = RGB{191, 255, 127}
+	LighterGreen      = RGB{127, 255, 127}
+	LighterSea        = RGB{127, 255, 191}
+	LighterTurquoise  = RGB{127, 255, 223}
+	LighterCyan       = RGB{127, 255, 255}
+	LighterSky        = RGB{127, 223, 255}
+	LighterAzure      = RGB{127, 191, 255}
+	LighterBlue       = RGB{127, 127, 255}
+	LighterHan        = RGB{159, 127, 255}
+	LighterViolet     = RGB{191, 127, 255}
+	LighterPurple     = RGB{223, 127, 255}
+	LighterFuchsia    = RGB{255, 127, 255}
+	LighterMagenta    = RGB{255, 127, 223}
+	LighterPink       = RGB{255, 127, 191}
+	LighterCrimson    = RGB{255, 127, 159}
+
+	LightRed        = RGB{255, 63, 63}
+	LightFlame      = RGB{255, 111, 63}
+	LightOrange     = RGB{255, 159, 63}
+	LightAmber      = RGB{255, 207, 63}
+	LightYellow     = RGB{255, 255, 63}
+	LightLime       = RGB{207, 255, 63}
+	LightChartreuse = RGB{159, 255, 63}
+	LightGreen      = RGB{63, 255, 63}
+	LightSea        = RGB{63, 255, 159}
+	LightTurquoise  = RGB{63, 255, 207}
+	LightCyan       = RGB{63, 255, 255}
+	LightSky        = RGB{63, 207, 255}
+	LightAzure      = RGB{63, 159, 255}
+	LightBlue       = RGB{63, 63, 255}
+	LightHan        = RGB{111, 63, 255}
+	LightViolet     = RGB{159, 63, 255}
+	LightPurple     = RGB{207, 63, 255}
+	LightFuchsia    = RGB{255, 63, 255}
+	LightMagenta    = RGB{255, 63, 207}
+	LightPink       = RGB{255, 63, 159}
+	LightCrimson    = RGB{255, 63, 111}
+
+	Red        = RGB{255, 0, 0}
+	Flame      = RGB{255, 63, 0}
+	Orange     = RGB{255, 127, 0}
+	Amber      = RGB{255, 191, 0}
+	Yellow     = RGB{255, 255, 0}
+	Lime       = RGB{191, 255, 0}
+	Chartreuse = RGB{127, 255, 0}
+	Green      = RGB{0, 255, 0}
+	Sea        = RGB{0, 255, 127}
+	Turquoise  = RGB{0, 255, 191}
+	Cyan       = RGB{0, 255, 255}
+	Sky        = RGB{0, 191, 255}
+	Azure      = RGB{0, 127, 255}
+	Blue       = RGB{0, 0, 255}
+	Han        = RGB{63, 0, 255}
+	Violet     = RGB{127, 0, 255}
+	Purple     = RGB{191, 0, 255}
+	Fuchsia    = RGB{255, 0, 255}
+	Magenta    = RGB{255, 0, 191}
+	Pink       = RGB{255, 0, 127}
+	Crimson    = RGB{255, 0, 63}
+
+	DarkRed        = RGB{191, 0, 0}
+	DarkFlame      = RGB{191, 47, 0}
+	DarkOrange     = RGB{191, 95, 0}
+	DarkAmber      = RGB{191, 143, 0}
+	DarkYellow     = RGB{191, 191, 0}
+	DarkLime       = RGB{143, 191, 0}
+	DarkChartreuse = RGB{95, 191, 0}
+	DarkGreen      = RGB{0, 191, 0}
+	DarkSea        = RGB{0, 191, 95}
+	DarkTurquoise  = RGB{0, 191, 143}
+	DarkCyan       = RGB{0, 191, 191}
+	DarkSky        = RGB{0, 143, 191}
+	DarkAzure      = RGB{0, 95, 191}
+	DarkBlue       = RGB{0, 0, 191}
+	DarkHan        = RGB{47, 0, 191}
+	DarkViolet     = RGB{95, 0, 191}
+	DarkPurple     = RGB{143, 0, 191}
+	DarkFuchsia    = RGB{191, 0, 191}
+	DarkMagenta    = RGB{191, 0, 143}
+	DarkPink       = RGB{191, 0, 95}
+	DarkCrimson    = RGB{191, 0, 47}
+
+	DarkerRed        = RGB{127, 0, 0}
+	DarkerFlame      = RGB{127, 31, 0}
+	DarkerOrange     = RGB{127, 63, 0}
+	DarkerAmber      = RGB{127, 95, 0}
+	DarkerYellow     = RGB{127, 127, 0}
+	DarkerLime       = RGB{95, 127, 0}
+	DarkerChartreuse = RGB{63, 127, 0}
+	DarkerGreen      = RGB{0, 127, 0}
+	DarkerSea        = RGB{0, 127, 63}
+	DarkerTurquoise  = RGB{0, 127, 95}
+	DarkerCyan       = RGB{0, 127, 127}
+	DarkerSky        = RGB{0, 95, 127}
+	DarkerAzure      = RGB{0, 63, 127}
+	DarkerBlue       = RGB{0, 0, 127}
+	DarkerHan        = RGB{31, 0, 127}
+	DarkerViolet     = RGB{63, 0, 127}
+	DarkerPurple     = RGB{95, 0, 127}
+	DarkerFuchsia    = RGB{127, 0, 127}
+	DarkerMagenta    = RGB{127, 0, 95}
+	DarkerPink       = RGB{127, 0, 63}
+	DarkerCrimson    = RGB{127, 0, 31}
+
+	DarkestRed        = RGB{63, 0, 0}
+	DarkestFlame      = RGB{63, 15, 0}
+	DarkestOrange     = RGB{63, 31, 0}
+	DarkestAmber      = RGB{63, 47, 0}
+	DarkestYellow     = RGB{63, 63, 0}
+	DarkestLime       = RGB{47, 63, 0}
+	DarkestChartreuse = RGB{31, 63, 0}
+	DarkestGreen      = RGB{0, 63, 0}
+	DarkestSea        = RGB{0, 63, 31}
+	DarkestTurquoise  = RGB{0, 63, 47}
+	DarkestCyan       = RGB{0, 63, 63}
+	DarkestSky        = RGB{0, 47, 63}
+	DarkestAzure      = RGB{0, 31, 63}
+	DarkestBlue       = RGB{0, 0, 63}
+	DarkestHan        = RGB{15, 0, 63}
+	DarkestViolet     = RGB{31, 0, 63}
+	DarkestPurple     = RGB{47, 0, 63}
+	DarkestFuchsia    = RGB{63, 0, 63}
+	DarkestMagenta    = RGB{63, 0, 47}
+	DarkestPink       = RGB{63, 0, 31}
+	DarkestCrimson    = RGB{63, 0, 15}
+
+	Brass  = RGB{191, 151, 96}
+	Copper = RGB{197, 136, 124}
+	Gold   = RGB{229, 191, 0}
+	Silver = RGB{203, 203, 203}
+
+	Celadon = RGB{172, 255, 175}
+	Peach   = RGB{255, 159, 127}
+)

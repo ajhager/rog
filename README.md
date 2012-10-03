@@ -54,7 +54,6 @@ Plans
 * Window resizing and fullscreen
 * User supplied, non-square, and ttf fonts
 * Image blitting
-* Standard colors by name
 * Random color Blenders
 * Palette support
 * Merge in lighting
