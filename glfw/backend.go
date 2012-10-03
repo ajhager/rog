@@ -242,7 +242,7 @@ var glfwToRogKey = map[int]int{
 	glfw.KeyHome:       rog.Home,
 	glfw.KeyEnd:        rog.End,
 	glfw.KeyCapslock:   rog.Capslock,
-	glfw.KeyKPDidivde:  rog.KPDivide,
+	glfw.KeyKPDivide:  rog.KPDivide,
 	glfw.KeyKPMultiply: rog.KPMultiply,
 	glfw.KeyKPSubtract: rog.KPSubtract,
 	glfw.KeyKPAdd:      rog.KPAdd,
