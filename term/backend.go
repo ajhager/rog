@@ -51,7 +51,7 @@ func cLevel(i uint8) int {
 	return 4
 }
 
-var cols map[int]termbox.Attribute = map[int]termbox.Attribute{
+var cols = map[int]termbox.Attribute{
 	111: termbox.ColorBlack,
 	121: termbox.ColorGreen,
 	131: termbox.ColorGreen,
@@ -161,7 +161,7 @@ func (w *termboxBackend) Key() int {
 	return w.key
 }
 
-var termToRogKey map[termbox.Key]int = map[termbox.Key]int{
+var termToRogKey = map[termbox.Key]int{
 	termbox.KeyBackspace:  rog.Backspace,
 	termbox.KeyTab:        rog.Tab,
 	termbox.KeyEsc:        rog.Escape,

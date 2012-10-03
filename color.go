@@ -5,8 +5,8 @@ import (
 )
 
 var (
-	Black RGB = RGB{0, 0, 0}
-	White RGB = RGB{255, 255, 255}
+	Black = RGB{0, 0, 0}
+	White = RGB{255, 255, 255}
 )
 
 func colorToFloats(c RGB) (r, g, b float64) {

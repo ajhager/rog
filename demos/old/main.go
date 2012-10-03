@@ -13,8 +13,6 @@ var (
 
 	wall   = rog.Hex(0xffbb99)
 	floorc = rog.Hex(0x885040)
-	black  = rog.Hex(0x000000)
-	white  = rog.Hex(0xffffff)
 	lgrey  = rog.Hex(0xc8c8c8)
 	dgrey  = rog.Hex(0x1e1e1e)
 
@@ -49,13 +47,9 @@ var (
 	}
 )
 
-func init() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-}
-
 func movePlayer(xx, yy int) {
 	if xx >= 0 && yy > 0 && xx < width && yy < height-1 && tmap[yy][xx] == ' ' {
-		rog.Set(x, y, white, nil, " ")
+		rog.Set(x, y, rog.White, nil, " ")
 		x = xx
 		y = yy
 		pmap.Fov(x, y, 20, true, rog.FOVCircular)
@@ -102,7 +96,7 @@ func example() {
 
 	for cy := 0; cy < pmap.Height(); cy++ {
 		for cx := 0; cx < pmap.Width(); cx++ {
-			rog.Set(cx, cy, nil, black, " ")
+			rog.Set(cx, cy, nil, rog.Black, " ")
 			if pmap.Look(cx, cy) {
 				i := intensity(x, y, cx, cy, 20)
 				if tmap[cy][cx] == '#' {
