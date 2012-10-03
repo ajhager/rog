@@ -43,11 +43,12 @@ func IsOpen() bool {
 
 // Open creates a window and a root console with size width by height cells.
 func Open(width, height, zoom int, title string) {
-	timing = new(stats)
 	console = NewConsole(width, height)
 
 	backend.Open(width, height, zoom)
 	backend.Name(title)
+
+    timing = NewStats()
 }
 
 // Close shuts down the windowing system.
