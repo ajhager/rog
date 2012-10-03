@@ -6,7 +6,6 @@ import (
 	"github.com/banthar/gl"
 	"github.com/jteeuwen/glfw"
 	"image"
-	"image/color"
 	"image/draw"
 	_ "image/png"
 )
@@ -82,11 +81,11 @@ func (w *glfwBackend) Render(console *rog.Console) {
 			for x := 0; x < console.Width(); x++ {
 				fg, bg, ch := console.Get(x, y)
 
-				setColor(bg)
+	            gl.Color3ub(bg.R, bg.G, bg.B)
 				w.letter(x, y, 0)
 
 				if ch != 0 && ch != 32 {
-					setColor(fg)
+	                gl.Color3ub(fg.R, fg.G, fg.B)
 					w.letter(x, y, ch)
 				}
 			}
@@ -173,6 +172,8 @@ func glInit(width, height int, font image.Image) {
 	draw.Draw(m, m.Bounds(), font, b.Min, draw.Src)
 
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
+	gl.EnableClientState(gl.VERTEX_ARRAY)
+	gl.EnableClientState(gl.TEXTURE_COORD_ARRAY)
 }
 
 // Draw a letter at a certain coordinate
@@ -188,19 +189,9 @@ func (w *glfwBackend) letter(lx, ly int, c rune) {
 	t := float32(16) / float32(b.Max.Y)
 	u := x * s
 	v := y * t
-	gl.EnableClientState(gl.VERTEX_ARRAY)
-	gl.EnableClientState(gl.TEXTURE_COORD_ARRAY)
 	gl.VertexPointer(2, 0, verts)
 	gl.TexCoordPointer(2, 0, []float32{u, v, u, v + t, u + s, v + t, u + s, v, u, v})
 	gl.DrawArrays(gl.POLYGON, 0, len(verts)/2-1)
-	gl.DisableClientState(gl.VERTEX_ARRAY)
-	gl.DisableClientState(gl.TEXTURE_COORD_ARRAY)
-}
-
-// Set the opengl drawing color
-func setColor(c color.Color) {
-	r, g, b, _ := c.RGBA()
-	gl.Color3ub(uint8(r), uint8(g), uint8(b))
 }
 
 var glfwToRogKey = map[int]int{
