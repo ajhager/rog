@@ -338,6 +338,18 @@ func Discrete(blenders ...Blender) ScaleFunc {
 	}
 }
 
+func Linear(blenders ...Blender) ScaleFunc {
+	return func(bot RGB, i, t int) RGB {
+        if i == (t - 1) {
+            return blenders[len(blenders)-1].Blend(bot, i, t)
+        }
+
+        a := (float64(i) / float64(t-1)) * float64(len(blenders) - 1)
+        b := int(math.Floor(a))
+        return alpha(blenders[b+1].Blend(bot, i, t), blenders[b].Blend(bot, i, t), a-float64(b))
+	}
+}
+
 var (
 	Black        = RGB{0, 0, 0}
 	DarkestGrey  = RGB{31, 31, 31}
