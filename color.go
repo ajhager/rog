@@ -2,7 +2,7 @@ package rog
 
 import (
 	"math"
-    "math/rand"
+	"math/rand"
 )
 
 func colorToFloats(c RGB) (r, g, b float64) {
@@ -145,7 +145,7 @@ func alpha(top, bot RGB, a float64) RGB {
 
 // Blender interface
 type Blender interface {
-	Blend(RGB) RGB
+	Blend(RGB, int, int) RGB
 }
 
 // RGB represents a traditional 24-bit alpha-premultiplied color, having 8 bits for each of red, green, and blue.
@@ -174,10 +174,10 @@ func Hex(n uint32) RGB {
 
 // Rand returns a random RGB color
 func Rand() RGB {
-    return RGB{
-        uint8(rand.Int31n(256)),
-        uint8(rand.Int31n(256)),
-        uint8(rand.Int31n(256))}
+	return RGB{
+		uint8(rand.Int31n(256)),
+		uint8(rand.Int31n(256)),
+		uint8(rand.Int31n(256))}
 }
 
 // Multiply = old * new
@@ -237,11 +237,11 @@ func (c RGB) Alpha(o RGB, a float64) RGB {
 
 // Scale the color a random amount.
 func (c RGB) RandScale() RGB {
-    return scale(c, rand.Float64())
+	return scale(c, rand.Float64())
 }
 
 // RGB Blender interface
-func (c RGB) Blend(o RGB) RGB {
+func (c RGB) Blend(o RGB, i, t int) RGB {
 	return c
 }
 
@@ -249,7 +249,7 @@ func (c RGB) Blend(o RGB) RGB {
 type BlendFunc func(RGB) RGB
 
 // BlendFunc Blender interface
-func (bf BlendFunc) Blend(o RGB) RGB {
+func (bf BlendFunc) Blend(o RGB, i, t int) RGB {
 	return bf(o)
 }
 
@@ -322,6 +322,19 @@ func AddAlpha(top RGB, a float64) BlendFunc {
 func Alpha(top RGB, a float64) BlendFunc {
 	return func(bot RGB) RGB {
 		return addAlpha(top, bot, a)
+	}
+}
+
+// Scales
+type ScaleFunc func(RGB, int, int) RGB
+
+func (sf ScaleFunc) Blend(c RGB, i, t int) RGB {
+    return sf(c, i, t)
+}
+
+func Discrete(blenders ...Blender) ScaleFunc {
+	return func(bot RGB, i, t int) RGB {
+        return blenders[i % len(blenders)].Blend(bot, i, t)
 	}
 }
 

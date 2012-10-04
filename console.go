@@ -36,27 +36,28 @@ func NewConsole(width, height int) *Console {
 	return con
 }
 
-func (con *Console) put(x, y int, fg, bg Blender, ch rune) {
+func (con *Console) put(x, y, i, t int, fg, bg Blender, ch rune) {
 	if ch > 0 {
 		con.ch[y][x] = ch
 	}
 
 	if bg != nil {
-		con.bg[y][x] = bg.Blend(con.bg[y][x])
+		con.bg[y][x] = bg.Blend(con.bg[y][x], i, t)
 	}
 
 	if fg != nil {
-		con.fg[y][x] = fg.Blend(con.bg[y][x])
+		con.fg[y][x] = fg.Blend(con.bg[y][x], i, t)
 	}
 }
 
 func (con *Console) set(i, j, x, y, w, h int, fg, bg Blender, data string, rest ...interface{}) {
 	runes := []rune(fmt.Sprintf(data, rest...))
-	if len(runes) > 0 {
+    t := len(runes)
+	if t > 0 {
 		if h == 0 {
 			h = con.h - y
 		}
-		for k := 0; k < len(runes); k++ {
+		for k := 0; k < t; k++ {
 			if i == x+w {
 				j += 1
 				i = x
@@ -64,11 +65,11 @@ func (con *Console) set(i, j, x, y, w, h int, fg, bg Blender, data string, rest 
 			if j == y+h {
 				break
 			}
-			con.put(i, j, fg, bg, runes[k])
+			con.put(i, j, k, t, fg, bg, runes[k])
 			i += 1
 		}
 	} else {
-		con.put(i, j, fg, bg, -1)
+		con.put(i, j, 0, 0, fg, bg, -1)
 	}
 }
 
