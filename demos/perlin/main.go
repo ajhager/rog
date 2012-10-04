@@ -13,8 +13,6 @@ const (
 )
 
 var (
-	sampleConsole = rog.NewConsole(width, height)
-
 	seed    = 1.0
 	alpha   = 1.08
 	beta    = 0.0
@@ -78,7 +76,7 @@ func render() {
 			color := rog.RGB{r, g, b}
 			result := rog.Black.Alpha(color, perlin)
 
-			sampleConsole.Set(int(x), int(y), nil, result, "")
+			rog.Set(int(x), int(y)+1, nil, result, "")
 		}
 	}
 
@@ -88,8 +86,7 @@ func main() {
 	rog.Open(width, height+2, 1, "Perlin-noise Test")
 	for rog.IsOpen() {
 		render()
-		rog.Blit(sampleConsole, 0, 1)
-		rog.Set(0, height+1, nil, nil, "%v", base_x)
+		rog.Set(0, height+1, nil, nil, "%v", rog.Fps())
 		if rog.Key() == rog.Escape {
 			rog.Close()
 		}
