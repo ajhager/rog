@@ -340,6 +340,10 @@ func Discrete(blenders ...Blender) ScaleFunc {
 
 func Linear(blenders ...Blender) ScaleFunc {
 	return func(bot RGB, i, t int) RGB {
+        if i == 0 {
+            return blenders[0].Blend(bot, i, t)
+        }
+
         if i == (t - 1) {
             return blenders[len(blenders)-1].Blend(bot, i, t)
         }

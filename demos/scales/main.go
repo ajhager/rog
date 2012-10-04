@@ -13,6 +13,7 @@ func main() {
     rog.Set(0, 3, rog.Burn(rog.Grey), drainbow, "   Discrete Scale   ")
     rog.Set(0, 6, rog.Burn(rog.Grey), lrainbow, "    Linear Scale    ")
 	for rog.IsOpen() {
+		rog.Set(0, 9, nil, nil, "%v", rog.Fps())
 		if rog.Key() == rog.Escape {
 			rog.Close()
 		}
