@@ -84,7 +84,7 @@ func Dt() float64 {
 }
 
 // Fps returns the number of rendered frames per second.
-func Fps() int64 {
+func Fps() float64 {
 	return timing.Fps
 }
 
