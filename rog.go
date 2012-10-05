@@ -9,7 +9,7 @@ Package rog provides algorithms and data structures for creating roguelike games
 
  import (
      "github.com/ajhager/rog"
-     _ "github.com/ajhager/rog/wde"
+     _ "github.com/ajhager/rog/glfw"
  )
 
  func main() {

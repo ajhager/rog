@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/ajhager/rog"
-	_ "github.com/ajhager/rog/wde"
+	_ "github.com/ajhager/rog/glfw"
 )
 
 var drainbow = rog.Discrete(rog.Red, rog.Orange, rog.Yellow, rog.Green, rog.Blue, rog.Purple, rog.Magenta)

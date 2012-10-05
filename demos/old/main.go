@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/ajhager/rog"
-	_ "github.com/ajhager/rog/wde"
+	_ "github.com/ajhager/rog/glfw"
 	"image"
 	"runtime"
 )

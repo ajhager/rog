@@ -14,7 +14,7 @@ package main
 
 import (
     "github.com/ajhager/rog"
-    _ "github.com/ajhager/rog/wde"
+    _ "github.com/ajhager/rog/glfw"
 )
 
 func main() {
@@ -31,8 +31,8 @@ func main() {
 
 Backends
 --------
-* wde:   No dependencies, software rasterizer, somewhat unstable
 * glfw:  GLFW dynamic libs needed, opengl rendering, fast and stable
+* wde:   No dependencies, software rasterizer, somewhat unstable
 * term:  Runs in a terminal, RGB->Ansi color, not feature complete yet
 * html:  Coming soon?
 
@@ -54,7 +54,6 @@ Plans
 * Window resizing and fullscreen
 * User supplied, non-square, and ttf fonts
 * Image blitting
-* Random color Blenders
 * Palette support
 * Merge in lighting
 * World creation
