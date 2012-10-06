@@ -6,7 +6,6 @@ import (
 	"github.com/banthar/gl"
 	"github.com/jteeuwen/glfw"
 	"image"
-	"image/draw"
 	_ "image/png"
 )
 
@@ -187,9 +186,7 @@ func glInit(width, height int, font image.Image) {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 
-	b := font.Bounds()
-	m := image.NewRGBA(image.Rect(0, 0, b.Dx(), b.Dy()))
-	draw.Draw(m, m.Bounds(), font, b.Min, draw.Src)
+    m := font.(*image.NRGBA)
 
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
 	gl.EnableClientState(gl.VERTEX_ARRAY)
