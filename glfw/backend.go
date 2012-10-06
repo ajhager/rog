@@ -1,10 +1,10 @@
 package glfw
 
 import (
-	"bytes"
 	"github.com/ajhager/rog"
 	"github.com/banthar/gl"
 	"github.com/jteeuwen/glfw"
+    "os"
 	"image"
 	_ "image/png"
     "runtime"
@@ -24,20 +24,25 @@ type glfwBackend struct {
 	open  bool
 	mouse *rog.MouseData
 	key   int
-	font  image.Image
     s, t float32
 	width, height, zoom int
     verts []float32
 }
 
-func (w *glfwBackend) Open(width, height, zoom int) {
-    fontChan := make(chan image.Image)
+func (w *glfwBackend) Open(width, height, zoom int, fontPath string) {
+    fontChan := make(chan *image.NRGBA)
     go func() {
-	    font, _, err := image.Decode(bytes.NewBuffer(rog.FontData()))
-	    if err != nil {
-		    panic(err)
-	    }
-	    fontChan <- font
+        file, err := os.Open(fontPath)
+        if err != nil {
+            panic(err)
+        }
+        defer file.Close()
+
+        m, _, err := image.Decode(file)
+        if err != nil {
+            panic(err)
+        }
+        fontChan <- m.(*image.NRGBA)
     }()
 
 	if err := glfw.Init(); err != nil {
@@ -62,16 +67,7 @@ func (w *glfwBackend) Open(width, height, zoom int) {
 	glfw.SetMousePosCallback(func(x, y int) { w.mouseMove(x, y) })
 	glfw.SetMouseButtonCallback(func(but, state int) { w.mousePress(but, state) })
 
-	// font, _, err := image.Decode(bytes.NewBuffer(rog.FontData()))
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// w.font = font
-    // w.s = 16 / float32(font.Bounds().Max.X)
-    // w.t = 16 / float32(font.Bounds().Max.Y)
-
 	fc := float32(16 * zoom)
-
 	for y := 0; y < height; y++ {
 	    for x := 0; x < width; x++ {
 	        cx := float32(x) * fc
@@ -83,8 +79,7 @@ func (w *glfwBackend) Open(width, height, zoom int) {
     runtime.LockOSThread()
 	glInit(width*16*zoom, height*16*zoom)
 
-    w.font = <-fontChan
-    m := w.font.(*image.NRGBA)
+    m := <-fontChan
     w.s = 16 / float32(m.Bounds().Max.X)
     w.t = 16 / float32(m.Bounds().Max.Y)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)

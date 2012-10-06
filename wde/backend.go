@@ -1,10 +1,10 @@
 package wde
 
 import (
-	"bytes"
 	"github.com/ajhager/rog"
 	"github.com/skelterjohn/go.wde"
 	_ "github.com/skelterjohn/go.wde/init"
+    "os"
 	"image"
 	"image/color"
 	"image/draw"
@@ -47,7 +47,7 @@ type wdeBackend struct {
 	zoom         int
 }
 
-func (w *wdeBackend) Open(width, height, zoom int) {
+func (w *wdeBackend) Open(width, height, zoom int, fontPath string) {
 	w.window, _ = wde.NewWindow(width*16*zoom, height*16*zoom)
 	w.window.Show()
 	go func() {
@@ -68,11 +68,17 @@ func (w *wdeBackend) Open(width, height, zoom int) {
 		w.chbuf[y] = make([]rune, width)
 	}
 
-	font, _, err := image.Decode(bytes.NewBuffer(rog.FontData()))
+    file, err := os.Open(fontPath)
+    if err != nil {
+        panic(err)
+    }
+    defer file.Close()
+
+	m, _, err := image.Decode(file)
 	if err != nil {
 		panic(err)
 	}
-	w.font = nearestNeighborImage{font, zoom}
+	w.font = nearestNeighborImage{m, zoom}
 
 	w.open = true
 }

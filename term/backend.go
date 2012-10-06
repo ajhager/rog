@@ -15,13 +15,12 @@ type termboxBackend struct {
 	key   int
 }
 
-func (w *termboxBackend) Open(width, height, zoom int) {
+func (w *termboxBackend) Open(width, height, zoom int, fontPath string) {
 	if err := termbox.Init(); err != nil {
 		panic(err)
 	}
 
 	w.mouse = new(rog.MouseData)
-	println(termbox.ColorBlue | termbox.AttrBold)
 
 	go w.pollKeys()
 

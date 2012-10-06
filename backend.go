@@ -1,7 +1,7 @@
 package rog
 
 type Backend interface {
-	Open(int, int, int)
+	Open(int, int, int, string)
 	IsOpen() bool
 	Close()
 	Name(string)

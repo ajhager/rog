@@ -74,7 +74,7 @@ func render() {
 }
 
 func main() {
-	rog.Open(width, height+2, 1, "tcod true color")
+	rog.Open(width, height+2, 1, "tcod true color", "../../data/font.png")
 	for rog.IsOpen() {
 		render()
 		rog.Set(0, height+1, nil, nil, "%v", rog.Fps())

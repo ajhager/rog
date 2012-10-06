@@ -83,7 +83,7 @@ func render() {
 }
 
 func main() {
-	rog.Open(width, height+2, 1, "Perlin-noise Test")
+	rog.Open(width, height+2, 1, "Perlin-noise Test", "../../data/font.png")
 	for rog.IsOpen() {
 		render()
 		rog.Set(0, height+1, nil, nil, "%v", rog.Fps())
