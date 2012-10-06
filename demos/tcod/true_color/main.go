@@ -16,7 +16,6 @@ const (
 )
 
 var (
-	sampleConsole = rog.NewConsole(width, height)
 	colors        = []rog.RGB{
 		rog.RGB{50, 40, 150},
 		rog.RGB{240, 85, 5},
@@ -61,15 +60,15 @@ func render() {
 		for y := 0; y < height; y++ {
 			ycoef := float64(y) / float64(height-1)
 			cur := top.Alpha(bot, ycoef)
-			sampleConsole.Set(x, y, nil, cur, "")
+			rog.Set(x, y+1, nil, cur, "")
 		}
 	}
 
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
-			_, col, _ := sampleConsole.Get(x, y)
+			_, col, _ := rog.Get(x, y+1)
 			col = col.Alpha(rog.Black, 0.5)
-			sampleConsole.Set(x, y, col, nil, string(rand.Int31n(26)+97))
+			rog.Set(x, y+1, col, nil, string(rand.Int31n(26)+97))
 		}
 	}
 }
@@ -78,7 +77,6 @@ func main() {
 	rog.Open(width, height+2, 1, "tcod true color")
 	for rog.IsOpen() {
 		render()
-		rog.Blit(sampleConsole, 0, 1)
 		rog.Set(0, height+1, nil, nil, "%v", rog.Fps())
 		if rog.Key() == rog.Escape {
 			rog.Close()

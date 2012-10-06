@@ -12,6 +12,13 @@ func colorToFloats(c RGB) (r, g, b float64) {
 	return
 }
 
+func colorToFloatsA(c RGB) (r, g, b float64) {
+	r = float64(c.R) / 255.0
+	g = float64(c.G) / 255.0
+	b = float64(c.B) / 255.0
+	return
+}
+
 func clampF(low, high, value float64) float64 {
 	return math.Min(high, math.Max(low, value))
 }
@@ -134,12 +141,13 @@ func addAlpha(top, bot RGB, a float64) RGB {
 }
 
 func alpha(top, bot RGB, a float64) RGB {
-	topR, topG, topB := colorToFloats(top)
-	botR, botG, botB := colorToFloats(bot)
+    a = clampF(0, 1, a)
+	topR, topG, topB := float64(top.R), float64(top.G), float64(top.B)
+	botR, botG, botB := float64(bot.R), float64(bot.G), float64(bot.B)
 	return RGB{
-		uint8(255 * (botR + (topR-botR)*a)),
-		uint8(255 * (botG + (topG-botG)*a)),
-		uint8(255 * (botB + (topB-botB)*a)),
+        uint8(botR + (topR-botR)*a),
+        uint8(botG + (topG-botG)*a),
+        uint8(botB + (topB-botB)*a),
 	}
 }
 
