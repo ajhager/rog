@@ -7,6 +7,7 @@ import (
 	"github.com/jteeuwen/glfw"
 	"image"
 	_ "image/png"
+    "runtime"
 )
 
 func init() {
@@ -30,6 +31,15 @@ type glfwBackend struct {
 }
 
 func (w *glfwBackend) Open(width, height, zoom int) {
+    fontChan := make(chan image.Image)
+    go func() {
+	    font, _, err := image.Decode(bytes.NewBuffer(rog.FontData()))
+	    if err != nil {
+		    panic(err)
+	    }
+	    fontChan <- font
+    }()
+
 	if err := glfw.Init(); err != nil {
 		panic(err)
 	}
@@ -52,13 +62,13 @@ func (w *glfwBackend) Open(width, height, zoom int) {
 	glfw.SetMousePosCallback(func(x, y int) { w.mouseMove(x, y) })
 	glfw.SetMouseButtonCallback(func(but, state int) { w.mousePress(but, state) })
 
-	font, _, err := image.Decode(bytes.NewBuffer(rog.FontData()))
-	if err != nil {
-		panic(err)
-	}
-	w.font = font
-    w.s = 16 / float32(font.Bounds().Max.X)
-    w.t = 16 / float32(font.Bounds().Max.Y)
+	// font, _, err := image.Decode(bytes.NewBuffer(rog.FontData()))
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// w.font = font
+    // w.s = 16 / float32(font.Bounds().Max.X)
+    // w.t = 16 / float32(font.Bounds().Max.Y)
 
 	fc := float32(16 * zoom)
 
@@ -70,7 +80,14 @@ func (w *glfwBackend) Open(width, height, zoom int) {
 		}
 	}
 
-	glInit(width*16*zoom, height*16*zoom, w.font)
+    runtime.LockOSThread()
+	glInit(width*16*zoom, height*16*zoom)
+
+    w.font = <-fontChan
+    m := w.font.(*image.NRGBA)
+    w.s = 16 / float32(m.Bounds().Max.X)
+    w.t = 16 / float32(m.Bounds().Max.Y)
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
 
 	w.open = true
 }
@@ -168,7 +185,7 @@ func (w *glfwBackend) setKey(key, state int) {
 	}
 }
 
-func glInit(width, height int, font image.Image) {
+func glInit(width, height int) {
 	gl.Init()
 	gl.Enable(gl.TEXTURE_2D)
 	gl.PixelStorei(gl.UNPACK_ALIGNMENT, 1)
@@ -186,9 +203,6 @@ func glInit(width, height int, font image.Image) {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 
-    m := font.(*image.NRGBA)
-
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
 	gl.EnableClientState(gl.VERTEX_ARRAY)
 	gl.EnableClientState(gl.COLOR_ARRAY)
 	gl.EnableClientState(gl.TEXTURE_COORD_ARRAY)
