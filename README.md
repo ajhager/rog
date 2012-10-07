@@ -52,11 +52,14 @@ Plans
 -----
 * Website, tutorial, and more demos
 * Window resizing and fullscreen
+* Audio generation and output
 * Image blitting
+* Custom drawing
+* Noise generators
 * Palette support
 * Merge in lighting
 * World creation
-* Noise generators
 * More fov algorithms
 * Curses like API
 * Common GUI widgets
+* HSL and HUSL color
