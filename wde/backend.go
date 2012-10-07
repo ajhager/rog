@@ -4,7 +4,6 @@ import (
 	"github.com/ajhager/rog"
 	"github.com/skelterjohn/go.wde"
 	_ "github.com/skelterjohn/go.wde/init"
-    "os"
 	"image"
 	"image/color"
 	"image/draw"
@@ -43,11 +42,11 @@ type wdeBackend struct {
 	key          int
 	bgbuf, fgbuf [][]color.Color
 	chbuf        [][]rune
-	font         image.Image
+	font         *rog.FontData
 	zoom         int
 }
 
-func (w *wdeBackend) Open(width, height, zoom int, fontPath string) {
+func (w *wdeBackend) Open(width, height, zoom int, font *rog.FontData) {
 	w.window, _ = wde.NewWindow(width*16*zoom, height*16*zoom)
 	w.window.Show()
 	go func() {
@@ -68,22 +67,13 @@ func (w *wdeBackend) Open(width, height, zoom int, fontPath string) {
 		w.chbuf[y] = make([]rune, width)
 	}
 
-    file, err := os.Open(fontPath)
-    if err != nil {
-        panic(err)
-    }
-    defer file.Close()
-
-	m, _, err := image.Decode(file)
-	if err != nil {
-		panic(err)
-	}
-	w.font = nearestNeighborImage{m, zoom}
+	w.font = font
+	w.font.Image = nearestNeighborImage{font.Image, zoom}
 
 	w.open = true
 }
 
-func (w *wdeBackend) IsOpen() bool {
+func (w *wdeBackend) Running() bool {
 	return w.open
 }
 
@@ -98,11 +88,11 @@ func (w *wdeBackend) Name(title string) {
 }
 
 func (w *wdeBackend) Render(console *rog.Console) {
-	if w.IsOpen() {
+	if w.Running() {
 		w.handleFrameEvents()
 
 		im := w.window.Screen()
-		maskRect := image.Rectangle{image.Point{0, 0}, image.Point{16 * w.zoom, 16 * w.zoom}}
+		maskRect := image.Rectangle{image.Point{0, 0}, image.Point{w.font.CellWidth * w.zoom, w.font.CellHeight * w.zoom}}
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
 				fg, bg, ch := console.Get(x, y)
@@ -110,13 +100,13 @@ func (w *wdeBackend) Render(console *rog.Console) {
 					w.bgbuf[y][x] = bg
 					w.fgbuf[y][x] = fg
 					w.chbuf[y][x] = ch
-					rect := maskRect.Add(image.Point{x * 16 * w.zoom, y * 16 * w.zoom})
+					rect := maskRect.Add(image.Point{x * w.font.CellWidth * w.zoom, y * w.font.CellHeight * w.zoom})
 					src := &image.Uniform{bg}
 					draw.Draw(im, rect, src, image.ZP, draw.Src)
 
-					if ch != ' ' {
+                    if position, ok := w.font.Mapping[ch]; ok {
 						src = &image.Uniform{fg}
-						draw.DrawMask(im, rect, src, image.ZP, w.font, image.Point{int(ch%256) * 16 * w.zoom, int(ch/256) * 16 * w.zoom}, draw.Over)
+						draw.DrawMask(im, rect, src, image.ZP, w.font.Image, image.Point{position%w.font.Width * w.font.CellWidth * w.zoom, position/w.font.Width * w.font.CellHeight * w.zoom}, draw.Over)
 					}
 				}
 			}

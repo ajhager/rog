@@ -15,7 +15,7 @@ type termboxBackend struct {
 	key   int
 }
 
-func (w *termboxBackend) Open(width, height, zoom int, fontPath string) {
+func (w *termboxBackend) Open(width, height, zoom int, font *rog.FontData) {
 	if err := termbox.Init(); err != nil {
 		panic(err)
 	}
@@ -27,7 +27,7 @@ func (w *termboxBackend) Open(width, height, zoom int, fontPath string) {
 	w.open = true
 }
 
-func (w *termboxBackend) IsOpen() bool {
+func (w *termboxBackend) Running() bool {
 	return w.open
 }
 

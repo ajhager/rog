@@ -19,7 +19,7 @@ import (
 
 func main() {
     rog.Open(20, 11, 2, "rog", nil)
-    for rog.IsOpen() {
+    for rog.Running() {
         rog.Set(5, 5, nil, nil, "Hello, 世界!")
         if rog.Key() == rog.Escape {
             rog.Close()
