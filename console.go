@@ -51,15 +51,15 @@ func (con *Console) put(x, y, i, t int, fg, bg Blender, ch rune) {
 }
 
 func (con *Console) set(i, j, x, y, w, h int, fg, bg Blender, data string, rest ...interface{}) {
-    if len(rest) > 0 {
-	    data = fmt.Sprintf(data, rest...)
-    }
-    t := len(data)
+	if len(rest) > 0 {
+		data = fmt.Sprintf(data, rest...)
+	}
+	t := len(data)
 	if t > 0 {
 		if h == 0 {
 			h = con.h - y
 		}
-        for k, r := range data {
+		for k, r := range data {
 			if i == x+w {
 				j += 1
 				i = x

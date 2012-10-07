@@ -7,7 +7,7 @@ import (
 	"image"
 	"image/draw"
 	_ "image/png"
-    "runtime"
+	"runtime"
 )
 
 func init() {
@@ -15,20 +15,20 @@ func init() {
 }
 
 var (
-    vs = []float32{0, 0, 0, 0, 0, 0, 0, 0}
-    cs = []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-    ts = []float32{0, 0, 0, 0, 0, 0, 0, 0}
-    textures []gl.Texture
+	vs       = []float32{0, 0, 0, 0, 0, 0, 0, 0}
+	cs       = []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ts       = []float32{0, 0, 0, 0, 0, 0, 0, 0}
+	textures []gl.Texture
 )
 
 type glfwBackend struct {
-	open  bool
-	mouse *rog.MouseData
-    font *rog.FontData
-	key   int
-    s, t float32
+	open                bool
+	mouse               *rog.MouseData
+	font                *rog.FontData
+	key                 int
+	s, t                float32
 	width, height, zoom int
-    verts []float32
+	verts               []float32
 }
 
 func (w *glfwBackend) Open(width, height, zoom int, font *rog.FontData) {
@@ -37,8 +37,8 @@ func (w *glfwBackend) Open(width, height, zoom int, font *rog.FontData) {
 	}
 
 	w.zoom = zoom
-    w.width = width
-    w.height = height
+	w.width = width
+	w.height = height
 
 	glfw.OpenWindowHint(glfw.WindowNoResize, gl.TRUE)
 	err := glfw.OpenWindow(width*16*zoom, height*16*zoom, 8, 8, 8, 8, 0, 0, glfw.Windowed)
@@ -56,19 +56,19 @@ func (w *glfwBackend) Open(width, height, zoom int, font *rog.FontData) {
 
 	fc := float32(16 * zoom)
 	for y := 0; y < height; y++ {
-	    for x := 0; x < width; x++ {
-	        cx := float32(x) * fc
-	        cy := float32(y) * fc
-	        w.verts = append(w.verts, cx, cy, cx, cy + fc, cx + fc, cy + fc, cx + fc, cy)
+		for x := 0; x < width; x++ {
+			cx := float32(x) * fc
+			cy := float32(y) * fc
+			w.verts = append(w.verts, cx, cy, cx, cy+fc, cx+fc, cy+fc, cx+fc, cy)
 		}
 	}
 
-    runtime.LockOSThread()
+	runtime.LockOSThread()
 	glInit(width*16*zoom, height*16*zoom)
 
-    m := font.Image.(*image.RGBA)
-    w.s = float32(font.Width) / float32(m.Bounds().Max.X)
-    w.t = float32(font.Height) / float32(m.Bounds().Max.Y)
+	m := font.Image.(*image.RGBA)
+	w.s = float32(font.Width) / float32(m.Bounds().Max.X)
+	w.t = float32(font.Height) / float32(m.Bounds().Max.Y)
 	textures = make([]gl.Texture, 2)
 	gl.GenTextures(textures)
 
@@ -77,14 +77,14 @@ func (w *glfwBackend) Open(width, height, zoom int, font *rog.FontData) {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
 
-    m = image.NewRGBA(image.Rect(0, 0, font.Width, font.Height))
-    draw.Draw(m, m.Bounds(), &image.Uniform{rog.White}, image.ZP, draw.Src)
+	m = image.NewRGBA(image.Rect(0, 0, font.Width, font.Height))
+	draw.Draw(m, m.Bounds(), &image.Uniform{rog.White}, image.ZP, draw.Src)
 	textures[1].Bind(gl.TEXTURE_2D)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
 
-    w.font = font
+	w.font = font
 
 	w.open = true
 }
@@ -112,7 +112,7 @@ func (w *glfwBackend) Render(console *rog.Console) {
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
-        textures[1].Bind(gl.TEXTURE_2D)
+		textures[1].Bind(gl.TEXTURE_2D)
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
 				_, bg, _ := console.Get(x, y)
@@ -120,13 +120,13 @@ func (w *glfwBackend) Render(console *rog.Console) {
 			}
 		}
 
-        textures[0].Bind(gl.TEXTURE_2D)
+		textures[0].Bind(gl.TEXTURE_2D)
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
 				fg, _, ch := console.Get(x, y)
-                if position, ok := w.font.Mapping[ch]; ok {
-				    w.letter(x, y, position, fg)
-                }
+				if position, ok := w.font.Mapping[ch]; ok {
+					w.letter(x, y, position, fg)
+				}
 			}
 		}
 
@@ -212,40 +212,40 @@ func glInit(width, height int) {
 
 // Draw a letter at a certain coordinate
 func (w *glfwBackend) letter(lx, ly int, c int, cl rog.RGB) {
-    start := 8 * (ly*w.width+lx)
+	start := 8 * (ly*w.width + lx)
 
-    vs[0] = w.verts[start]
-    vs[1] = w.verts[start+1]
-    vs[2] = w.verts[start+2]
-    vs[3] = w.verts[start+3]
-    vs[4] = w.verts[start+4]
-    vs[5] = w.verts[start+5]
-    vs[6] = w.verts[start+6]
-    vs[7] = w.verts[start+7]
+	vs[0] = w.verts[start]
+	vs[1] = w.verts[start+1]
+	vs[2] = w.verts[start+2]
+	vs[3] = w.verts[start+3]
+	vs[4] = w.verts[start+4]
+	vs[5] = w.verts[start+5]
+	vs[6] = w.verts[start+6]
+	vs[7] = w.verts[start+7]
 
-    cs[0] = cl.R
-    cs[1] = cl.G
-    cs[2] = cl.B
-    cs[3] = cl.R
-    cs[4] = cl.G
-    cs[5] = cl.B
-    cs[6] = cl.R
-    cs[7] = cl.G
-    cs[8] = cl.B
-    cs[9] = cl.R
-    cs[10] = cl.G
-    cs[11] = cl.B
+	cs[0] = cl.R
+	cs[1] = cl.G
+	cs[2] = cl.B
+	cs[3] = cl.R
+	cs[4] = cl.G
+	cs[5] = cl.B
+	cs[6] = cl.R
+	cs[7] = cl.G
+	cs[8] = cl.B
+	cs[9] = cl.R
+	cs[10] = cl.G
+	cs[11] = cl.B
 
-	u := float32(c % w.font.Width) * w.s
-	v := float32(c / w.font.Height) * w.t
-    ts[0] = u
-    ts[1] = v
-    ts[2] = u
-    ts[3] = v+w.t
-    ts[4] = u+w.s
-    ts[5] = v+w.t
-    ts[6] = u+w.s
-    ts[7] = v
+	u := float32(c%w.font.Width) * w.s
+	v := float32(c/w.font.Height) * w.t
+	ts[0] = u
+	ts[1] = v
+	ts[2] = u
+	ts[3] = v + w.t
+	ts[4] = u + w.s
+	ts[5] = v + w.t
+	ts[6] = u + w.s
+	ts[7] = v
 
 	gl.DrawArrays(gl.POLYGON, 0, 4)
 }
@@ -289,7 +289,7 @@ var glfwToRogKey = map[int]int{
 	glfw.KeyHome:       rog.Home,
 	glfw.KeyEnd:        rog.End,
 	glfw.KeyCapslock:   rog.Capslock,
-	glfw.KeyKPDivide:  rog.KPDivide,
+	glfw.KeyKPDivide:   rog.KPDivide,
 	glfw.KeyKPMultiply: rog.KPMultiply,
 	glfw.KeyKPSubtract: rog.KPSubtract,
 	glfw.KeyKPAdd:      rog.KPAdd,

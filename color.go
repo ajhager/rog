@@ -141,13 +141,13 @@ func addAlpha(top, bot RGB, a float64) RGB {
 }
 
 func alpha(top, bot RGB, a float64) RGB {
-    a = clampF(0, 1, a)
+	a = clampF(0, 1, a)
 	topR, topG, topB := float64(top.R), float64(top.G), float64(top.B)
 	botR, botG, botB := float64(bot.R), float64(bot.G), float64(bot.B)
 	return RGB{
-        uint8(botR + (topR-botR)*a),
-        uint8(botG + (topG-botG)*a),
-        uint8(botB + (topB-botB)*a),
+		uint8(botR + (topR-botR)*a),
+		uint8(botG + (topG-botG)*a),
+		uint8(botB + (topB-botB)*a),
 	}
 }
 
@@ -337,28 +337,28 @@ func Alpha(top RGB, a float64) BlendFunc {
 type ScaleFunc func(RGB, int, int) RGB
 
 func (sf ScaleFunc) Blend(c RGB, i, t int) RGB {
-    return sf(c, i, t)
+	return sf(c, i, t)
 }
 
 func Discrete(blenders ...Blender) ScaleFunc {
 	return func(bot RGB, i, t int) RGB {
-        return blenders[i % len(blenders)].Blend(bot, i, t)
+		return blenders[i%len(blenders)].Blend(bot, i, t)
 	}
 }
 
 func Linear(blenders ...Blender) ScaleFunc {
 	return func(bot RGB, i, t int) RGB {
-        if i == 0 {
-            return blenders[0].Blend(bot, i, t)
-        }
+		if i == 0 {
+			return blenders[0].Blend(bot, i, t)
+		}
 
-        if i == (t - 1) {
-            return blenders[len(blenders)-1].Blend(bot, i, t)
-        }
+		if i == (t - 1) {
+			return blenders[len(blenders)-1].Blend(bot, i, t)
+		}
 
-        a := (float64(i) / float64(t-1)) * float64(len(blenders) - 1)
-        b := int(math.Floor(a))
-        return alpha(blenders[b+1].Blend(bot, i, t), blenders[b].Blend(bot, i, t), a-float64(b))
+		a := (float64(i) / float64(t-1)) * float64(len(blenders)-1)
+		b := int(math.Floor(a))
+		return alpha(blenders[b+1].Blend(bot, i, t), blenders[b].Blend(bot, i, t), a-float64(b))
 	}
 }
 

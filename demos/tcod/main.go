@@ -16,7 +16,7 @@ const (
 )
 
 var (
-	colors        = []rog.RGB{
+	colors = []rog.RGB{
 		rog.RGB{50, 40, 150},
 		rog.RGB{240, 85, 5},
 		rog.RGB{50, 35, 240},

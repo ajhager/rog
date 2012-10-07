@@ -1,21 +1,21 @@
 package rog
 
 import (
+	"math"
 	"time"
-    "math"
 )
 
 type stats struct {
 	Elapsed, Dt, Fps, Frames, Period float64
-	Then   time.Time
+	Then                             time.Time
 }
 
 func NewStats() *stats {
-    st := new(stats)
-    st.Period = .25
-    st.Update()
-    st.Update()
-    return st
+	st := new(stats)
+	st.Period = .25
+	st.Update()
+	st.Update()
+	return st
 }
 
 func (t *stats) Update() {

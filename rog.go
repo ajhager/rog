@@ -47,14 +47,14 @@ func Running() bool {
 func Open(width, height, zoom int, title string, font *FontData) {
 	console = NewConsole(width, height)
 
-    if font == nil {
-        font = ReadFont(bytes.NewBuffer(Terminal()), 16, 16, "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ✵웃世界")
-    }
+	if font == nil {
+		font = ReadFont(bytes.NewBuffer(Terminal()), 16, 16, "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ✵웃世界")
+	}
 
 	backend.Open(width, height, zoom, font)
 	backend.Name(title)
 
-    timing = NewStats()
+	timing = NewStats()
 }
 
 // Close shuts down the windowing system.

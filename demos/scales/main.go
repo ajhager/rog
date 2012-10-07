@@ -10,8 +10,8 @@ var lrainbow = rog.Linear(rog.Red, rog.Orange, rog.Yellow, rog.Green, rog.Blue, 
 
 func main() {
 	rog.Open(20, 10, 2, "rog", nil)
-    rog.Set(0, 3, rog.Burn(rog.Grey), drainbow, "   Discrete Scale   ")
-    rog.Set(0, 6, rog.Burn(rog.Grey), lrainbow, "    Linear Scale    ")
+	rog.Set(0, 3, rog.Burn(rog.Grey), drainbow, "   Discrete Scale   ")
+	rog.Set(0, 6, rog.Burn(rog.Grey), lrainbow, "    Linear Scale    ")
 	for rog.Running() {
 		rog.Set(0, 9, nil, nil, "%v", rog.Fps())
 		if rog.Key() == rog.Escape {
