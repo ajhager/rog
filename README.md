@@ -5,7 +5,7 @@ rog
 * 24bit, scaling console with custom font support
 * Cross platform with pluggable backends
 * Field of view, lighting, and pathfinding algorithms
-* Procedural color and palette creation
+* Procedural color and palette manipulation
 
 [Documentation](http://go.pkgdoc.org/github.com/ajhager/rog "Documentation")
 
