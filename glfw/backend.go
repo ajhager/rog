@@ -4,8 +4,8 @@ import (
 	"github.com/ajhager/rog"
 	"github.com/banthar/gl"
 	"github.com/jteeuwen/glfw"
-    "os"
 	"image"
+	"image/draw"
 	_ "image/png"
     "runtime"
 )
@@ -18,33 +18,20 @@ var (
     vs = []float32{0, 0, 0, 0, 0, 0, 0, 0}
     cs = []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     ts = []float32{0, 0, 0, 0, 0, 0, 0, 0}
+    textures []gl.Texture
 )
 
 type glfwBackend struct {
 	open  bool
 	mouse *rog.MouseData
+    font *rog.FontData
 	key   int
     s, t float32
 	width, height, zoom int
     verts []float32
 }
 
-func (w *glfwBackend) Open(width, height, zoom int, fontPath string) {
-    fontChan := make(chan *image.NRGBA)
-    go func() {
-        file, err := os.Open(fontPath)
-        if err != nil {
-            panic(err)
-        }
-        defer file.Close()
-
-        m, _, err := image.Decode(file)
-        if err != nil {
-            panic(err)
-        }
-        fontChan <- m.(*image.NRGBA)
-    }()
-
+func (w *glfwBackend) Open(width, height, zoom int, font *rog.FontData) {
 	if err := glfw.Init(); err != nil {
 		panic(err)
 	}
@@ -79,15 +66,30 @@ func (w *glfwBackend) Open(width, height, zoom int, fontPath string) {
     runtime.LockOSThread()
 	glInit(width*16*zoom, height*16*zoom)
 
-    m := <-fontChan
-    w.s = 16 / float32(m.Bounds().Max.X)
-    w.t = 16 / float32(m.Bounds().Max.Y)
+    m := font.Image.(*image.RGBA)
+    w.s = float32(font.Width) / float32(m.Bounds().Max.X)
+    w.t = float32(font.Height) / float32(m.Bounds().Max.Y)
+	textures = make([]gl.Texture, 2)
+	gl.GenTextures(textures)
+
+	textures[0].Bind(gl.TEXTURE_2D)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
+
+    m = image.NewRGBA(image.Rect(0, 0, font.Width, font.Height))
+    draw.Draw(m, m.Bounds(), &image.Uniform{rog.White}, image.ZP, draw.Src)
+	textures[1].Bind(gl.TEXTURE_2D)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
+
+    w.font = font
 
 	w.open = true
 }
 
-func (w *glfwBackend) IsOpen() bool {
+func (w *glfwBackend) Running() bool {
 	return w.open && glfw.WindowParam(glfw.Opened) == 1
 }
 
@@ -102,7 +104,7 @@ func (w *glfwBackend) Name(title string) {
 }
 
 func (w *glfwBackend) Render(console *rog.Console) {
-	if w.IsOpen() {
+	if w.Running() {
 		w.mouse.Left.Released = false
 		w.mouse.Right.Released = false
 		w.mouse.Middle.Released = false
@@ -110,14 +112,21 @@ func (w *glfwBackend) Render(console *rog.Console) {
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
+        textures[1].Bind(gl.TEXTURE_2D)
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
-				fg, bg, ch := console.Get(x, y)
+				_, bg, _ := console.Get(x, y)
 				w.letter(x, y, 0, bg)
+			}
+		}
 
-				if ch != 0 && ch != 32 {
-					w.letter(x, y, ch, fg)
-				}
+        textures[0].Bind(gl.TEXTURE_2D)
+		for y := 0; y < console.Height(); y++ {
+			for x := 0; x < console.Width(); x++ {
+				fg, _, ch := console.Get(x, y)
+                if position, ok := w.font.Mapping[ch]; ok {
+				    w.letter(x, y, position, fg)
+                }
 			}
 		}
 
@@ -192,11 +201,6 @@ func glInit(width, height int) {
 	gl.LoadIdentity()
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-	textures := make([]gl.Texture, 1)
-	gl.GenTextures(textures)
-	textures[0].Bind(gl.TEXTURE_2D)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 
 	gl.EnableClientState(gl.VERTEX_ARRAY)
 	gl.EnableClientState(gl.COLOR_ARRAY)
@@ -207,7 +211,7 @@ func glInit(width, height int) {
 }
 
 // Draw a letter at a certain coordinate
-func (w *glfwBackend) letter(lx, ly int, c rune, cl rog.RGB) {
+func (w *glfwBackend) letter(lx, ly int, c int, cl rog.RGB) {
     start := 8 * (ly*w.width+lx)
 
     vs[0] = w.verts[start]
@@ -232,8 +236,8 @@ func (w *glfwBackend) letter(lx, ly int, c rune, cl rog.RGB) {
     cs[10] = cl.G
     cs[11] = cl.B
 
-	u := float32(c % 256) * w.s
-	v := float32(c / 256) * w.t
+	u := float32(c % w.font.Width) * w.s
+	v := float32(c / w.font.Height) * w.t
     ts[0] = u
     ts[1] = v
     ts[2] = u

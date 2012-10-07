@@ -13,8 +13,8 @@ Package rog provides algorithms and data structures for creating roguelike games
  )
 
  func main() {
-     rog.Open(20, 11, 2, "rog")
-     for rog.IsOpen() {
+     rog.Open(20, 11, 2, "rog", nil)
+     for rog.Running() {
          rog.Set(5, 5, nil, nil, "Hello, 世界!")
          if rog.Key() == rog.Escape {
              rog.Close()
@@ -24,6 +24,8 @@ Package rog provides algorithms and data structures for creating roguelike games
  }
 */
 package rog
+
+import "bytes"
 
 var (
 	backend Backend
@@ -36,14 +38,18 @@ func SetBackend(b Backend) {
 	backend = b
 }
 
-// IsOpen returns whether the rog window is open or not.
-func IsOpen() bool {
-	return backend.IsOpen()
+// Running returns whether the rog window is open or not.
+func Running() bool {
+	return backend.Running()
 }
 
 // Open creates a window and a root console with size width by height cells.
-func Open(width, height, zoom int, title, font string) {
+func Open(width, height, zoom int, title string, font *FontData) {
 	console = NewConsole(width, height)
+
+    if font == nil {
+        font = ReadFont(bytes.NewBuffer(Terminal()), 16, 16, "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ✵웃世界")
+    }
 
 	backend.Open(width, height, zoom, font)
 	backend.Name(title)

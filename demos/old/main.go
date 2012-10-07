@@ -123,8 +123,8 @@ func example() {
 }
 
 func main() {
-	rog.Open(width, height, 1, "Example", "../../data/font.png")
-	for rog.IsOpen() {
+	rog.Open(width, height, 1, "Example", nil)
+	for rog.Running() {
 		example()
 		rog.Flush()
 	}

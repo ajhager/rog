@@ -1,9 +1,9 @@
 package rog
 
 type Backend interface {
-	Open(int, int, int, string)
-	IsOpen() bool
+	Open(int, int, int, *FontData)
 	Close()
+	Running() bool
 	Name(string)
 	Render(*Console)
 	Mouse() *MouseData

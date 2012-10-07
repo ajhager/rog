@@ -67,15 +67,15 @@ func render() {
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
 			_, col, _ := rog.Get(x, y+1)
-			col = col.Alpha(rog.Black, 0.5)
+			col = col.Alpha(rog.Black, .5)
 			rog.Set(x, y+1, col, nil, string(rand.Int31n(26)+97))
 		}
 	}
 }
 
 func main() {
-	rog.Open(width, height+2, 1, "tcod true color", "../../data/font.png")
-	for rog.IsOpen() {
+	rog.Open(width, height+2, 1, "tcod true color", nil)
+	for rog.Running() {
 		render()
 		rog.Set(0, height+1, nil, nil, "%v", rog.Fps())
 		if rog.Key() == rog.Escape {
