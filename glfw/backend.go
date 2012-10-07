@@ -124,7 +124,7 @@ func (w *glfwBackend) Render(console *rog.Console) {
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
 				fg, _, ch := console.Get(x, y)
-				if position, ok := w.font.Mapping[ch]; ok {
+				if position, ok := w.font.Map(ch); ok {
 					w.letter(x, y, position, fg)
 				}
 			}

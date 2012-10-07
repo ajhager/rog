@@ -104,7 +104,7 @@ func (w *wdeBackend) Render(console *rog.Console) {
 					src := &image.Uniform{bg}
 					draw.Draw(im, rect, src, image.ZP, draw.Src)
 
-					if position, ok := w.font.Mapping[ch]; ok {
+					if position, ok := w.font.Map(ch); ok {
 						src = &image.Uniform{fg}
 						draw.DrawMask(im, rect, src, image.ZP, w.font.Image, image.Point{position % w.font.Width * w.font.CellWidth * w.zoom, position / w.font.Width * w.font.CellHeight * w.zoom}, draw.Over)
 					}
