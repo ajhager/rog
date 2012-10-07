@@ -52,7 +52,6 @@ Plans
 -----
 * Website, tutorial, and more demos
 * Window resizing and fullscreen
-* User supplied, non-square, and ttf fonts
 * Image blitting
 * Palette support
 * Merge in lighting
