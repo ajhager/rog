@@ -2,8 +2,10 @@ package glfw
 
 import (
 	"github.com/ajhager/rog"
-	"github.com/banthar/gl"
-	"github.com/jteeuwen/glfw"
+//	"github.com/banthar/gl"
+//	"github.com/jteeuwen/glfw"
+    "github.com/go-gl/glfw"
+    "github.com/go-gl/gl"
 	"image"
 	"image/draw"
 	_ "image/png"
@@ -205,9 +207,9 @@ func glInit(width, height int) {
 	gl.EnableClientState(gl.VERTEX_ARRAY)
 	gl.EnableClientState(gl.COLOR_ARRAY)
 	gl.EnableClientState(gl.TEXTURE_COORD_ARRAY)
-	gl.VertexPointer(2, 0, vs)
-	gl.ColorPointer(3, 0, cs)
-	gl.TexCoordPointer(2, 0, ts)
+	gl.VertexPointer(2, gl.FLOAT, 0, vs)
+	gl.ColorPointer(3, gl.UNSIGNED_BYTE, 0, cs)
+	gl.TexCoordPointer(2, gl.FLOAT, 0, ts)
 }
 
 // Draw a letter at a certain coordinate
