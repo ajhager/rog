@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-    rog.Open(20, 11, 2, "rog", nil)
+    rog.Open(20, 11, 2, false, "rog", nil)
     for rog.Running() {
         rog.Set(5, 5, nil, nil, "Hello, 世界!")
         if rog.Key() == rog.Esc {
@@ -36,7 +36,6 @@ Notes
 Plans
 -----
 * Website, tutorial, and more demos
-* Window resizing and fullscreen
 * Audio generation and output
 * Image (subcell) blitting
 * Custom drawing callback

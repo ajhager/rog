@@ -98,7 +98,7 @@ type glfwBackend struct {
 	verts               []float32
 }
 
-func (w *glfwBackend) Open(width, height, zoom int, font *FontData) {
+func (w *glfwBackend) Open(width, height, zoom int, fs bool, font *FontData) {
 	if err := glfw.Init(); err != nil {
 		panic(err)
 	}
@@ -107,8 +107,21 @@ func (w *glfwBackend) Open(width, height, zoom int, font *FontData) {
 	w.width = width
 	w.height = height
 
+    var fwidth = width*font.CellWidth*zoom
+    var fheight = height*font.CellHeight*zoom
+    var twidth = fwidth
+    var theight = fheight
+
+    flag := glfw.Windowed
+    if (fs) {
+        flag = glfw.Fullscreen
+        dm := glfw.DesktopMode()
+        twidth = dm.W
+        theight = dm.H
+    }
+    
 	glfw.OpenWindowHint(glfw.WindowNoResize, gl.TRUE)
-	err := glfw.OpenWindow(width*16*zoom, height*16*zoom, 8, 8, 8, 8, 0, 0, glfw.Windowed)
+	err := glfw.OpenWindow(twidth, theight, 8, 8, 8, 8, 0, 0, flag)
 	if err != nil {
 		panic(err)
 	}
@@ -122,17 +135,20 @@ func (w *glfwBackend) Open(width, height, zoom int, font *FontData) {
 	glfw.SetMousePosCallback(func(x, y int) { w.mouseMove(x, y) })
 	glfw.SetMouseButtonCallback(func(but, state int) { w.mousePress(but, state) })
 
-	fc := float32(16 * zoom)
+    xoff := float32(twidth - fwidth) / 2.0
+    yoff := float32(theight - fheight) / 2.0
+
+	fc := float32(font.CellWidth * zoom)
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			cx := float32(x) * fc
-			cy := float32(y) * fc
+			cx := xoff + float32(x) * fc
+			cy := yoff + float32(y) * fc
 			w.verts = append(w.verts, cx, cy, cx, cy+fc, cx+fc, cy+fc, cx+fc, cy)
 		}
 	}
 
 	runtime.LockOSThread()
-	glInit(width*16*zoom, height*16*zoom)
+	glInit(twidth, theight)
 
 	m := font.Image.(*image.RGBA)
 	w.s = float32(font.Width) / float32(m.Bounds().Max.X)

@@ -73,7 +73,7 @@ func render() {
 }
 
 func main() {
-	rog.Open(width, height+2, 1, "tcod true color", nil)
+	rog.Open(width, height+2, 1, false, "tcod true color", nil)
 	for rog.Running() {
 		render()
 		rog.Set(0, height+1, nil, nil, "%v", rog.Fps())

@@ -122,7 +122,7 @@ func example() {
 }
 
 func main() {
-	rog.Open(width, height, 1, "Example", nil)
+	rog.Open(width, height, 1, false, "Example", nil)
 	for rog.Running() {
 		example()
 		rog.Flush()

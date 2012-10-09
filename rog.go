@@ -12,7 +12,7 @@ Package rog provides algorithms and data structures for creating roguelike games
  )
 
  func main() {
-     rog.Open(20, 11, 2, "rog", nil)
+     rog.Open(20, 11, 2, false, "rog", nil)
      for rog.Running() {
          rog.Set(5, 5, nil, nil, "Hello, 世界!")
          if rog.Key() == rog.Esc {
@@ -38,7 +38,7 @@ func Running() bool {
 }
 
 // Open creates a window and a root console with size width by height cells.
-func Open(width, height, zoom int, title string, font *FontData) {
+func Open(width, height, zoom int, fs bool, title string, font *FontData) {
 	backend = new(glfwBackend)
 	console = NewConsole(width, height)
 
@@ -46,7 +46,7 @@ func Open(width, height, zoom int, title string, font *FontData) {
 		font = ReadFont(bytes.NewBuffer(Terminal()), 16, 16, "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ✵웃世界¢¥¤§©¨«¬£ª±²³´¶·¸¹º»¼½¾¿☐☑═║╔╗╚╝╠╣╦╩╬░▒▓☺☻☼♀♂▀▁▂▃▄▅▆▇█ÐÑÒÓÔÕÖÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏØÙÚÛÜÝàáâãäåèéêëìíîïðñòóôõö÷ùúûüýÿ♥♦♣♠♪♬æçø←↑→↓↔↕®‼")
 	}
 
-	backend.Open(width, height, zoom, font)
+	backend.Open(width, height, zoom, fs, font)
 	backend.Name(title)
 
 	timing = NewStats()
