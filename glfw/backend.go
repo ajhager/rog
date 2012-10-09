@@ -2,10 +2,8 @@ package glfw
 
 import (
 	"github.com/ajhager/rog"
-//	"github.com/banthar/gl"
-//	"github.com/jteeuwen/glfw"
     "github.com/go-gl/glfw"
-    "github.com/go-gl/gl"
+    gl "github.com/chsc/gogl/gl21"
 	"image"
 	"image/draw"
 	_ "image/png"
@@ -20,7 +18,7 @@ var (
 	vs       = []float32{0, 0, 0, 0, 0, 0, 0, 0}
 	cs       = []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ts       = []float32{0, 0, 0, 0, 0, 0, 0, 0}
-	textures []gl.Texture
+	textures []gl.Uint
 )
 
 type glfwBackend struct {
@@ -71,20 +69,20 @@ func (w *glfwBackend) Open(width, height, zoom int, font *rog.FontData) {
 	m := font.Image.(*image.RGBA)
 	w.s = float32(font.Width) / float32(m.Bounds().Max.X)
 	w.t = float32(font.Height) / float32(m.Bounds().Max.Y)
-	textures = make([]gl.Texture, 2)
-	gl.GenTextures(textures)
+	textures = make([]gl.Uint, 2)
+	gl.GenTextures(2, &textures[0])
 
-	textures[0].Bind(gl.TEXTURE_2D)
+	gl.BindTexture(gl.TEXTURE_2D, textures[0])
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.Sizei(m.Bounds().Max.X), gl.Sizei(m.Bounds().Max.Y), 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Pointer(&m.Pix[0]))
 
 	m = image.NewRGBA(image.Rect(0, 0, font.Width, font.Height))
 	draw.Draw(m, m.Bounds(), &image.Uniform{rog.White}, image.ZP, draw.Src)
-	textures[1].Bind(gl.TEXTURE_2D)
+	gl.BindTexture(gl.TEXTURE_2D, textures[1])
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.Bounds().Max.X, m.Bounds().Max.Y, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.Pix)
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.Sizei(m.Bounds().Max.X), gl.Sizei(m.Bounds().Max.Y), 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Pointer(&m.Pix[0]))
 
 	w.font = font
 
@@ -114,7 +112,7 @@ func (w *glfwBackend) Render(console *rog.Console) {
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
-		textures[1].Bind(gl.TEXTURE_2D)
+		gl.BindTexture(gl.TEXTURE_2D, textures[1])
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
 				_, bg, _ := console.Get(x, y)
@@ -122,7 +120,7 @@ func (w *glfwBackend) Render(console *rog.Console) {
 			}
 		}
 
-		textures[0].Bind(gl.TEXTURE_2D)
+		gl.BindTexture(gl.TEXTURE_2D, textures[0])
 		for y := 0; y < console.Height(); y++ {
 			for x := 0; x < console.Width(); x++ {
 				fg, _, ch := console.Get(x, y)
@@ -195,10 +193,10 @@ func glInit(width, height int) {
 	gl.Init()
 	gl.Enable(gl.TEXTURE_2D)
 	gl.PixelStorei(gl.UNPACK_ALIGNMENT, 1)
-	gl.Viewport(0, 0, width, height)
+	gl.Viewport(0, 0, gl.Sizei(width), gl.Sizei(height))
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
-	gl.Ortho(0, float64(width), float64(height), 0, -1, 1)
+	gl.Ortho(0, gl.Double(width), gl.Double(height), 0, -1, 1)
 	gl.MatrixMode(gl.MODELVIEW)
 	gl.LoadIdentity()
 	gl.Enable(gl.BLEND)
@@ -207,9 +205,9 @@ func glInit(width, height int) {
 	gl.EnableClientState(gl.VERTEX_ARRAY)
 	gl.EnableClientState(gl.COLOR_ARRAY)
 	gl.EnableClientState(gl.TEXTURE_COORD_ARRAY)
-	gl.VertexPointer(2, gl.FLOAT, 0, vs)
-	gl.ColorPointer(3, gl.UNSIGNED_BYTE, 0, cs)
-	gl.TexCoordPointer(2, gl.FLOAT, 0, ts)
+	gl.VertexPointer(2, gl.FLOAT, 0, gl.Pointer(&vs[0]))
+	gl.ColorPointer(3, gl.UNSIGNED_BYTE, 0, gl.Pointer(&cs[0]))
+	gl.TexCoordPointer(2, gl.FLOAT, 0, gl.Pointer(&ts[0]))
 }
 
 // Draw a letter at a certain coordinate
