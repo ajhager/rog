@@ -80,18 +80,18 @@ func example() {
 		path = pmap.Path(x, y, rog.Mouse().Cell.X, rog.Mouse().Cell.Y)
 	}
 
-	switch rog.Key() {
-	case 'K':
+    switch rog.Key() {
+    case 'k':
 		movePlayer(x, y-1)
-	case 'J':
+    case 'j':
 		movePlayer(x, y+1)
-	case 'H':
+    case 'h':
 		movePlayer(x-1, y)
-	case 'L':
+    case 'l':
 		movePlayer(x+1, y)
-	case rog.Escape:
-		rog.Close()
-	}
+    case rog.Esc:
+        rog.Close()
+    }
 
 	for cy := 0; cy < pmap.Height(); cy++ {
 		for cx := 0; cx < pmap.Width(); cx++ {

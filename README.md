@@ -37,7 +37,6 @@ Plans
 -----
 * Website, tutorial, and more demos
 * Window resizing and fullscreen
-* Better keyboard handling
 * Audio generation and output
 * Image (subcell) blitting
 * Custom drawing callback

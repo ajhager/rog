@@ -13,7 +13,7 @@ func main() {
 	rog.Set(0, 6, rog.Burn(rog.Grey), lrainbow, "    Linear Scale    ")
 	for rog.Running() {
 		rog.Set(0, 9, nil, nil, "%v", rog.Fps())
-		if rog.Key() == rog.Escape {
+		if rog.Key() == rog.Esc {
 			rog.Close()
 		}
 		rog.Flush()

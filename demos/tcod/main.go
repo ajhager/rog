@@ -77,7 +77,7 @@ func main() {
 	for rog.Running() {
 		render()
 		rog.Set(0, height+1, nil, nil, "%v", rog.Fps())
-		if rog.Key() == rog.Escape {
+		if rog.Key() == rog.Esc {
 			rog.Close()
 		}
 		rog.Flush()
