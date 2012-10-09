@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/ajhager/rog"
-	_ "github.com/ajhager/rog/glfw"
 )
 
 func main() {

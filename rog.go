@@ -9,7 +9,6 @@ Package rog provides algorithms and data structures for creating roguelike games
 
  import (
      "github.com/ajhager/rog"
-     _ "github.com/ajhager/rog/glfw"
  )
 
  func main() {
@@ -28,15 +27,10 @@ package rog
 import "bytes"
 
 var (
-	backend Backend
+	backend *glfwBackend
 	console *Console
 	timing  *stats
 )
-
-// SetBackend registers a backend and isn't normally used by the user.
-func SetBackend(b Backend) {
-	backend = b
-}
 
 // Running returns whether the rog window is open or not.
 func Running() bool {
@@ -45,6 +39,7 @@ func Running() bool {
 
 // Open creates a window and a root console with size width by height cells.
 func Open(width, height, zoom int, title string, font *FontData) {
+    backend = new(glfwBackend)
 	console = NewConsole(width, height)
 
 	if font == nil {

@@ -3,7 +3,7 @@ rog
 ![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot.png)
 
 * 24bit, scaling console with custom font support
-* Cross platform with pluggable backends
+* Cross platform rendering and input
 * Field of view, lighting, and pathfinding algorithms
 * Procedural color and palette manipulation
 
@@ -14,7 +14,6 @@ package main
 
 import (
     "github.com/ajhager/rog"
-    _ "github.com/ajhager/rog/glfw"
 )
 
 func main() {
@@ -29,37 +28,20 @@ func main() {
 }
 ```
 
-Backends
---------
-* glfw:  GLFW dynamic libs needed, opengl rendering, fast and stable
-* wde:   No dependencies, software rasterizer, somewhat unstable
-* term:  Runs in a terminal, RGB->Ansi color, not feature complete yet
-* html:  Coming soon?
-
 Notes
 -----
+* You will need glfw static libs and development headers installed for now.
 * On Windows you can build your project with `go build -ldflags -Hwindowsgui` to inhibit the console window that pops up by default.
-
-Thanks
-------
-* libTCOD [http://doryen.eptalys.net/libtcod/]
-* Yamamushi [http://www.theasciiproject.com/]
-* John Asmuth [http://github.com/skelterjohn/go.wde]
-* jteeuwen [http://github.com/jteeuwen/glfw]
-* nsf [http://github.com/nsf/termbox-go]
 
 Plans
 -----
 * Website, tutorial, and more demos
 * Window resizing and fullscreen
+* Better keyboard handling
 * Audio generation and output
-* Image blitting
-* Custom drawing
+* Image (subcell) blitting
+* Custom drawing callback
 * Noise generators
-* Palette support
 * Merge in lighting
 * World creation
 * More fov algorithms
-* Curses like API
-* Common GUI widgets
-* HSL and HUSL color
