@@ -15,7 +15,7 @@ Package rog provides algorithms and data structures for creating roguelike games
      rog.Open(20, 11, 2, "rog", nil)
      for rog.Running() {
          rog.Set(5, 5, nil, nil, "Hello, 世界!")
-         if rog.Key() == rog.Escape {
+         if rog.Key() == rog.Esc {
              rog.Close()
          }
          rog.Flush()
