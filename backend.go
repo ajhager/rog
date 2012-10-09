@@ -1,8 +1,8 @@
 package rog
 
 import (
-    "github.com/go-gl/glfw"
-    gl "github.com/chsc/gogl/gl21"
+	gl "github.com/chsc/gogl/gl21"
+	"github.com/go-gl/glfw"
 	"image"
 	"image/draw"
 	_ "image/png"
@@ -10,75 +10,75 @@ import (
 )
 
 const (
-	Esc = glfw.KeyEsc
-	F1 = glfw.KeyF1
-	F2 = glfw.KeyF2
-	F3 = glfw.KeyF3
-	F4 = glfw.KeyF4
-	F5 = glfw.KeyF5
-	F6 = glfw.KeyF6
-	F7 = glfw.KeyF7
-	F8 = glfw.KeyF8
-	F9 = glfw.KeyF9
-	F10 = glfw.KeyF10
-	F11 = glfw.KeyF11
-	F12 = glfw.KeyF12
-	F13 = glfw.KeyF13
-	F14 = glfw.KeyF14
-	F15 = glfw.KeyF15
-	F16 = glfw.KeyF16
-	F17 = glfw.KeyF17
-	F18 = glfw.KeyF18
-	F19 = glfw.KeyF19
-	F20 = glfw.KeyF20
-	F21 = glfw.KeyF21
-	F22 = glfw.KeyF22
-	F23 = glfw.KeyF23
-	F24 = glfw.KeyF24
-	F25 = glfw.KeyF25
-	Up = glfw.KeyUp
-	Down = glfw.KeyDown
-	Left = glfw.KeyLeft
-	Right = glfw.KeyRight
-	Lshift = glfw.KeyLshift
-	Rshift = glfw.KeyRshift
-	Lctrl = glfw.KeyLctrl
-	Rctrl = glfw.KeyRctrl
-	Lalt = glfw.KeyLalt
-	Ralt = glfw.KeyRalt
-	Tab = glfw.KeyTab
-	Enter = glfw.KeyEnter
-	Backspace = glfw.KeyBackspace
-	Insert = glfw.KeyInsert
-	Del = glfw.KeyDel
-	Pageup = glfw.KeyPageup
-	Pagedown = glfw.KeyPagedown
-	Home = glfw.KeyHome
-	End = glfw.KeyEnd
-	KP0 = glfw.KeyKP0
-	KP1 = glfw.KeyKP1
-	KP2 = glfw.KeyKP2
-	KP3 = glfw.KeyKP3
-	KP4 = glfw.KeyKP4
-	KP5 = glfw.KeyKP5
-	KP6 = glfw.KeyKP6
-	KP7 = glfw.KeyKP7
-	KP8 = glfw.KeyKP8
-	KP9 = glfw.KeyKP9
-	KPDivide = glfw.KeyKPDivide
+	Esc        = glfw.KeyEsc
+	F1         = glfw.KeyF1
+	F2         = glfw.KeyF2
+	F3         = glfw.KeyF3
+	F4         = glfw.KeyF4
+	F5         = glfw.KeyF5
+	F6         = glfw.KeyF6
+	F7         = glfw.KeyF7
+	F8         = glfw.KeyF8
+	F9         = glfw.KeyF9
+	F10        = glfw.KeyF10
+	F11        = glfw.KeyF11
+	F12        = glfw.KeyF12
+	F13        = glfw.KeyF13
+	F14        = glfw.KeyF14
+	F15        = glfw.KeyF15
+	F16        = glfw.KeyF16
+	F17        = glfw.KeyF17
+	F18        = glfw.KeyF18
+	F19        = glfw.KeyF19
+	F20        = glfw.KeyF20
+	F21        = glfw.KeyF21
+	F22        = glfw.KeyF22
+	F23        = glfw.KeyF23
+	F24        = glfw.KeyF24
+	F25        = glfw.KeyF25
+	Up         = glfw.KeyUp
+	Down       = glfw.KeyDown
+	Left       = glfw.KeyLeft
+	Right      = glfw.KeyRight
+	Lshift     = glfw.KeyLshift
+	Rshift     = glfw.KeyRshift
+	Lctrl      = glfw.KeyLctrl
+	Rctrl      = glfw.KeyRctrl
+	Lalt       = glfw.KeyLalt
+	Ralt       = glfw.KeyRalt
+	Tab        = glfw.KeyTab
+	Enter      = glfw.KeyEnter
+	Backspace  = glfw.KeyBackspace
+	Insert     = glfw.KeyInsert
+	Del        = glfw.KeyDel
+	Pageup     = glfw.KeyPageup
+	Pagedown   = glfw.KeyPagedown
+	Home       = glfw.KeyHome
+	End        = glfw.KeyEnd
+	KP0        = glfw.KeyKP0
+	KP1        = glfw.KeyKP1
+	KP2        = glfw.KeyKP2
+	KP3        = glfw.KeyKP3
+	KP4        = glfw.KeyKP4
+	KP5        = glfw.KeyKP5
+	KP6        = glfw.KeyKP6
+	KP7        = glfw.KeyKP7
+	KP8        = glfw.KeyKP8
+	KP9        = glfw.KeyKP9
+	KPDivide   = glfw.KeyKPDivide
 	KPMultiply = glfw.KeyKPMultiply
 	KPSubtract = glfw.KeyKPSubtract
-	KPAdd = glfw.KeyKPAdd
-	KPDecimal = glfw.KeyKPDecimal
-	KPEqual = glfw.KeyKPEqual
-	KPEnter = glfw.KeyKPEnter
-	KPNumlock = glfw.KeyKPNumlock
-	Capslock = glfw.KeyCapslock
+	KPAdd      = glfw.KeyKPAdd
+	KPDecimal  = glfw.KeyKPDecimal
+	KPEqual    = glfw.KeyKPEqual
+	KPEnter    = glfw.KeyKPEnter
+	KPNumlock  = glfw.KeyKPNumlock
+	Capslock   = glfw.KeyCapslock
 	Scrolllock = glfw.KeyScrolllock
-	Pause = glfw.KeyPause
-	Lsuper = glfw.KeyLsuper
-	Rsuper = glfw.KeyRsuper
-	Menu = glfw.KeyMenu
+	Pause      = glfw.KeyPause
+	Lsuper     = glfw.KeyLsuper
+	Rsuper     = glfw.KeyRsuper
+	Menu       = glfw.KeyMenu
 )
 
 var (
@@ -241,15 +241,14 @@ func (w *glfwBackend) mousePress(button, state int) {
 }
 
 func (w *glfwBackend) Key() int {
-    return w.key
+	return w.key
 }
 
 func (w *glfwBackend) setKey(key, state int) {
-    if state == glfw.KeyPress {
-        w.key = key
-    }
+	if state == glfw.KeyPress {
+		w.key = key
+	}
 }
-
 
 func glInit(width, height int) {
 	gl.Init()

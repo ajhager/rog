@@ -39,7 +39,7 @@ func Running() bool {
 
 // Open creates a window and a root console with size width by height cells.
 func Open(width, height, zoom int, title string, font *FontData) {
-    backend = new(glfwBackend)
+	backend = new(glfwBackend)
 	console = NewConsole(width, height)
 
 	if font == nil {
