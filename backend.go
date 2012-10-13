@@ -10,6 +10,7 @@ import (
 )
 
 const (
+    NOKEY      = -1
 	Esc        = glfw.KeyEsc
 	F1         = glfw.KeyF1
 	F2         = glfw.KeyF2
@@ -126,16 +127,17 @@ func (w *glfwBackend) Open(width, height, zoom int, fs bool, font *FontData) {
 		panic(err)
 	}
 
+    w.key = NOKEY
 	glfw.SetWindowCloseCallback(func() int { w.Close(); return 0 })
 	glfw.SetKeyCallback(func(key, state int) { w.setKey(key, state) })
 	glfw.SetCharCallback(func(key, state int) { w.setKey(key, state) })
 	glfw.Enable(glfw.KeyRepeat)
-	glfw.Enable(glfw.MouseCursor)
 
 	w.mouse = new(MouseData)
     glfw.Enable(glfw.MouseCursor)
 	glfw.SetMousePosCallback(func(x, y int) { w.mouseMove(x, y) })
 	glfw.SetMouseButtonCallback(func(but, state int) { w.mousePress(but, state) })
+    glfw.Enable(glfw.MouseCursor)
 
     xoff := float32(twidth - fwidth) / 2.0
     yoff := float32(theight - fheight) / 2.0
@@ -194,7 +196,7 @@ func (w *glfwBackend) Render(console *Console) {
 		w.mouse.Left.Released = false
 		w.mouse.Right.Released = false
 		w.mouse.Middle.Released = false
-		w.key = -1
+		w.key = NOKEY
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
