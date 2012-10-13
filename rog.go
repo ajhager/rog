@@ -74,6 +74,11 @@ func Mouse() *MouseData {
 	return backend.Mouse()
 }
 
+// Cursor enables or disables the mouse cursor.
+func Cursor(on bool) {
+    backend.Cursor(on)
+}
+
 // Key returns the last key typed this frame.
 func Key() int {
 	return backend.Key()

@@ -130,8 +130,10 @@ func (w *glfwBackend) Open(width, height, zoom int, fs bool, font *FontData) {
 	glfw.SetKeyCallback(func(key, state int) { w.setKey(key, state) })
 	glfw.SetCharCallback(func(key, state int) { w.setKey(key, state) })
 	glfw.Enable(glfw.KeyRepeat)
+	glfw.Enable(glfw.MouseCursor)
 
 	w.mouse = new(MouseData)
+    glfw.Enable(glfw.MouseCursor)
 	glfw.SetMousePosCallback(func(x, y int) { w.mouseMove(x, y) })
 	glfw.SetMouseButtonCallback(func(but, state int) { w.mousePress(but, state) })
 
@@ -220,6 +222,14 @@ func (w *glfwBackend) Render(console *Console) {
 
 func (w *glfwBackend) Mouse() *MouseData {
 	return w.mouse
+}
+
+func (w *glfwBackend) Cursor(on bool) {
+    if on {
+        glfw.Enable(glfw.MouseCursor)
+    } else {
+        glfw.Disable(glfw.MouseCursor)
+    }
 }
 
 func (w *glfwBackend) mouseMove(x, y int) {
