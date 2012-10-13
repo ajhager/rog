@@ -30,7 +30,7 @@ func main() {
 
 Notes
 -----
-* You will need glfw static libs and development headers installed for now.
+* You will need glfw dynamic libs and development headers installed for now.
 * On Windows you can build your project with `go build -ldflags -Hwindowsgui` to inhibit the console window that pops up by default.
 
 Plans
