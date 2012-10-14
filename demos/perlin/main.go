@@ -1,7 +1,8 @@
+// Submitted by Dustin Lacewell <dlacewell@gmail.com>
 package main
 
 import (
-	"github.com/ajhager/rog"
+	"hagerbot.com/rog"
 	"github.com/iand/perlin"
 	"math"
 )

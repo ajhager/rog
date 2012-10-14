@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ajhager/rog"
+	"hagerbot.com/rog"
 	"math/rand"
 )
 

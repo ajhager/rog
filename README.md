@@ -1,6 +1,6 @@
 rog
 ===
-![Rog Screenshot](http://github.com/ajhager/rog/raw/master/data/screenshot.png)
+![Rog Screenshot](http://hagerbot.com/img/screenshot_rog_fov.png)
 
 * 24bit, scaling console with custom font support
 * Cross platform rendering and input
@@ -13,7 +13,7 @@ rog
 package main
 
 import (
-    "github.com/ajhager/rog"
+    "hagerbot.com/rog"
 )
 
 func main() {
