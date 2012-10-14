@@ -1,4 +1,4 @@
-rog
+rog A roguelike game library written in go
 ===
 ![Rog Screenshot](http://hagerbot.com/img/screenshot_rog_fov.png)
 
@@ -7,7 +7,7 @@ rog
 * Field of view, lighting, and pathfinding algorithms
 * Procedural color and palette manipulation
 
-[Documentation](http://go.pkgdoc.org/github.com/ajhager/rog "Documentation")
+[Documentation](http://hagerbot.com/rog/docs.html "Documentation")
 
 ```go
 package main
