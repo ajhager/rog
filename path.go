@@ -80,7 +80,7 @@ const (
 	WALL
 )
 
-// Tile movement cotsts
+// Tile movement costs
 const (
 	COST_STRAIGHT = 1000
 	COST_DIAGONAL = 1414
