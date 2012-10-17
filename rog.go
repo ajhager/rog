@@ -46,6 +46,11 @@ func SetTitle(title string) {
 	backend.Name(title)
 }
 
+// SetScreenColor sets the color to clear the border when fullscreen.
+func SetScreenColor(color RGB) {
+    backend.SetScreenColor(color)
+}
+
 // Flush renders the root console to the window.
 func Flush() {
 	backend.Render(console)

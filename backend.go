@@ -191,6 +191,13 @@ func (w *glfwBackend) Name(title string) {
 	glfw.SetWindowTitle(title)
 }
 
+func (w *glfwBackend) SetScreenColor(color RGB) {
+    r := gl.Float(float64(color.R) / 255.0)
+    g := gl.Float(float64(color.G) / 255.0)
+    b := gl.Float(float64(color.B) / 255.0)
+    gl.ClearColor(r, g, b, gl.Float(1.0))
+}
+
 func (w *glfwBackend) Render(console *Console) {
 	if w.Running() {
 		w.mouse.Left.Released = false
