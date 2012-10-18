@@ -35,11 +35,13 @@ Notes
 
 Plans
 -----
-* Website, tutorial, and more demos
-* Audio generation and output
-* Image (subcell) blitting
-* Custom drawing callback
-* Noise generators
-* Merge in lighting
-* World creation
-* More fov algorithms
+* Tutorial for installing dependencies
+* Generalize rendering to 2d tile engine and build rog semantics on top
+* Blitting of image.Image interface to consoles
+* User defined OpenGL callback
+* Noise generators (Perlin, Fractal, Simplex, Wavelet, etc.)
+* Clean up map system, merge in lighting, and add BSP level gen
+* Screenshot method
+* 1:2 custom font demo
+* Host and link to the full 4096x4096 Unicode font texture
+* Create tween module and unify it with color scales
