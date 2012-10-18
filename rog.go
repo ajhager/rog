@@ -15,11 +15,6 @@ var (
 	timing  *stats
 )
 
-// Running returns whether the rog window is open or not.
-func Running() bool {
-	return backend.Running()
-}
-
 // Open creates a window and a root console with size width by height cells.
 func Open(width, height, zoom int, fs bool, title string, font *FontData) {
 	backend = new(glfwBackend)
@@ -35,6 +30,11 @@ func Open(width, height, zoom int, fs bool, title string, font *FontData) {
 	timing = NewStats()
 }
 
+// Running returns whether the rog window is open or not.
+func Running() bool {
+	return backend.Running()
+}
+
 // Close shuts down the windowing system.
 // No rog functions should be called after this.
 func Close() {
@@ -44,11 +44,6 @@ func Close() {
 // SetTitle changes the title of the window.
 func SetTitle(title string) {
 	backend.Name(title)
-}
-
-// SetScreenColor sets the color to clear the border when fullscreen.
-func SetScreenColor(color RGB) {
-    backend.SetScreenColor(color)
 }
 
 // Flush renders the root console to the window.
