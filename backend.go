@@ -104,6 +104,7 @@ func (w *glfwBackend) Open(width, height, zoom int, fs bool, font *FontData) {
 		panic(err)
 	}
 
+	w.font = font
 	w.zoom = zoom
 	w.width = width
 	w.height = height
@@ -143,11 +144,12 @@ func (w *glfwBackend) Open(width, height, zoom int, fs bool, font *FontData) {
     yoff := float32(theight - fheight) / 2.0
 
 	fc := float32(font.CellWidth * zoom)
+	fch := float32(font.CellHeight * zoom)
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
 			cx := xoff + float32(x) * fc
-			cy := yoff + float32(y) * fc
-			w.verts = append(w.verts, cx, cy, cx, cy+fc, cx+fc, cy+fc, cx+fc, cy)
+			cy := yoff + float32(y) * fch
+			w.verts = append(w.verts, cx, cy, cx, cy+fch, cx+fc, cy+fch, cx+fc, cy)
 		}
 	}
 
@@ -155,8 +157,8 @@ func (w *glfwBackend) Open(width, height, zoom int, fs bool, font *FontData) {
 	glInit(twidth, theight)
 
 	m := font.Image.(*image.RGBA)
-	w.s = float32(font.Width) / float32(m.Bounds().Max.X)
-	w.t = float32(font.Height) / float32(m.Bounds().Max.Y)
+	w.s = float32(font.CellWidth) / float32(m.Bounds().Max.X)
+	w.t = float32(font.CellHeight) / float32(m.Bounds().Max.Y)
 	textures = make([]gl.Uint, 2)
 	gl.GenTextures(2, &textures[0])
 
@@ -165,14 +167,12 @@ func (w *glfwBackend) Open(width, height, zoom int, fs bool, font *FontData) {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.Sizei(m.Bounds().Max.X), gl.Sizei(m.Bounds().Max.Y), 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Pointer(&m.Pix[0]))
 
-	m = image.NewRGBA(image.Rect(0, 0, font.Width, font.Height))
+	m = image.NewRGBA(image.Rect(0, 0, font.CellWidth, font.CellHeight))
 	draw.Draw(m, m.Bounds(), &image.Uniform{White}, image.ZP, draw.Src)
 	gl.BindTexture(gl.TEXTURE_2D, textures[1])
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.Sizei(m.Bounds().Max.X), gl.Sizei(m.Bounds().Max.Y), 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Pointer(&m.Pix[0]))
-
-	w.font = font
 
 	w.open = true
 }
@@ -237,8 +237,8 @@ func (w *glfwBackend) Cursor(on bool) {
 func (w *glfwBackend) mouseMove(x, y int) {
 	w.mouse.Pos.X = x
 	w.mouse.Pos.Y = y
-	w.mouse.Cell.X = x / (16 * w.zoom)
-	w.mouse.Cell.Y = y / (16 * w.zoom)
+	w.mouse.Cell.X = x / (w.font.Width * w.zoom)
+  	w.mouse.Cell.Y = y / (w.font.Height * w.zoom)
 }
 
 func (w *glfwBackend) mousePress(button, state int) {
