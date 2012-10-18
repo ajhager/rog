@@ -28,9 +28,19 @@ func main() {
 }
 ```
 
+Setup
+-----
+rog currently depends on github.com/go-gl/glfw. You can skip this step if you already have that up and running.
+* Ubuntu: apt-get install libglfw-dev
+* OSX: brew install glfw
+* Windows: download the glfw binaries, then drop the GL/ directory into C:\MingW\include and the files for your arch under libmingw into C:\MingW\lib. You will then need to install glfw.dll system wide or have it in the directory with your game.
+
+Install
+-------
+go get hagerbot.com/rog
+
 Notes
 -----
-* You will need glfw dynamic libs and development headers installed for now.
 * On Windows you can build your project with `go build -ldflags -Hwindowsgui` to inhibit the console window that pops up by default.
 
 Plans
