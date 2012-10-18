@@ -1,7 +1,9 @@
 rog A roguelike game library written in go
 ===
-[Documentation](http://hagerbot.com/rog/docs.html "Documentation") &nbsp;
+[Documentation](http://hagerbot.com/rog/docs.html "Documentation")
+
 ![Rog Screenshot](http://hagerbot.com/img/screenshot_rog_fov.png)
+
 
 Setup
 -----
