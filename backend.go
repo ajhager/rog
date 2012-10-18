@@ -10,7 +10,7 @@ import (
 )
 
 const (
-    NOKEY      = -1
+	NOKEY      = -1
 	Esc        = glfw.KeyEsc
 	F1         = glfw.KeyF1
 	F2         = glfw.KeyF2
@@ -109,46 +109,46 @@ func (w *glfwBackend) Open(width, height, zoom int, fs bool, font *FontData) {
 	w.width = width
 	w.height = height
 
-    var fwidth = width*font.CellWidth*zoom
-    var fheight = height*font.CellHeight*zoom
-    var twidth = fwidth
-    var theight = fheight
+	var fwidth = width * font.CellWidth * zoom
+	var fheight = height * font.CellHeight * zoom
+	var twidth = fwidth
+	var theight = fheight
 
-    flag := glfw.Windowed
-    if (fs) {
-        flag = glfw.Fullscreen
-        dm := glfw.DesktopMode()
-        twidth = dm.W
-        theight = dm.H
-    }
-    
+	flag := glfw.Windowed
+	if fs {
+		flag = glfw.Fullscreen
+		dm := glfw.DesktopMode()
+		twidth = dm.W
+		theight = dm.H
+	}
+
 	glfw.OpenWindowHint(glfw.WindowNoResize, gl.TRUE)
 	err := glfw.OpenWindow(twidth, theight, 8, 8, 8, 8, 0, 0, flag)
 	if err != nil {
 		panic(err)
 	}
 
-    w.key = NOKEY
+	w.key = NOKEY
 	glfw.SetWindowCloseCallback(func() int { w.Close(); return 0 })
 	glfw.SetKeyCallback(func(key, state int) { w.setKey(key, state) })
 	glfw.SetCharCallback(func(key, state int) { w.setKey(key, state) })
 	glfw.Enable(glfw.KeyRepeat)
 
 	w.mouse = new(MouseData)
-    glfw.Enable(glfw.MouseCursor)
+	glfw.Enable(glfw.MouseCursor)
 	glfw.SetMousePosCallback(func(x, y int) { w.mouseMove(x, y) })
 	glfw.SetMouseButtonCallback(func(but, state int) { w.mousePress(but, state) })
-    glfw.Enable(glfw.MouseCursor)
+	glfw.Enable(glfw.MouseCursor)
 
-    xoff := float32(twidth - fwidth) / 2.0
-    yoff := float32(theight - fheight) / 2.0
+	xoff := float32(twidth-fwidth) / 2.0
+	yoff := float32(theight-fheight) / 2.0
 
 	fc := float32(font.CellWidth * zoom)
 	fch := float32(font.CellHeight * zoom)
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			cx := xoff + float32(x) * fc
-			cy := yoff + float32(y) * fch
+			cx := xoff + float32(x)*fc
+			cy := yoff + float32(y)*fch
 			w.verts = append(w.verts, cx, cy, cx, cy+fch, cx+fc, cy+fch, cx+fc, cy)
 		}
 	}
@@ -227,18 +227,18 @@ func (w *glfwBackend) Mouse() *MouseData {
 }
 
 func (w *glfwBackend) Cursor(on bool) {
-    if on {
-        glfw.Enable(glfw.MouseCursor)
-    } else {
-        glfw.Disable(glfw.MouseCursor)
-    }
+	if on {
+		glfw.Enable(glfw.MouseCursor)
+	} else {
+		glfw.Disable(glfw.MouseCursor)
+	}
 }
 
 func (w *glfwBackend) mouseMove(x, y int) {
 	w.mouse.Pos.X = x
 	w.mouse.Pos.Y = y
 	w.mouse.Cell.X = x / (w.font.Width * w.zoom)
-  	w.mouse.Cell.Y = y / (w.font.Height * w.zoom)
+	w.mouse.Cell.Y = y / (w.font.Height * w.zoom)
 }
 
 func (w *glfwBackend) mousePress(button, state int) {

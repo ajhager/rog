@@ -2,8 +2,8 @@
 package main
 
 import (
-	"hagerbot.com/rog"
 	"github.com/iand/perlin"
+	"hagerbot.com/rog"
 	"math"
 )
 

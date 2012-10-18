@@ -37,9 +37,9 @@ func NewConsole(width, height int) *Console {
 }
 
 func (con *Console) put(x, y, i, t int, fg, bg Blender, ch rune) {
-    if x < 0 || x >= con.w || y < 0 || y >= con.h {
-        return
-    }
+	if x < 0 || x >= con.w || y < 0 || y >= con.h {
+		return
+	}
 
 	if ch > 0 {
 		con.ch[y][x] = ch
