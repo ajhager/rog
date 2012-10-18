@@ -4,5 +4,4 @@
 * Noise generators (Perlin, Fractal, Simplex, Wavelet, etc.)
 * Clean up map system, merge in lighting, and add BSP level gen
 * Screenshot method
-* Host and link to the full 4096x4096 Unicode font texture
 * Create tween module and unify it with color scales

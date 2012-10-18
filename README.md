@@ -1,6 +1,7 @@
 rog A roguelike game library written in go
 ===
-[Documentation](http://hagerbot.com/rog/docs.html "Documentation")
+[Documentation](http://hagerbot.com/rog/docs.html "Documentation") &nbsp;
+[Custom Fonts](http://hagerbot.com/rog/font.html "Custom Fonts") &nbsp;
 
 ![Rog Screenshot](http://hagerbot.com/img/screenshot_rog_fov.png)
 
