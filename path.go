@@ -6,6 +6,16 @@ import (
 	"container/heap"
 )
 
+type Walkable interface {
+	Roughness() float64
+}
+
+type WalkableMap interface {
+	Width() int
+	Height() int
+	Roughness(x, y int) int
+}
+
 // A PriorityQueue implements heap.Interface and holds Items.
 type PriorityQueue []*Node
 
@@ -76,8 +86,8 @@ func abs(a int) int {
 
 // Tile information
 const (
-	LAND = 1 << iota
-	WALL
+	PATH_MIN = 1 << iota
+	PATH_MAX
 )
 
 // Tile movement costs
@@ -86,55 +96,35 @@ const (
 	COST_DIAGONAL = 1414
 )
 
-type MapData [][]int
+// TODO: move to serialization module
 
-// Return a new MapData by value given some dimensions
-func NewMapData(rows, cols int) MapData {
-	result := make([]([]int), rows)
-	for i := 0; i < rows; i++ {
-		result[i] = make([]int, cols)
-	}
-	return result
-}
-
-func (m MapData) Clone() MapData {
-	rows := len(m)
-	cols := len(m[0])
-	result := make([]([]int), rows)
-	for i := 0; i < rows; i++ {
-		result[i] = make([]int, cols)
-		copy(result[i], m[i])
-	}
-	return result
-}
-
-func str_map(data MapData, nodes []*Node) string {
-	var result string
-	for i, row := range data {
-		for j, cell := range row {
-			added := false
-			for _, node := range nodes {
-				if node.X == i && node.Y == j {
-					result += "o"
-					added = true
-					break
-				}
-			}
-			if !added {
-				switch cell {
-				case LAND:
-					result += "."
-				case WALL:
-					result += "#"
-				default: //Unknown
-					result += "?"
-				}
-			}
-		}
-		result += "\n"
-	}
-	return result
-}
+// func str_map(data MapData, nodes []*Node) string {
+// 	var result string
+// 	for i, row := range data {
+// 		for j, cell := range row {
+// 			added := false
+// 			for _, node := range nodes {
+// 				if node.X == i && node.Y == j {
+// 					result += "o"
+// 					added = true
+// 					break
+// 				}
+// 			}
+// 			if !added {
+// 				switch cell {
+// 				case PATH_MIN:
+// 					result += "."
+// 				case PATH_MAX:
+// 					result += "#"
+// 				default: //Unknown
+// 					result += "?"
+// 				}
+// 			}
+// 		}
+// 		result += "\n"
+// 	}
+// 	return result
+// }
 
 /*** Node type ***/
 
@@ -206,15 +196,15 @@ func (n *nodeList) hasNode(node *Node) bool {
 // Start, stop nodes and a slice of nodes
 type Graph struct {
 	nodes *nodeList // Used to avoid duplicated nodes!
-	data  MapData
+	wmap WalkableMap
 }
 
 // Return a Graph from a map of coordinates (those that are passible)
-func NewGraph(map_data MapData) *Graph {
+func NewGraph(wmap WalkableMap) *Graph {
 	//var start, stop *Node
 	return &Graph{
-		nodes: newNodeList(len(map_data), len(map_data[0])),
-		data:  map_data,
+		nodes: newNodeList(wmap.Width(), wmap.Height()),
+		wmap:  wmap,
 	}
 }
 
@@ -224,7 +214,7 @@ func (g *Graph) Node(x, y int) *Node {
 	var node *Node
 	node = g.nodes.getNode(x, y)
 
-	if node == nil && (g.data[x][y] != WALL) {
+	if node == nil && (g.wmap.Roughness(x, y) < PATH_MAX) {
 		//Create a new node and add it to the graph
 		node = NewNode(x, y)
 		g.nodes.addNode(node)
@@ -280,9 +270,9 @@ var adjecentDirs4 = [][3]int{
 }
 
 // A* search algorithm. See http://en.wikipedia.org/wiki/A*_search_algorithm
-func Astar(map_data MapData, startx, starty, stopx, stopy int, dir8 bool) []*Node {
-	graph := NewGraph(map_data)
-	rows, cols := len(graph.data), len(graph.data[0])
+func Astar(wmap WalkableMap, startx, starty, stopx, stopy int, dir8 bool) []*Node {
+	graph := NewGraph(wmap)
+	rows, cols := wmap.Width(), wmap.Height()
 
 	// Create lists
 	closedSet := newNodeList(rows, cols)

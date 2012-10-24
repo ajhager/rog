@@ -1,7 +1,33 @@
 package rog
 
+import (
+	"image"
+)
+
+type Point image.Point 
+
+type Viewable interface {
+	Viewable() bool
+}
+
+type ViewableMap interface {
+	In(x, y int) bool
+	Width() int
+	Height() int
+	Viewable(x, y int) bool
+	ViewMap() ViewMap
+}
+
+type ViewMap map[Point]bool
+
+func (self ViewMap) Update(other ViewMap) {
+	for k, v := range other{
+		self[k] = v
+	}
+}
+
 // FOVAlgo takes a FOVMap x,y vantage, radius of the view, whether to include walls and then marks in the map which cells are viewable.
-type FOVAlgo func(*Map, int, int, int, bool)
+type FOVAlgo func(ViewableMap, int, int, int, bool) ViewMap
 
 func max(a, b int) int {
 	if a > b {
@@ -18,14 +44,15 @@ func min(a, b int) int {
 }
 
 // Circular Raycasting
-func fovCircularCastRay(fov *Map, xo, yo, xd, yd, r2 int, walls bool) {
+func fovCircularCastRay(fov ViewableMap, xo, yo, xd, yd, r2 int, walls bool) ViewMap {
+	data := make(ViewMap, 0)
 	curx := xo
 	cury := yo
 	in := false
 	blocked := false
 	if fov.In(curx, cury) {
 		in = true
-		fov.seen[cury][curx] = true
+		data[Point{curx, cury}] = true
 	}
 	for _, p := range Line(xo, yo, xd, yd) {
 		curx = p.X
@@ -38,48 +65,52 @@ func fovCircularCastRay(fov *Map, xo, yo, xd, yd, r2 int, walls bool) {
 		}
 		if fov.In(curx, cury) {
 			in = true
-			if !blocked && fov.blocked[cury][curx] {
+			if !blocked && fov.Viewable(curx, cury) {
 				blocked = true
 			} else if blocked {
 				break
 			}
 			if walls || !blocked {
-				fov.seen[cury][curx] = true
+				data[Point{curx, cury}] = true
 			}
 		} else if in {
 			break
 		}
 	}
+	return data
 }
 
-func fovCircularPostProc(fov *Map, x0, y0, x1, y1, dx, dy int) {
+func fovCircularPostProc(fov ViewableMap, vdata ViewMap, x0, y0, x1, y1, dx, dy int) {
+	data := make(ViewMap, 0)
 	for cx := x0; cx <= x1; cx++ {
 		for cy := y0; cy <= y1; cy++ {
 			x2 := cx + dx
 			y2 := cy + dy
-			if fov.In(cx, cy) && fov.Look(cx, cy) && !fov.blocked[cy][cx] {
+			seen := vdata[Point{cx, cy}]
+			if fov.In(cx, cy) && seen && !fov.Viewable(cx, cy) {
 				if x2 >= x0 && x2 <= x1 {
-					if fov.In(x2, cy) && fov.blocked[cy][x2] {
-						fov.seen[cy][x2] = true
+					if fov.In(x2, cy) && fov.Viewable(x2, cy) {
+						data[Point{x2, cy}] = true
 					}
 				}
 				if y2 >= y0 && y2 <= y1 {
-					if fov.In(cx, y2) && fov.blocked[y2][cx] {
-						fov.seen[y2][cx] = true
+					if fov.In(cx, y2) && fov.Viewable(cx, y2) {
+						data[Point{cx, y2}] = true
 					}
 				}
 				if x2 >= x0 && x2 <= x1 && y2 >= y0 && y2 <= y1 {
-					if fov.In(x2, y2) && fov.blocked[y2][x2] {
-						fov.seen[y2][x2] = true
+					if fov.In(x2, y2) && fov.Viewable(x2, y2) {
+						data[Point{x2, y2}] = true
 					}
 				}
 			}
 		}
 	}
+	vdata.Update(data)
 }
 
 // FOVCicular raycasts out from the vantage in a circle.
-func FOVCircular(fov *Map, x, y, r int, walls bool) {
+func FOVCircular(fov ViewableMap, x, y, r int, walls bool) ViewMap {
 	xo := 0
 	yo := 0
 	xmin := 0
@@ -95,32 +126,37 @@ func FOVCircular(fov *Map, x, y, r int, walls bool) {
 	}
 	xo = xmin
 	yo = ymin
+
+	data := make(ViewMap, 0)
+
 	for xo < xmax {
-		fovCircularCastRay(fov, x, y, xo, yo, r2, walls)
+		data.Update(fovCircularCastRay(fov, x, y, xo, yo, r2, walls))
 		xo++
 	}
 	xo = xmax - 1
 	yo = ymin + 1
 	for yo < ymax {
-		fovCircularCastRay(fov, x, y, xo, yo, r2, walls)
+		data.Update(fovCircularCastRay(fov, x, y, xo, yo, r2, walls))
 		yo++
 	}
 	xo = xmax - 2
 	yo = ymax - 1
 	for xo >= 0 {
-		fovCircularCastRay(fov, x, y, xo, yo, r2, walls)
+		data.Update(fovCircularCastRay(fov, x, y, xo, yo, r2, walls))
 		xo--
 	}
 	xo = xmin
 	yo = ymax - 2
 	for yo > 0 {
-		fovCircularCastRay(fov, x, y, xo, yo, r2, walls)
+		data.Update(fovCircularCastRay(fov, x, y, xo, yo, r2, walls))
 		yo--
 	}
 	if walls {
-		fovCircularPostProc(fov, xmin, ymin, x, y, -1, -1)
-		fovCircularPostProc(fov, x, ymin, xmax-1, y, 1, -1)
-		fovCircularPostProc(fov, xmin, y, x, ymax-1, -1, 1)
-		fovCircularPostProc(fov, x, y, xmax-1, ymax-1, 1, 1)
+		fovCircularPostProc(fov, data, xmin, ymin, x, y, -1, -1)
+		fovCircularPostProc(fov, data, x, ymin, xmax-1, y, 1, -1)
+		fovCircularPostProc(fov, data, xmin, y, x, ymax-1, -1, 1)
+		fovCircularPostProc(fov, data, x, y, xmax-1, ymax-1, 1, 1)
 	}
+
+	return data
 }
