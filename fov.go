@@ -1,13 +1,14 @@
 package rog
 
 import (
+	"fmt"
 	"image"
 )
 
 type Point image.Point 
 
 type Viewable interface {
-	Viewable() bool
+	IsViewable() bool
 }
 
 type ViewableMap interface {
@@ -65,7 +66,7 @@ func fovCircularCastRay(fov ViewableMap, xo, yo, xd, yd, r2 int, walls bool) Vie
 		}
 		if fov.In(curx, cury) {
 			in = true
-			if !blocked && fov.Viewable(curx, cury) {
+			if !blocked && !fov.Viewable(curx, cury) {
 				blocked = true
 			} else if blocked {
 				break
@@ -90,16 +91,19 @@ func fovCircularPostProc(fov ViewableMap, vdata ViewMap, x0, y0, x1, y1, dx, dy 
 			if fov.In(cx, cy) && seen && !fov.Viewable(cx, cy) {
 				if x2 >= x0 && x2 <= x1 {
 					if fov.In(x2, cy) && fov.Viewable(x2, cy) {
+						fmt.Print('.')
 						data[Point{x2, cy}] = true
 					}
 				}
 				if y2 >= y0 && y2 <= y1 {
 					if fov.In(cx, y2) && fov.Viewable(cx, y2) {
+						fmt.Print('.')
 						data[Point{cx, y2}] = true
 					}
 				}
 				if x2 >= x0 && x2 <= x1 && y2 >= y0 && y2 <= y1 {
 					if fov.In(x2, y2) && fov.Viewable(x2, y2) {
+						fmt.Print('.')
 						data[Point{x2, y2}] = true
 					}
 				}
@@ -151,12 +155,12 @@ func FOVCircular(fov ViewableMap, x, y, r int, walls bool) ViewMap {
 		data.Update(fovCircularCastRay(fov, x, y, xo, yo, r2, walls))
 		yo--
 	}
-	if walls {
-		fovCircularPostProc(fov, data, xmin, ymin, x, y, -1, -1)
-		fovCircularPostProc(fov, data, x, ymin, xmax-1, y, 1, -1)
-		fovCircularPostProc(fov, data, xmin, y, x, ymax-1, -1, 1)
-		fovCircularPostProc(fov, data, x, y, xmax-1, ymax-1, 1, 1)
-	}
+	// if walls {
+	// 	fovCircularPostProc(fov, data, xmin, ymin, x, y, -1, -1)
+	// 	fovCircularPostProc(fov, data, x, ymin, xmax-1, y, 1, -1)
+	// 	fovCircularPostProc(fov, data, xmin, y, x, ymax-1, -1, 1)
+	// 	fovCircularPostProc(fov, data, x, y, xmax-1, ymax-1, 1, 1)
+	// }
 
 	return data
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type Walkable interface {
-	Roughness() float64
+	GetRoughness() int
 }
 
 type WalkableMap interface {

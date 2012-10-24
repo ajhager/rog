@@ -1,15 +1,15 @@
 package rog
 
 type Renderable interface {
-    X() int
-    Y() int
+    GetX() int
+    GetY() int
     SetX(int)
     SetY(int)
 
-    Fg() RGB
-    Bg() RGB
-    Glyph() rune
-    Render()
+    GetFg() RGB
+    GetBg() RGB
+    GetGlyph() rune
+    Render(dx, dy int)
 }
 
 type Tileable interface {
@@ -18,50 +18,28 @@ type Tileable interface {
 }
 
 type Tile struct {
-    x, y int
-
-    fg, bg RGB
-    glyph rune
-    blocks bool
+    X, Y int
+    Fg, Bg RGB
+    Glyph rune
+    Roughness int
+    Viewable bool
 }
 
-func (self *Tile) X() int { return self.x }
-func (self *Tile) Y() int { return self.y }
+func (self *Tile) GetX() int { return self.X }
+func (self *Tile) GetY() int { return self.Y }
 
-func (self *Tile) SetX(v int) { self.x = v }
-func (self *Tile) SetY(v int) { self.y = v }
+func (self *Tile) SetX(v int) { self.X = v }
+func (self *Tile) SetY(v int) { self.Y = v }
 
-func (self *Tile) Fg() RGB { return self.fg }
-func (self *Tile) Bg() RGB { return self.bg }
-func (self *Tile) Glyph() rune { return self.glyph }
-func (self *Tile) Blocks() bool { return self.blocks }
+func (self *Tile) GetFg() RGB { return self.Fg }
+func (self *Tile) GetBg() RGB { return self.Bg }
+func (self *Tile) GetGlyph() rune { return self.Glyph }
+func (self *Tile) GetRoughness() int { return self.Roughness }
+func (self *Tile) IsViewable() bool { return self.Viewable }
 func (self *Tile) Render(dx, dy int) {
     Set(
-        self.X() + dx, self.Y() + dy,
-        self.Fg(), self.Bg(),
-        string(self.Glyph()),
+        self.GetX() + dx, self.GetY() + dy,
+        self.GetFg(), self.GetBg(),
+        string(self.GetGlyph()),
     )
-}
-
-type Floor struct { Tile }
-func NewFloor(x, y int) *Floor {
-    return &Floor{
-        Tile{
-            x, y,
-            Hex(0x885040), Hex(0x885040),
-            '.', false,
-
-        },
-    }
-}
-
-type Wall struct { Tile }
-func NewWall(x, y int) *Wall {
-    return &Wall{
-        Tile{
-            x, y,
-            Hex(0xffbb99), Hex(0xffbb99),
-            '#', true,
-        },
-    }
 }

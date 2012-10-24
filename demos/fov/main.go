@@ -6,12 +6,39 @@ import (
 	"runtime"
 )
 
+type Floor struct { rog.Tile }
+func NewFloor(x, y int) *Floor {
+    return &Floor{
+        rog.Tile {
+            X: x, Y: y,
+            Fg: rog.Hex(0x442020), 
+            Bg: rog.Hex(0x885040),
+            Glyph: '.', 
+            Roughness: rog.PATH_MIN, 
+            Viewable: true,
+        },
+    }
+}
+
+type Wall struct { rog.Tile }
+func NewWall(x, y int) *Wall {
+    return &Wall{
+    	rog.Tile {
+		    X: x, Y: y,
+		    Fg: rog.Hex(0x885544), 
+		    Bg: rog.Hex(0xffbb99),
+		    Glyph: '#', 
+		    Roughness: rog.PATH_MAX, 
+		    Viewable: false,
+		},
+	}
+}
+
+
 var (
 	width  = 40
 	height = 20
 
-	wall   = rog.Hex(0xffbb99)
-	floorc = rog.Hex(0x885040)
 	lgrey  = rog.Hex(0xc8c8c8)
 	dgrey  = rog.Hex(0x1e1e1e)
 
@@ -69,7 +96,9 @@ func example() {
 		for y := 0; y < height; y++ {
 			for x := 0; x < width; x++ {
 				if tmap[y][x] == '#' {
-					pmap.Block(x, y, true)
+					pmap.SetTile(NewWall(x, y), x, y)
+				} else {
+					pmap.SetTile(NewFloor(x, y), x, y)
 				}
 			}
 		}
@@ -93,18 +122,18 @@ func example() {
 		rog.Close()
 	}
 
+	//floor := NewFloor(0, 0)
+
 	for cy := 0; cy < pmap.Height(); cy++ {
 		for cx := 0; cx < pmap.Width(); cx++ {
 			rog.Set(cx, cy, nil, rog.Black, " ")
-			if pmap.Look(cx, cy) {
-				i := intensity(x, y, cx, cy, 20)
-				if tmap[cy][cx] == '#' {
-					rog.Set(cx, cy, nil, wall.Scale(i), "")
-				} else {
-					rog.Set(cx, cy, rog.Scale(1.5), floorc.Scale(i), "✵")
-				}
-			}
 		}
+	}
+
+	for point, _ := range pmap.ViewMap() {
+		tile, _ := pmap.GetTile(point.X, point.Y)
+		i := intensity(x, y, point.X, point.Y, 20)
+		rog.Set(point.X, point.Y, tile.GetFg().Scale(i), tile.GetBg().Scale(i), string(tile.GetGlyph()))
 	}
 	rog.Set(x, y, lgrey, nil, "웃")
 

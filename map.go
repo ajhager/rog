@@ -4,22 +4,24 @@ import (
 	"image"
 )
 
+type Entity interface {
+	Renderable
+	Viewable
+	Walkable
+}
 
 type Map struct {
 	w, h          int
-	blocked [][]bool
+	tiles map[Point]Entity
 	viewable ViewMap
 }
 
 func NewMap(width, height int) *Map {
-	blocked := make([][]bool, height)
-	for y := 0; y < height; y++ {
-		blocked[y] = make([]bool, width)		
+	return &Map{
+		width, height, 
+		make(map[Point]Entity, 0),
+		make(ViewMap, 0),
 	}
-
-	seen := make(ViewMap, 0)
-
-	return &Map{width, height, blocked, seen}
 }
 
 // In returns whether the coordinate is inside the map bounds.
@@ -27,25 +29,37 @@ func (this *Map) In(x, y int) bool {
 	return x >= 0 && x < this.w && y >= 0 && y < this.h
 }
 
-func (this *Map) Viewable(x, y int) bool {
-	return this.blocked[y][x]
+func (this *Map) SetTile(e Entity, x, y int) {
+	this.tiles[Point{x, y}]	= e
 }
 
-func (this *Map) Roughness(x, y int) int {
-	if this.blocked[y][x] {
-		return PATH_MAX
-	}
-	return PATH_MIN
+func (this *Map) GetTile(x, y int) (Entity, bool) {
+	e, ok := this.tiles[Point{x, y}]
+	return e, ok
+}
+
+func (this *Map) Viewable(x, y int) bool {
+	tile, ok := this.tiles[Point{x, y}]
+	switch ok {
+		case true:
+			return tile.IsViewable()
+		case false:
+			return false
+	}; panic(nil)
 }
 
 func (this *Map) ViewMap() ViewMap {
-	data := make(ViewMap, 0)
-	for y := 0; y < this.h; y++ {
-		for x := 0; x < this.w; x++ {
-			data[Point{x, y}] = this.blocked[y][x]
-		}
-	}
-	return data
+	return this.viewable
+}
+
+func (this *Map) Roughness(x, y int) int {
+	tile, ok := this.tiles[Point{x, y}]
+	switch ok {
+		case true:
+			return tile.GetRoughness()
+		case false:
+			return PATH_MAX
+	}; panic(nil)
 }
 
 // Update runs the give fov alogrithm on the map.
@@ -63,24 +77,13 @@ func (this *Map) Path(x0, y0, x1, y1 int) []image.Point {
 	return points
 }
 
-// Block sets a cell as blocking or not.
-func (this *Map) Block(x, y int, blocked bool) {
-	this.blocked[y][x] = blocked
-}
-
-// Look indicates if the cell at the coordinate can be seen.
 func (this *Map) Look(x, y int) bool {
-	return this.viewable[Point{x, y}]
+	return this.Viewable(x, y)
 }
 
 // Clear resets the map to completely unblocked but unviewable.
 func (this *Map) Clear() {
-	for y := 0; y < this.h; y++ {
-		for x := 0; x < this.w; x++ {
-			this.blocked[y][y] = false
-			this.viewable = make(ViewMap, 0)
-		}
-	}
+	this.viewable = make(ViewMap, 0)
 }
 
 // Width returns the width in cells of the map.
