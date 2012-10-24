@@ -97,7 +97,7 @@ func SetR(x, y, w, h int, fg, bg Blender, data string, rest ...interface{}) {
 }
 
 // Get returns the fg, bg colors and rune of the cell on the root console.
-func Get(x, y int) (RGB, RGB, rune) {
+func Get(x, y int) (Blender, Blender, rune) {
 	return console.Get(x, y)
 }
 

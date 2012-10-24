@@ -173,11 +173,11 @@ func (c RGB) RGBA() (r, g, b, a uint32) {
 }
 
 // HEX returns parses a uint32 into RGB components.
-func Hex(n uint32) RGB {
+func Hex(n uint32) *RGB {
 	r := uint8((n >> 16) & 0xFF)
 	g := uint8((n >> 8) & 0xFF)
 	b := uint8(n & 0xFF)
-	return RGB{r, g, b}
+	return &RGB{r, g, b}
 }
 
 // Rand returns a random RGB color
