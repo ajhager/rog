@@ -6,6 +6,14 @@ import (
 	"runtime"
 )
 
+type Level struct {
+    data [][]rune
+}
+
+func (l *Level) MoveBlocked(x, y int) bool {
+    return l.data[y][x] == '#'
+}
+
 var (
 	width  = 40
 	height = 20
@@ -44,6 +52,8 @@ var (
 		[]rune("                                        "),
 		[]rune("                                        "),
 	}
+
+    level = &Level{tmap}
 )
 
 func movePlayer(xx, yy int) {
@@ -77,7 +87,9 @@ func example() {
 	}
 
 	if rog.Mouse().Left.Released {
-		path = pmap.Path(x, y, rog.Mouse().Cell.X, rog.Mouse().Cell.Y)
+        limit := image.Rect(0, 0, 40, 20)
+        target := image.Pt(rog.Mouse().Cell.X, rog.Mouse().Cell.Y)
+		path = rog.Path(level, limit, image.Pt(x, y), target)
 	}
 
 	switch rog.Key() {

@@ -4,7 +4,31 @@ package rog
 
 import (
 	"container/heap"
+    "image"
 )
+
+type GridMove interface {
+    MoveBlocked(x, y int) bool
+}
+
+func Path(g GridMove, this image.Rectangle, start, end image.Point) []image.Point {
+	data := NewMapData(this.Dx(), this.Dy())
+	for y := this.Min.Y; y < this.Dy(); y++ {
+		for x := this.Min.X; x < this.Dx(); x++ {
+			if g.MoveBlocked(x, y) {
+				data[x][y] = WALL
+			} else {
+				data[x][y] = LAND
+			}
+		}
+	}
+	nodes := Astar(data, start.X, start.Y, end.X, end.Y, true)
+	points := make([]image.Point, len(nodes))
+	for i := 0; i < len(nodes); i++ {
+		points[i] = image.Pt(nodes[i].X, nodes[i].Y)
+	}
+	return points
+}
 
 // A PriorityQueue implements heap.Interface and holds Items.
 type PriorityQueue []*Node
