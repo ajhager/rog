@@ -1,3 +1,4 @@
+* Transition to https://code.google.com/p/glcv-go/ in order to remove the glfw dependency. 
 * Clean up backend to be more readable
 * Screenshot method
 * User defined OpenGL callback
