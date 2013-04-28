@@ -1,17 +1,17 @@
 package main
 
 import (
-	"hagerbot.com/rog"
+	"github.com/ajhager/rog"
 	"image"
 	"runtime"
 )
 
 type Level struct {
-    data [][]rune
+	data [][]rune
 }
 
 func (l *Level) MoveBlocked(x, y int) bool {
-    return l.data[y][x] == '#'
+	return l.data[y][x] == '#'
 }
 
 var (
@@ -53,7 +53,7 @@ var (
 		[]rune("                                        "),
 	}
 
-    level = &Level{tmap}
+	level = &Level{tmap}
 )
 
 func movePlayer(xx, yy int) {
@@ -87,8 +87,8 @@ func example() {
 	}
 
 	if rog.Mouse().Left.Released {
-        limit := image.Rect(0, 0, 40, 20)
-        target := image.Pt(rog.Mouse().Cell.X, rog.Mouse().Cell.Y)
+		limit := image.Rect(0, 0, 40, 20)
+		target := image.Pt(rog.Mouse().Cell.X, rog.Mouse().Cell.Y)
 		path = rog.Path(level, limit, image.Pt(x, y), target)
 	}
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"hagerbot.com/rog"
+	"github.com/ajhager/rog"
 )
 
 var drainbow = rog.Discrete(rog.Red, rog.Orange, rog.Yellow, rog.Green, rog.Blue, rog.Purple, rog.Magenta)
