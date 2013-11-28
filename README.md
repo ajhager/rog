@@ -3,7 +3,7 @@ rog A roguelike game library written in go
 
 Note
 ----
-rog is no longer maintained. Please check out [eng](http://github.com/ajhager/eng) for an up to date 2d game library for go.
+rog is no longer maintained. Please check out [eng](http://github.com/ajhager/eng/rog) for an updated roguelike library.
 
 Setup
 -----
