@@ -1,3 +1,0 @@
-#!/bin/bash
-go install github.com/jteeuwen/go-bindata
-go-bindata -f="Terminal" -i="terminal.png" -m=true -o="terminal.go" -p="rog"
